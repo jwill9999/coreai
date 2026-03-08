@@ -1,5 +1,5 @@
 {
-  "name": "@coreai/agent-types",
+  "name": "@coreai/agent-core",
   "version": "0.1.0-alpha.0",
   "type": "module",
   "main": "./dist/index.js",
@@ -19,6 +19,8 @@
     "!**/*.tsbuildinfo"
   ],
   "dependencies": {
+    "@coreai/agent-types": "*",
+    "commander": "^14.0.3",
     "tslib": "^2.3.0"
   }
 }

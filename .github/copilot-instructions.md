@@ -106,7 +106,24 @@ Scope: epic/task ID or package name, e.g. e2-t1, agent-core
 - Generated automatically with **`git-cliff`** on every merge to `main`
 - Never edited manually
 
-> **Note:** `git-cliff` needs to be installed: `npm install -D git-cliff` and a `cliff.toml` config created. This will be done when starting Epic 2.
+> **Note:** `git-cliff` is installed globally via brew. `cliff.toml` is at the repo root.
+
+### Package Versioning
+
+All packages in this monorepo are versioned **in lockstep** (same version across all packages).
+
+| Stage | Version format | When |
+|-------|---------------|------|
+| Active development | `0.x.0-alpha.0` | Now — all epics in progress |
+| Feature complete, stabilising | `0.x.0-beta.0` | All 9 epics done |
+| Release candidate | `1.0.0-rc.0` | Tested, docs complete |
+| Stable release | `1.0.0` | Production ready |
+
+**Minor version (`0.x`) increments per epic completed** — e.g. after Epic 2 merges to main, bump to `0.2.0-alpha.0`.
+
+**Current version: `0.1.0-alpha.0`** — set when Epic 2 work began.
+
+When bumping versions, update **all** `packages/*/package.json` files together. Use `nx release` when the full release workflow is configured.
 
 ## Key Conventions
 
