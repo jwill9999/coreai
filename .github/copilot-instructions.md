@@ -71,25 +71,36 @@ main
    git checkout -b feat/e{N}-t{M}-{task-name}
    ```
 
-3. **Complete a task** — commit with conventional commit message, push and open a PR to the epic branch:
+3. **Complete a task** — commit, push, open PR to epic branch (not `main`):
    ```bash
    git add . && git commit -m "feat(e{N}-t{M}): description"
    git push -u origin feat/e{N}-t{M}-{task-name}
    gh pr create --base feat/e{N}-{epic-name} --title "feat(e{N}-t{M}): description"
    ```
-   **Human reviews the PR** — only merge when satisfied. Do not self-merge task branches.
+   **Human reviews the PR.** Do not self-merge. Wait for approval before moving to next task.
 
-4. **Complete an epic** — push epic branch and open a PR to `main`:
+4. **All tasks complete → pre-merge local test** — before opening the epic PR, run the full suite locally against the epic branch:
+   ```bash
+   git checkout feat/e{N}-{epic-name}
+   npx nx run-many -t typecheck,lint,test,build --all
+   ```
+   Fix any issues before opening the PR to `main`.
+
+5. **Open epic PR to `main`**:
    ```bash
    git push -u origin feat/e{N}-{epic-name}
    gh pr create --base main --title "feat: Epic {N} — {Epic Name}" --body "..."
    ```
+   **Human reviews and merges** when satisfied.
 
-5. **On PR merge to main** — generate/update `CHANGELOG.md`:
+6. **After merge to main** — generate/update `CHANGELOG.md` and bump version:
    ```bash
    git checkout main && git pull
-   npx git-cliff --output CHANGELOG.md
-   git add CHANGELOG.md && git commit -m "chore: update CHANGELOG.md" && git push
+   git-cliff --output CHANGELOG.md
+   # Bump all packages/*/package.json to next alpha version (e.g. 0.2.0-alpha.0)
+   git add CHANGELOG.md packages/*/package.json
+   git commit -m "chore: update CHANGELOG.md and bump to 0.{N+1}.0-alpha.0"
+   git push
    ```
 
 ### Commit Message Format (Conventional Commits)
