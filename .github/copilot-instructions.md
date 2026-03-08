@@ -127,6 +127,21 @@ git add SESSION.md && git commit -m "chore: update SESSION.md" && git push
 
 > **Note:** Epic 5 (`agent-plugin-session`) and Epic 6 (context injection hooks) will automate this once built. Until then it is a manual checkpoint.
 
+### SUMMARY.md
+`SUMMARY.md` is the **compressed conversation history** at the repo root. It is **append-only** — new segments are added; past segments are never edited.
+
+Each segment maps to the `CompressionSummary` interface in `@coreai/agent-types` (topic, keyDecisions, constraints, outcome). This is the manual equivalent of what `agent-core`'s context builder will auto-generate once built (Epic 5/6).
+
+#### When to add a new segment to SUMMARY.md
+- When a major topic or epic completes
+- When conversation history is getting long (approaching ~30 messages in a session)
+- When explicitly asked
+
+#### After updating SUMMARY.md always
+```bash
+git add SUMMARY.md && git commit -m "docs: update SUMMARY.md" && git push
+```
+
 ### Context Injection Order (prompt assembly)
 ```
 skills / instructions
