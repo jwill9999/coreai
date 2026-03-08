@@ -185,6 +185,53 @@ Prevents unsafe modifications by automated agents.
 
 ------------------------------------------------------------------------
 
+# Decision 8 --- Nx Monorepo over Separate Repositories
+
+## Context
+
+The original `ECOSYSTEM_REPO_STRUCTURE.md` spec described each package
+(`agent-core`, `agent-plugin-beads`, etc.) as its own separate GitHub
+repository under a shared organisation. This was written before a build
+tool was selected.
+
+## Decision
+
+Implement as a **single Nx monorepo** with all packages under `packages/`:
+
+    coreai/
+        packages/
+            agent-types/
+            agent-core/
+            agent-plugin-beads/
+            agent-plugin-mulch/
+            agent-plugin-session/
+            agent-plugin-compression/
+            agent-plugin-guardrails/
+            agent-stack-standard/
+            skillshare/
+
+Use `packages/` (not Nx's default `libs/`) to signal these are
+**publishable npm packages**, not internal-only libraries.
+
+## Rationale
+
+-   shared tooling (ESLint, Jest, Prettier, TypeScript) configured once
+-   atomic commits across packages
+-   cross-package type-checking via TypeScript project references
+-   Nx cache and task pipeline work across all packages together
+-   `agent-types` (shared interfaces) is immediately available to all
+    other packages without a publish/install cycle
+-   easier to enforce conventions consistently
+
+## What changes from the original spec
+
+-   no separate repos; one repo at https://github.com/jwill9999/coreai
+-   each package's internal `src/` structure is preserved as designed
+-   the `apps/` folder is not used — all packages are libraries with
+    optional CLI entry points, not standalone runnable applications
+
+------------------------------------------------------------------------
+
 # Future Evolution
 
 Possible future layers:
