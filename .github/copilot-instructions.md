@@ -101,7 +101,31 @@ Lessons are stored in JSONL. Required fields: `id`, `topic`, `summary`, `recomme
 - Query order: project mulch → global mulch
 
 ### SESSION.md
-Short-term session handoff document (150–400 words max). Sections: Current Objective, Active Task, Progress Since Last Session, Decisions Made, Open Issues, Next Steps, References.
+`SESSION.md` is the **primary session handoff document** at the repo root. It must be kept up to date so any new agent session can resume without needing conversation history.
+
+#### When to update SESSION.md
+Update and commit `SESSION.md` at **every one of these checkpoints** — do not wait to be asked:
+
+1. **After completing an epic or task** — mark it done in the task table
+2. **Before the user takes a break** — any message indicating they are stepping away
+3. **After every commit to main** — keep the active task and next steps current
+4. **When explicitly asked** — user says "update session" or similar
+
+#### What SESSION.md must always contain
+- Current Objective
+- Active Task (epic/task ID currently in progress)
+- Progress Since Last Session (what was completed)
+- Decisions Made (key technical decisions)
+- Open Issues (blockers or unknowns)
+- Next Steps (the exact next task ID and what to do)
+- Full epic and task table with ✅ / ⬜ status for every task
+
+#### After updating SESSION.md always
+```bash
+git add SESSION.md && git commit -m "chore: update SESSION.md" && git push
+```
+
+> **Note:** Epic 5 (`agent-plugin-session`) and Epic 6 (context injection hooks) will automate this once built. Until then it is a manual checkpoint.
 
 ### Context Injection Order (prompt assembly)
 ```
