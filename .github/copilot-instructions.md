@@ -41,6 +41,73 @@ export interface AgentPlugin {
 }
 ```
 
+## Branching Strategy
+
+All work from **Epic 2 onwards** follows this Git workflow. Epic 1 was pushed directly to `main` during initial scaffolding — that is the only exception.
+
+### Branch Structure
+```
+main
+└── feat/e{N}-{epic-name}          ← epic branch (opened as PR → main)
+    ├── feat/e{N}-t{M}-{task-name} ← task sub-branch (merged into epic branch)
+    └── feat/e{N}-t{M}-{task-name}
+```
+
+**Examples:**
+- Epic branch: `feat/e2-agent-core`
+- Task sub-branch: `feat/e2-t1-context-builder`, `feat/e2-t2-plugin-loader`
+
+### Workflow (follow this for every epic)
+
+1. **Start of epic** — create epic branch from `main`:
+   ```bash
+   git checkout main && git pull
+   git checkout -b feat/e{N}-{epic-name}
+   ```
+
+2. **Start of each task** — create task sub-branch from epic branch:
+   ```bash
+   git checkout feat/e{N}-{epic-name}
+   git checkout -b feat/e{N}-t{M}-{task-name}
+   ```
+
+3. **Complete a task** — commit with conventional commit message, merge back into epic branch:
+   ```bash
+   git add . && git commit -m "feat(e{N}-t{M}): description"
+   git checkout feat/e{N}-{epic-name}
+   git merge feat/e{N}-t{M}-{task-name} --no-ff
+   git branch -d feat/e{N}-t{M}-{task-name}
+   ```
+
+4. **Complete an epic** — push epic branch and open a PR to `main`:
+   ```bash
+   git push -u origin feat/e{N}-{epic-name}
+   gh pr create --base main --title "feat: Epic {N} — {Epic Name}" --body "..."
+   ```
+
+5. **On PR merge to main** — generate/update `CHANGELOG.md`:
+   ```bash
+   git checkout main && git pull
+   npx git-cliff --output CHANGELOG.md
+   git add CHANGELOG.md && git commit -m "chore: update CHANGELOG.md" && git push
+   ```
+
+### Commit Message Format (Conventional Commits)
+All commits must follow this format — it drives the auto-generated changelog:
+```
+<type>(scope): short description
+
+Types: feat | fix | docs | chore | refactor | test | ci
+Scope: epic/task ID or package name, e.g. e2-t1, agent-core
+```
+
+### Changelog
+- `CHANGELOG.md` lives at the repo root
+- Generated automatically with **`git-cliff`** on every merge to `main`
+- Never edited manually
+
+> **Note:** `git-cliff` needs to be installed: `npm install -D git-cliff` and a `cliff.toml` config created. This will be done when starting Epic 2.
+
 ## Key Conventions
 
 ### Node.js & Package Manager
