@@ -4,43 +4,130 @@
 Build the coreai agent ecosystem — a layered AI-assisted engineering workflow platform — as an Nx monorepo with 8 publishable packages.
 
 ## Active Task
-Epic 2 — `@coreai/agent-core` (not yet started)
+**Epic 2 — `@coreai/agent-core`** (next to start — not yet begun)
 
 ## Progress Since Last Session
-- ✅ Epic 1 complete and committed
-  - Scaffolded `@coreai/agent-types` publishable Nx package with all shared TypeScript interfaces: `AgentPlugin`, `AgentContext`, `AgentConfig`, `BeadsTask`, `MulchLesson`, `ConversationMessage`, `ConversationSegment`, `CompressionSummary`
-  - Installed and configured `@nx/eslint` and `@nx/jest` plugins — all packages now have `lint`, `test`, `typecheck`, `build` targets via Nx inference
-  - Root `.eslintrc.js` + per-package `.eslintrc.json` pattern established
-  - `jest.preset.js` + per-package `jest.config.cts` pattern established
-  - `.nvmrc` pinned to Node 24 (project uses nvm)
-  - `copilot-instructions.md` created and updated with architecture, Nx plugin conventions, and Node setup
-  - All quality checks passing: typecheck ✅ lint ✅ test ✅ format ✅
-  - Committed (2 commits) and pushed to https://github.com/jwill9999/coreai (`main`)
+- ✅ **Epic 1 complete** — `@coreai/agent-types` scaffolded and pushed to GitHub
+- ✅ Nx plugin tooling configured: `@nx/eslint`, `@nx/jest`, `@nx/js` (all targets inferred)
+- ✅ Node 24 / nvm pinned in `.nvmrc`
+- ✅ All quality checks passing: `typecheck` ✅ `lint` ✅ `test` ✅ `format:check` ✅
+- ✅ Repo live at https://github.com/jwill9999/coreai (`main`)
 
 ## Decisions Made
-- Nx monorepo using `@nx/js`, `@nx/eslint`, `@nx/jest` plugins (prefer Nx ecosystem over manual config)
-- TypeScript: `module: nodenext`, strict mode, `.js` import extensions in `.ts` source files
-- `tsconfig.spec.json` must set `"customConditions": null` to avoid TS5098 when Jest uses `moduleResolution: node10`
-- Node 24 via nvm (`.nvmrc` in repo root)
-- ESLint uses legacy config format (`.eslintrc.*`) — ESLint 8 is installed
-- Do not fork `bd` (Beads) or `mulch` — adapter plugins only
+- Nx monorepo — always prefer `npx nx add @nx/<plugin>` over manual config
+- TypeScript: `module: nodenext`, strict mode, `.js` extensions in imports
+- `tsconfig.spec.json` must set `"customConditions": null` (avoids TS5098 with Jest/node10)
+- Node 24 via nvm; ESLint 8 using legacy `.eslintrc.*` format
+- Do NOT fork `bd` (Beads) or `mulch` — adapter plugins only
 - Hooks may only write to `SESSION.md` and `.mulch/mulch.jsonl`
-- For now pushing directly to `main` (early scaffolding phase)
+- Pushing directly to `main` during early scaffolding phase
+- New package pattern: `jest.config.cts` (`passWithNoTests: true`) + `.eslintrc.json` extending root
 
 ## Open Issues
-- None currently
+None
 
 ## Next Steps
-1. Start Epic 2 — scaffold `@coreai/agent-core` package
-2. Implement context builder (`src/context-builder/`) — assembles prompt in correct injection order
-3. Implement plugin loader (`src/plugin-loader/`) — loads plugins and calls lifecycle hooks
-4. Implement hook runner (`src/hook-runner/`) — resolves and executes hooks with controlled write permissions
-5. Implement CLI (`src/cli/`) — `agent start`, `agent end`, `agent task start <id>` using `commander`
-6. Write unit tests for context builder and plugin loader
+Start **E2-T1** — scaffold `@coreai/agent-core` and implement the context builder
+
+---
+
+## Full Epic & Task Plan
+
+Legend: ✅ done | ⬜ pending
+
+### Epic 1 — Monorepo Foundation & Shared Types ✅
+| ID | Task | Status |
+|----|------|--------|
+| E1-T1 | Scaffold `@coreai/agent-types` — all shared TS interfaces/types | ✅ |
+| E1-T2 | Configure Nx targets and Prettier across all packages | ✅ |
+
+### Epic 2 — `@coreai/agent-core` ⬜
+Runtime orchestration: context builder, plugin loader, hook runner, CLI.
+| ID | Task | Status |
+|----|------|--------|
+| E2-T1 | Context builder — assembles prompt in injection order; triggers compression at 30–40 messages | ⬜ |
+| E2-T2 | Plugin loader — loads plugins from config, calls all lifecycle hooks | ⬜ |
+| E2-T3 | Hook runner — resolves `repo/.agent/hooks/` then `~/.agent/hooks/`; enforces write permissions; first-run prompt → `.agent/config.json` | ⬜ |
+| E2-T4 | CLI — `agent start`, `agent end`, `agent task start <id>` using `commander` | ⬜ |
+| E2-T5 | Unit tests for context builder and plugin loader | ⬜ |
+
+### Epic 3 — `@coreai/agent-plugin-beads` ⬜
+Wraps `bd` CLI to inject Beads task context.
+| ID | Task | Status |
+|----|------|--------|
+| E3-T1 | `beadsAdapter.ts` — calls `bd show <task-id>`, parses into `BeadsTask` | ⬜ |
+| E3-T2 | `hooks.ts` — `onTaskStart` injects task metadata + spec path | ⬜ |
+| E3-T3 | `contextLoader.ts` — loads spec file content from task metadata | ⬜ |
+| E3-T4 | Unit tests with mocked `bd` CLI output | ⬜ |
+
+### Epic 4 — `@coreai/agent-plugin-mulch` ⬜
+Wraps `mulch` CLI to surface experience lessons.
+| ID | Task | Status |
+|----|------|--------|
+| E4-T1 | `mulchAdapter.ts` — calls `mulch search <topic>`, parses JSONL | ⬜ |
+| E4-T2 | `hooks.ts` — `onSessionStart` searches mulch for relevant topics | ⬜ |
+| E4-T3 | `lessonWriter.ts` — calls `mulch add` to persist new lessons at session end | ⬜ |
+| E4-T4 | Unit tests with mocked `mulch` CLI | ⬜ |
+
+### Epic 5 — `@coreai/agent-plugin-session` ⬜
+Manages `SESSION.md` lifecycle.
+| ID | Task | Status |
+|----|------|--------|
+| E5-T1 | `sessionReader.ts` — reads and parses `SESSION.md` from repo root | ⬜ |
+| E5-T2 | `sessionWriter.ts` — writes structured `SESSION.md`; validates under 500 words | ⬜ |
+| E5-T3 | `hooks.ts` — `onSessionStart` (load), `onSessionEnd` (write) | ⬜ |
+| E5-T4 | Unit tests | ⬜ |
+
+### Epic 6 — `@coreai/agent-plugin-compression` ⬜
+Ephemeral conversation compression — no file writes ever.
+| ID | Task | Status |
+|----|------|--------|
+| E6-T1 | `segmenter.ts` — groups messages into logical topic segments | ⬜ |
+| E6-T2 | `compressor.ts` — summarises older segments into `CompressionSummary` (100–200 words each) | ⬜ |
+| E6-T3 | `hooks.ts` — `onConversationThreshold`: compress and replace older messages | ⬜ |
+| E6-T4 | Unit tests for segmentation and compression logic | ⬜ |
+
+### Epic 7 — `@coreai/agent-plugin-guardrails` ⬜
+Validation pipeline triggered when a task enters `review`.
+| ID | Task | Status |
+|----|------|--------|
+| E7-T1 | `pipeline.ts` — format → lint → typecheck → unit tests → integration tests | ⬜ |
+| E7-T2 | `checkers/` — individual checker modules (Prettier, ESLint, tsc, test runner) | ⬜ |
+| E7-T3 | `hooks.ts` — `onTaskStart`: detects `review` status, runs pipeline | ⬜ |
+| E7-T4 | Task state transitions: pass → `done`; fail → `in_progress` via Beads | ⬜ |
+| E7-T5 | Unit tests | ⬜ |
+
+### Epic 8 — `@coreai/agent-stack-standard` ⬜
+Convenience bundle — installs all plugins + agent-core.
+| ID | Task | Status |
+|----|------|--------|
+| E8-T1 | Package with peer deps on all 5 plugins + agent-core | ⬜ |
+| E8-T2 | `agent-stack-standard init` — default config generator | ⬜ |
+| E8-T3 | README and usage documentation | ⬜ |
+
+### Epic 9 — `@coreai/skillshare` ⬜
+Standalone manifest-driven skills/instructions sync CLI (independent of other epics).
+| ID | Task | Status |
+|----|------|--------|
+| E9-T1 | CLI entrypoint — `init`, `sync`, optional `pull` using `commander` | ⬜ |
+| E9-T2 | `manifest.ts` — load/validate `skills-config.json` (`localSkills`, `centralRepo`, `syncBranch`) | ⬜ |
+| E9-T3 | `loader.ts` — `resolveSkill()`: local dir first, fallback to synced central repo | ⬜ |
+| E9-T4 | `commands/init.ts` — interactive prompt via `inquirer` to scaffold manifest | ⬜ |
+| E9-T5 | `commands/sync.ts` — clone/pull via `simple-git`, copy changes, commit+push; direct push or PR; graceful auth/error handling | ⬜ |
+| E9-T6 | `commands/pull.ts` — (optional) pull updates from central repo | ⬜ |
+| E9-T7 | `/templates/skills-config.json` — editable manifest template | ⬜ |
+| E9-T8 | README — manifest structure, CLI usage, search order, hook/CI scripting | ⬜ |
+| E9-T9 | Unit tests | ⬜ |
+
+---
+
+## Build Order
+```
+E1 ✅ → E2 ⬜ → E3, E4, E5, E6, E7 (parallel) → E8
+E9 (independent, can run in parallel with any epic)
+```
 
 ## References
-- Plan: `.copilot/session-state/1599717e-a507-4b20-88eb-68cf1030df61/plan.md` (session only)
 - Architecture specs: `docs/specs/agent_architecture_documentation_pack/`
 - Copilot instructions: `.github/copilot-instructions.md`
 - Repo: https://github.com/jwill9999/coreai
-- Epic breakdown: see commit history and plan above
