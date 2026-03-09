@@ -54,7 +54,7 @@ export function buildContext(context: AgentContext): BuiltContext {
 
   return {
     prompt: sections.join('\n\n---\n\n'),
-    compressionTriggered: false,
+    compressionTriggered: (context.compressionSummaries?.length ?? 0) > 0,
     messageCount: context.conversation.length,
   };
 }
