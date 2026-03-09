@@ -5,6 +5,9 @@
   "references": [
     {
       "path": "./packages/agent-types"
+    },
+    {
+      "path": "./packages/agent-core"
     }
   ]
 }

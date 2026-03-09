@@ -71,25 +71,36 @@ main
    git checkout -b feat/e{N}-t{M}-{task-name}
    ```
 
-3. **Complete a task** — commit with conventional commit message, merge back into epic branch:
+3. **Complete a task** — commit, push, open PR to epic branch (not `main`):
    ```bash
    git add . && git commit -m "feat(e{N}-t{M}): description"
-   git checkout feat/e{N}-{epic-name}
-   git merge feat/e{N}-t{M}-{task-name} --no-ff
-   git branch -d feat/e{N}-t{M}-{task-name}
+   git push -u origin feat/e{N}-t{M}-{task-name}
+   gh pr create --base feat/e{N}-{epic-name} --title "feat(e{N}-t{M}): description"
    ```
+   **Human reviews the PR.** Do not self-merge. Wait for approval before moving to next task.
 
-4. **Complete an epic** — push epic branch and open a PR to `main`:
+4. **All tasks complete → pre-merge local test** — before opening the epic PR, run the full suite locally against the epic branch:
+   ```bash
+   git checkout feat/e{N}-{epic-name}
+   npx nx run-many -t typecheck,lint,test,build --all
+   ```
+   Fix any issues before opening the PR to `main`.
+
+5. **Open epic PR to `main`**:
    ```bash
    git push -u origin feat/e{N}-{epic-name}
    gh pr create --base main --title "feat: Epic {N} — {Epic Name}" --body "..."
    ```
+   **Human reviews and merges** when satisfied.
 
-5. **On PR merge to main** — generate/update `CHANGELOG.md`:
+6. **After merge to main** — generate/update `CHANGELOG.md` and bump version:
    ```bash
    git checkout main && git pull
-   npx git-cliff --output CHANGELOG.md
-   git add CHANGELOG.md && git commit -m "chore: update CHANGELOG.md" && git push
+   git-cliff --output CHANGELOG.md
+   # Bump all packages/*/package.json to next alpha version (e.g. 0.2.0-alpha.0)
+   git add CHANGELOG.md packages/*/package.json
+   git commit -m "chore: update CHANGELOG.md and bump to 0.{N+1}.0-alpha.0"
+   git push
    ```
 
 ### Commit Message Format (Conventional Commits)
@@ -106,7 +117,38 @@ Scope: epic/task ID or package name, e.g. e2-t1, agent-core
 - Generated automatically with **`git-cliff`** on every merge to `main`
 - Never edited manually
 
-> **Note:** `git-cliff` needs to be installed: `npm install -D git-cliff` and a `cliff.toml` config created. This will be done when starting Epic 2.
+> **Note:** `git-cliff` is installed globally via brew. `cliff.toml` is at the repo root.
+
+### Code Quality & CI Tools
+
+| Tool | Purpose | Runs on |
+|------|---------|---------|
+| **Nx** (`typecheck`, `lint`, `test`, `build`) | Local quality gates | Every task branch, pre-PR |
+| **Sourcery AI** | Automated PR code review, architecture diagrams | Every PR (GitHub bot) |
+| **SonarCloud** | Static analysis, security hotspots, coverage gates, duplication | Every PR + main (cloud) |
+
+When SonarCloud flags issues on a PR:
+- **Bugs / Vulnerabilities** — must be fixed before merge
+- **Security Hotspots** — review and either fix or mark as reviewed with justification
+- **Code Smells** — fix if straightforward; log as a follow-up task if complex
+- **Coverage** — once E2-T5 unit tests are in place, coverage gates will apply
+
+### Package Versioning
+
+All packages in this monorepo are versioned **in lockstep** (same version across all packages).
+
+| Stage | Version format | When |
+|-------|---------------|------|
+| Active development | `0.x.0-alpha.0` | Now — all epics in progress |
+| Feature complete, stabilising | `0.x.0-beta.0` | All 9 epics done |
+| Release candidate | `1.0.0-rc.0` | Tested, docs complete |
+| Stable release | `1.0.0` | Production ready |
+
+**Minor version (`0.x`) increments per epic completed** — e.g. after Epic 2 merges to main, bump to `0.2.0-alpha.0`.
+
+**Current version: `0.1.0-alpha.0`** — set when Epic 2 work began.
+
+When bumping versions, update **all** `packages/*/package.json` files together. Use `nx release` when the full release workflow is configured.
 
 ## Key Conventions
 
