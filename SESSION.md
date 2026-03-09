@@ -5,9 +5,9 @@ Build the coreai agent ecosystem — a layered AI-assisted engineering workflow 
 
 ## Active Task
 **Epic 2 — `@coreai/agent-core`** (in progress)
-- ✅ E2-T1 complete — context builder implemented and pushed to `feat/e2-t1-context-builder`
-- ⏳ Awaiting human review and merge of E2-T1 PR into `feat/e2-agent-core`
-- ⬜ E2-T2 next — plugin loader
+- ✅ E2-T1 complete — context builder merged into `feat/e2-agent-core`
+- ✅ E2-T2 complete — plugin loader pushed to `feat/e2-t2-plugin-loader`, awaiting PR review
+- ⬜ E2-T3 next — hook runner (after E2-T2 PR reviewed and merged)
 
 ## Progress Since Last Session
 - ✅ **Epic 1 complete** — `@coreai/agent-types` scaffolded and pushed to GitHub
@@ -15,12 +15,17 @@ Build the coreai agent ecosystem — a layered AI-assisted engineering workflow 
 - ✅ Node 24 / nvm pinned in `.nvmrc`
 - ✅ All quality checks passing: `typecheck` ✅ `lint` ✅ `test` ✅ `format:check` ✅
 - ✅ Repo live at https://github.com/jwill9999/coreai (`main`)
-- ✅ Branching strategy established — epic branches + task sub-branches + human PR review
-- ✅ `git-cliff` installed, `cliff.toml` configured for changelog generation
-- ✅ Versioning strategy: `0.1.0-alpha.0` lockstep across all packages, minor bump per epic
-- ✅ ADR-8 (monorepo structure) and ADR-9 (versioning) added to ARCHITECTURE_DECISIONS.md
-- ✅ E2-T1 — `@coreai/agent-core` scaffolded + context builder implemented
-  - Branch: `feat/e2-t1-context-builder` pushed to GitHub, awaiting PR review
+- ✅ Branching strategy: epic branches + task sub-branches + human PR review before merge
+- ✅ `git-cliff` + `cliff.toml` configured for changelog generation on merge to main
+- ✅ Versioning: `0.1.0-alpha.0` lockstep, minor bump per epic
+- ✅ ADR-8 (monorepo structure) and ADR-9 (versioning) committed
+- ✅ SonarCloud + Sourcery AI + CodeQL active on all PRs
+- ✅ CI-T1 task added: GitHub Actions workflow deferred until after Epic 3
+- ✅ E2-T1 — context builder (`buildContext`, `shouldCompress`, `getMessagesToCompress`)
+  - Sourcery fix applied: `compressionTriggered` derived from `compressionSummaries.length`
+  - Merged into `feat/e2-agent-core` ✅
+- ✅ E2-T2 — plugin loader (`PluginLoader` class, all 4 lifecycle hook runners)
+  - PR open: `feat/e2-t2-plugin-loader` → `feat/e2-agent-core` ⏳
 
 ## Decisions Made
 - Nx monorepo — always prefer `npx nx add @nx/<plugin>` over manual config
@@ -29,16 +34,18 @@ Build the coreai agent ecosystem — a layered AI-assisted engineering workflow 
 - Node 24 via nvm; ESLint 8 using legacy `.eslintrc.*` format
 - Do NOT fork `bd` (Beads) or `mulch` — adapter plugins only
 - Hooks may only write to `SESSION.md` and `.mulch/mulch.jsonl`
-- Pushing directly to `main` during early scaffolding phase
-- New package pattern: `jest.config.cts` (`passWithNoTests: true`) + `.eslintrc.json` extending root
+- Branching: task PR → human review → epic branch → local test → epic PR → main
+- All packages versioned in lockstep at `0.1.0-alpha.0`
+- GitHub Actions CI deferred until after Epic 3 (SonarCloud covers PRs until then)
+- Unit tests written at end of each epic (E2-T5), not per task
 
 ## Open Issues
-None
+- E2-T2 PR under human review — **check at start of next session** whether `feat/e2-t2-plugin-loader` has been merged into `feat/e2-agent-core` before starting E2-T3
 
 ## Next Steps
-1. Human reviews and merges PR `feat/e2-t1-context-builder` → `feat/e2-agent-core`
-2. Create `feat/e2-t2-plugin-loader` from updated epic branch
-3. Implement E2-T2 plugin loader
+1. Human reviews and merges PR `feat/e2-t2-plugin-loader` → `feat/e2-agent-core`
+2. Create `feat/e2-t3-hook-runner` from updated epic branch
+3. Implement E2-T3 — hook runner (resolves `repo/.agent/hooks/` then `~/.agent/hooks/`, enforces write permissions, first-run permission prompt → `.agent/config.json`)
 
 ---
 
@@ -57,7 +64,7 @@ Runtime orchestration: context builder, plugin loader, hook runner, CLI.
 | ID | Task | Status |
 |----|------|--------|
 | E2-T1 | Context builder — assembles prompt in injection order; triggers compression at 30–40 messages | ✅ |
-| E2-T2 | Plugin loader — loads plugins from config, calls all lifecycle hooks | ⬜ |
+| E2-T2 | Plugin loader — loads plugins from config, calls all lifecycle hooks | ⏳ PR review |
 | E2-T3 | Hook runner — resolves `repo/.agent/hooks/` then `~/.agent/hooks/`; enforces write permissions; first-run prompt → `.agent/config.json` | ⬜ |
 | E2-T4 | CLI — `agent start`, `agent end`, `agent task start <id>` using `commander` | ⬜ |
 | E2-T5 | Unit tests for context builder and plugin loader | ⬜ |

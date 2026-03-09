@@ -65,6 +65,33 @@
 
 ---
 
+## Segment 4 — Epic 2 Work, Branching & Quality Pipeline
+
+**Topic:** Establishing the full development workflow and implementing the first two Epic 2 tasks
+
+**Key Decisions:**
+- Branching strategy finalised: task sub-branch → push → PR → human review → merge to epic branch → local full test → epic PR → merge to main → git-cliff changelog + version bump
+- Agent does NOT self-merge — human reviews every PR before merge
+- `git-cliff` installed (brew), `cliff.toml` configured with repo URL for changelog generation
+- Versioning: all packages lockstep at `0.1.0-alpha.0`; minor version bumps per epic on merge to main
+- ADR-8 (Nx monorepo over separate repos) and ADR-9 (pre-release versioning) added to `ARCHITECTURE_DECISIONS.md`
+- SonarCloud + Sourcery AI + CodeQL active on all PRs; GitHub Actions CI deferred until after Epic 3
+- Unit tests written at end of each epic (E2-T5), not per individual task
+- CI-T1 task created: GitHub Actions workflow + integration tests after Epic 3 merges
+
+**Constraints:**
+- Epic branch must be pushed to remote before task branch PRs are opened (so it exists as a PR target)
+- `feat/e2-agent-core` is the base for all E2 task PRs — never target `main` directly from a task branch
+- Sourcery AI review runs automatically; SonarCloud and CodeQL also active — bugs/vulnerabilities must be fixed before merge
+- `compressionTriggered` must be derived from `compressionSummaries.length`, not hardcoded (caught by Sourcery on PR #2)
+
+**Outcome:**
+- E2-T1 (context builder) implemented and merged into `feat/e2-agent-core`
+- E2-T2 (plugin loader) implemented, PR open for review
+- Full quality pipeline active: Nx local + SonarCloud + Sourcery + CodeQL
+
+---
+
 ## Current State
 
 | Document | Purpose | Update Frequency |
@@ -73,4 +100,4 @@
 | `SUMMARY.md` | Compressed conversation history | When a topic/segment completes |
 | `.github/copilot-instructions.md` | Conventions, patterns, commands | When conventions change |
 
-**Next active task:** E2-T1 — scaffold `@coreai/agent-core`
+**Next active task:** E2-T3 — hook runner (after E2-T2 PR is reviewed and merged)
