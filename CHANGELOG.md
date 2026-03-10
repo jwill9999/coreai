@@ -6,6 +6,7 @@
 - *(e3-t1)* Scaffold @coreai/agent-plugin-beads with beadsAdapter, hooks, contextLoader
 - *(nx-cloud)* Setup nx cloud workspace
 - Rename project from @coreai to @conscius (Conscius)
+- Add static version badge to README; update version bump checklist
 
 ### 🐛 Bug Fixes
 
@@ -73,3 +74,4 @@
 - *(changelog)* Update CHANGELOG.md [skip ci]
 - Bump root package.json to 0.3.0-alpha.0
 - *(git-workflow)* Include root package.json in version bump commands
+- *(changelog)* Update CHANGELOG.md [skip ci]
