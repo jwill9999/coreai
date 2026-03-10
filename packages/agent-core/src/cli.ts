@@ -43,9 +43,9 @@ async function runLifecycle(
   await runner.runHook(HOOK_NAMES[hook], context);
 }
 
-function wrapAction(fn: () => Promise<void>): () => void {
-  return () => {
-    fn().catch((err: unknown) => {
+function wrapAction<Args extends unknown[]>(fn: (...args: Args) => Promise<void>): (...args: Args) => void {
+  return (...args: Args) => {
+    fn(...args).catch((err: unknown) => {
       console.error('agent:', err instanceof Error ? err.message : String(err));
       process.exit(1);
     });
@@ -82,10 +82,10 @@ const taskCmd = program.command('task').description('Task-level commands');
 taskCmd
   .command('start <id>')
   .description('Mark a task as started — runs onTaskStart hooks with the given task id')
-  .action((id: string) =>
-    wrapAction(() =>
+  .action(
+    wrapAction((id: string) =>
       runLifecycle('onTaskStart', (loader, ctx) => loader.runTaskStart(ctx), { taskId: id }),
-    )(),
+    ),
   );
 
 program.parseAsync(process.argv).catch((err: unknown) => {
