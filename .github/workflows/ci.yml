@@ -49,3 +49,6 @@ jobs:
 
       - name: Build
         run: npx nx run-many -t build --all
+
+      - run: npx nx fix-ci
+        if: always()
