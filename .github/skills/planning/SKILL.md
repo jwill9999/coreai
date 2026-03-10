@@ -1,176 +1,203 @@
 ---
 name: planning
-description: Plan, document, and manage new features and backlog items for this project. Use this skill to create, update, or review feature and backlog documentation, break down requirements into subtasks, and track planning status. Supported slash commands: /new-feature, /add-subtask, /update-status, /close-feature, /archive-feature, /new-backlog, /move-to-feature, /list-features, /list-backlog, /help /planning
+description: Plan, document, and manage epics, features, tasks, and backlog items for the Conscius project. Creates entries in both the markdown planning docs (docs/planning/) and the Beads task graph (bd CLI). Use this skill for all planning work. Supported slash commands: /new-epic, /new-feature, /add-task, /update-status, /close-feature, /archive-feature, /new-backlog, /move-to-feature, /list-features, /list-backlog, /sync-beads, /help /planning
 ---
 
 argument-hint:
+/new-epic: |
+Parameters: name (required), description (required), tasks (optional list), relatedDocs (optional)
+Action: Create an epic entry in docs/planning/index.md AND run `bd create --type epic --labels epic` to register it in Beads. Store the returned bd ID (e.g. bd-a3f8) in the markdown entry. Prompt for missing details. Confirm with engineer before saving.
+Example: /new-epic name="Epic 4 — agent-plugin-mulch" description="Build the Mulch experience plugin"
+
 /new-feature: |
-Parameters: name (required), description (required), requirements (optional), dependencies (optional), mode (parallel/sequential, required), relatedDocs (optional)
-Action: Prompt for missing details, clarify requirements, ask if agent or engineer should break down subtasks, document in backlog.md (if not started) or index.md (if work begins), confirm with engineer before saving.
-Example: /new-feature name="User Profile Redesign" description="Redesign user profile page for accessibility" mode=sequential
-/add-subtask: |
-Parameters: featureId (required), name (required), dependencies (optional), mode (parallel/sequential, required), notes/links (optional)
-Action: Prompt for missing details, add subtask to specified feature, confirm dependencies and mode, update feature entry in index.md, confirm with engineer.
-Example: /add-subtask featureId=feature-2026-02-24-001 name="Implement mobile styles" mode=parallel dependencies=subtask-001
+Parameters: name (required), description (required), epicId (optional bd epic ID to parent under), requirements (optional), dependencies (optional), mode (parallel/sequential, required), relatedDocs (optional)
+Action: Create a feature entry in docs/planning/index.md AND run `bd create --type feature [--parent <epicId>]`. Store the returned bd ID in the markdown entry. Prompt for missing details. Confirm with engineer before saving.
+Example: /new-feature name="mulchAdapter" description="CLI adapter for mulch search" epicId=bd-a3f8 mode=sequential
+
+/add-task: |
+Parameters: name (required), featureId (required — planning ID or bd ID), description (optional), dependencies (optional bd IDs), mode (parallel/sequential, required), acceptance (optional)
+Action: Add a task row to the feature's subtask table in docs/planning/index.md AND run `bd create --type task --parent <bd-feature-id> [--deps <bd-ids>] [--acceptance "..."]`. Store the returned bd ID in the task row. Confirm with engineer before saving.
+Example: /add-task name="mulchAdapter.ts" featureId=bd-b12c mode=sequential acceptance="parses JSONL output into MulchLesson[]"
+
 /update-status: |
-Parameters: featureId or backlogId (required), subtaskId (optional), status (required)
-Action: Update the status of the specified feature, backlog item, or subtask. Confirm with engineer if status is set to complete or archived.
-Example: /update-status featureId=feature-2026-02-24-001 subtaskId=subtask-002 status=complete
+Parameters: id (required — planning ID or bd ID), status (required: not-started/in-progress/review/done/blocked), subtaskId (optional)
+Action: Update the status field in docs/planning/index.md AND run `bd update <bd-id> --status <status>`. Map planning statuses to bd statuses: not-started→todo, in-progress→in_progress, review→review, done→done, blocked→blocked. Confirm with engineer if closing or blocking.
+Example: /update-status id=bd-c99d status=in-progress
+
 /close-feature: |
-Parameters: featureId (required)
-Action: Mark the feature as complete, prompt engineer for confirmation before archiving, update index.md.
-Example: /close-feature featureId=feature-2026-02-24-001
+Parameters: featureId (required — planning ID or bd ID)
+Action: Mark the feature complete in docs/planning/index.md AND run `bd close <bd-id>`. Prompt engineer for confirmation before closing.
+Example: /close-feature featureId=bd-b12c
+
 /archive-feature: |
 Parameters: featureId (required)
-Action: Move the completed feature to the archive section or file, confirm with engineer.
-Example: /archive-feature featureId=feature-2026-02-24-001
+Action: Move the completed feature entry to the archive section in docs/planning/index.md. Confirm with engineer.
+Example: /archive-feature featureId=feature-2026-03-10-001
+
 /new-backlog: |
-Parameters: name (required), description (required), priority (required), effort (required), dependencies (optional), relatedDocs (optional)
-Action: Prompt for missing details, document backlog item in backlog.md, confirm with engineer.
-Example: /new-backlog name="Add dark mode" description="Support dark mode in UI" priority=Medium effort=Small
+Parameters: name (required), description (required), priority (required: high/medium/low), effort (required: small/medium/large), dependencies (optional), relatedDocs (optional)
+Action: Document a backlog item in docs/planning/backlog.md AND run `bd create --type task --labels backlog --priority <p>` (map: high→1, medium→2, low→3). Store the bd ID. Prompt for missing details. Confirm with engineer.
+Example: /new-backlog name="Pin workspace deps pre-publish" description="Pin \* deps to concrete versions before npm publish" priority=medium effort=small
+
 /move-to-feature: |
-Parameters: backlogId (required)
-Action: Promote the backlog item to a feature, move entry from backlog.md to index.md, prompt for any additional required details.
-Example: /move-to-feature backlogId=backlog-2026-02-24-002
+Parameters: backlogId (required — planning ID or bd ID)
+Action: Promote the backlog item: move entry from backlog.md to index.md, update bd issue type to feature (`bd update <id> --type feature`), prompt for additional required details. Confirm with engineer.
+Example: /move-to-feature backlogId=bd-d44e
+
 /list-features: |
 Parameters: none
-Action: List all features and their statuses from index.md.
+Action: Show all features and their statuses from docs/planning/index.md alongside live Beads status (`bd list --label feature`).
 Example: /list-features
+
 /list-backlog: |
 Parameters: none
-Action: List all backlog items and their statuses from backlog.md.
+Action: Show all backlog items from docs/planning/backlog.md alongside live Beads status (`bd list --label backlog`).
 Example: /list-backlog
+
+/sync-beads: |
+Parameters: none
+Action: Audit docs/planning/index.md and backlog.md for entries missing a bd ID. For each missing entry, run the appropriate `bd create` command and back-fill the ID. Report what was synced. Confirm with engineer before making changes.
+Example: /sync-beads
+
 /help /planning: |
 Parameters: none or command name (optional)
-Action: Display a table of all available planning slash commands, their parameters, and descriptions. If a command is specified, show detailed help for that command.
-Example: /help /planning /add-subtask
-
-## Documentation Streams
-
-There are two documentation streams:
-
-1. **Feature Index**: For new features that are being planned or are ready to be implemented. Documented in `docs/planning/index.md`.
-2. **Backlog Index**: For backlog items that are not yet being worked on. Documented in `docs/planning/backlog.md`.
-
-## Feature Template
-
-Use this template for each feature in the feature index:
-
-### [Feature Name] (`feature-slug`)
-
-**ID:** feature-unique-id
-**Status:** not started | in progress | complete | archived
-
-1. **Feature Index**: For new features that are being planned or are ready to be implemented. Documented in `docs/planning/feature-index.md`.
-   **Completed:** DD/MM/YYYY (GMT, UK time, if applicable)
-   **Mode:** parallel | sequential
-   **Description:** Brief summary of the feature
-   **Dependencies:** (optional) List of feature/backlog IDs this depends on
-   **Related Docs:** Links to additional files (e.g., requirements, Figma, designs)
-
-#### Subtasks
-
-| Subtask      | ID         | Status                           | Mode                | Depends On    | Created          | Completed        |
-| ------------ | ---------- | -------------------------------- | ------------------- | ------------- | ---------------- | ---------------- |
-| Subtask name | subtask-id | not started/in progress/complete | parallel/sequential | subtask-id(s) | DD/MM/YYYY (GMT) | DD/MM/YYYY (GMT) |
-
-## Backlog Template
-
-Use this template for each backlog item in the backlog index:
-
-### [Backlog Item Name] (`backlog-slug`)
-
-**ID:** backlog-unique-id
-**Status:** not started | in progress | complete | archived
-**Created:** DD/MM/YYYY (GMT, UK time)
-**Date Completed:** DD/MM/YYYY (GMT, UK time, leave blank until completed) - Document the feature in backlog.md (if not started) or feature-index.md (if work begins).
-**Effort:** Small | Medium | Large
-**Description:** Brief summary of the backlog item
-**Dependencies:** (optional) List of feature/backlog IDs this depends on
-**Related Docs:** Links to additional files (e.g., requirements, designs)
+Action: Display a table of all available planning slash commands, their parameters, and descriptions. If a command name is specified, show detailed help for that command.
+Example: /help /planning /add-task
 
 ---
 
-This planning skill covers the planning phase up to the point where the plan is agreed and documented. Implementation of subtasks and features will be handled by a separate skill.
+## Overview
+
+The planning skill maintains **two parallel records** for every epic, feature, and task:
+
+| Record         | Where                                   | Purpose                                                                |
+| -------------- | --------------------------------------- | ---------------------------------------------------------------------- |
+| Markdown entry | `docs/planning/index.md` / `backlog.md` | Human-readable roadmap, version-controlled, GitHub-visible             |
+| Beads issue    | `bd` CLI task graph                     | Live agent context — injected by `agent-plugin-beads` at session start |
+
+Every planning action writes to **both**. The Beads `bd` ID is stored in the markdown entry as the authoritative link between the two systems.
+
+---
+
+## Beads CLI Reference
+
+Key `bd` commands used by this skill:
+
+```bash
+# Create an epic
+bd create --type epic --labels epic -d "description" "Epic title"
+
+# Create a feature under an epic
+bd create --type feature --parent bd-XXXX --labels feature -d "description" "Feature title"
+
+# Create a task under a feature
+bd create --type task --parent bd-XXXX --deps "blocks:bd-YYYY" --acceptance "criteria" "Task title"
+
+# Update status
+bd update bd-XXXX --status in_progress   # statuses: todo|in_progress|review|done|blocked
+
+# Close
+bd close bd-XXXX --reason "Completed"
+
+# List by label
+bd list --label epic
+bd list --label feature
+bd list --label backlog
+
+# Show detail
+bd show bd-XXXX
+```
+
+**Status mapping** (planning → Beads):
+
+| Planning    | Beads         |
+| ----------- | ------------- |
+| not started | `todo`        |
+| in progress | `in_progress` |
+| review      | `review`      |
+| done        | `done`        |
+| blocked     | `blocked`     |
+
+**Priority mapping** (planning → Beads `--priority`):
+
+| Planning | Beads         |
+| -------- | ------------- |
+| high     | `1`           |
+| medium   | `2` (default) |
+| low      | `3`           |
+
+---
+
+## Documentation Streams
+
+| File                       | Purpose                                         |
+| -------------------------- | ----------------------------------------------- |
+| `docs/planning/index.md`   | Active and completed epics, features, and tasks |
+| `docs/planning/backlog.md` | Items not yet started or promoted to a feature  |
+
+---
+
+## Templates
+
+### Epic / Feature entry (`docs/planning/index.md`)
+
+```markdown
+### [Feature Name] (`feature-slug`)
+
+**Planning ID:** feature-YYYY-MM-DD-NNN
+**Beads ID:** bd-XXXX
+**Status:** not started | in progress | review | done | archived
+**Created:** DD/MM/YYYY (GMT)
+**Completed:** DD/MM/YYYY (GMT, if applicable)
+**Mode:** parallel | sequential
+**Description:** Brief summary
+**Dependencies:** (planning IDs or bd IDs)
+**Related Docs:** Links to specs, ADRs, guides
+
+#### Tasks
+
+| Task      | Planning ID | Beads ID | Status      | Mode       | Depends On | Created    | Completed |
+| --------- | ----------- | -------- | ----------- | ---------- | ---------- | ---------- | --------- |
+| Task name | subtask-001 | bd-YYYY  | not started | sequential |            | DD/MM/YYYY |           |
+```
+
+### Backlog entry (`docs/planning/backlog.md`)
+
+```markdown
+### [Backlog Item Name] (`backlog-slug`)
+
+**Planning ID:** backlog-YYYY-MM-DD-NNN
+**Beads ID:** bd-XXXX
+**Status:** not started | in progress | done
+**Created:** DD/MM/YYYY (GMT)
+**Priority:** high | medium | low
+**Effort:** small | medium | large
+**Description:** Brief summary
+**Dependencies:** (planning IDs or bd IDs)
+**Related Docs:** Links if applicable
+```
 
 ---
 
 ## Archiving
 
-- Completed features can be moved to an archive section or file, or tagged as archived in the index.
-- Archived features should remain accessible for future reference.
-
-## Slash Command Workflow
-
-### Help Command
-
-Use `/help /planning` to display a table of all available planning slash commands and their parameters. - Update the feature entry in feature-index.md.
-| Command | Parameters | Description | - Move the entry from backlog.md to feature-index.md.
-| /new-feature | name, description, requirements, dependencies, mode, relatedDocs | Start a new feature and prompt for details | - List all features and their statuses from feature-index.md.
-| /update-status | featureId or backlogId, subtaskId (optional), status | Update the status of a feature, backlog item, or subtask |
-| /close-feature | featureId | Mark a feature as complete, prompt for confirmation before archiving |
-| /archive-feature | featureId | Move a completed feature to the archive |
-| /new-backlog | name, description, priority, effort, dependencies, relatedDocs | Add a new backlog item |
-| /move-to-feature | backlogId | Promote a backlog item to a feature |
-| /list-features | | List all features and their statuses |
-| /list-backlog | | List all backlog items and their statuses |
-
-For each command, the agent will prompt for any required parameters if not provided.
-
-The following slash commands are supported for planning and tracking:
-
-- `/new-feature` – Start a new feature, prompt for name, requirements, and stories.
-- `/add-subtask` – Add a subtask to a feature, prompt for dependencies and mode.
-- `/update-status` – Update the status of a feature or subtask.
-- `/close-feature` – Mark a feature as complete, prompt for confirmation before archiving.
-- `/archive-feature` – Move a completed feature to the archive.
-- `/new-backlog` – Add a new backlog item.
-- `/move-to-feature` – Promote a backlog item to a feature.
-- `/list-features` – List all features and their statuses.
-- `/list-backlog` – List all backlog items and their statuses.
-
-The agent should always confirm with the engineer before closing or archiving a feature. For large or complex subtasks, link to additional documentation as needed.
-
-## Example Feature Entry
-
-### User Profile Redesign (`user-profile-redesign`)
-
-**ID:** feature-2026-02-24-001
-**Status:** in progress
-**Created:** 24/02/2026 (GMT)
-**Date Completed:**
-**Mode:** sequential
-**Description:** Redesign the user profile page for improved accessibility and mobile responsiveness.
-**Dependencies:**
-**Related Docs:** [UI Mockups](../design/user-profile-mockups.md)
-
-#### Subtasks
-
-| Subtask                   | ID          | Status      | Mode       | Depends On  | Created          | Completed        |
-| ------------------------- | ----------- | ----------- | ---------- | ----------- | ---------------- | ---------------- |
-| Create new profile layout | subtask-001 | complete    | sequential |             | 24/02/2026 (GMT) | 25/02/2026 (GMT) |
-| Implement mobile styles   | subtask-002 | in progress | parallel   | subtask-001 | 25/02/2026 (GMT) |                  |
-| Add accessibility tests   | subtask-003 | not started | parallel   | subtask-001 | 25/02/2026 (GMT) |                  |
+- Completed features may be moved to an `## Archive` section at the bottom of `index.md`
+- Archived entries keep their Beads ID for traceability
+- Closed Beads issues are not deleted — they remain queryable with `bd list --all`
 
 ---
 
-## Purpose
+## Workflow Summary
 
-This skill guides agents and contributors through the planning process for new features, ensuring all planning, backlog, and documentation requirements are met according to project standards.
+```
+/new-epic          → index.md entry + bd create --type epic
+  /new-feature     → index.md entry + bd create --type feature --parent
+    /add-task      → task row in entry + bd create --type task --parent
+    /update-status → update entry + bd update --status
+    /close-feature → mark complete + bd close
+/new-backlog       → backlog.md entry + bd create --type task --labels backlog
+/move-to-feature   → promote to index.md + bd update --type feature
+/sync-beads        → audit and back-fill missing bd IDs
+```
 
-## Planning Workflow Overview
-
-- Add new features to `docs/planning/backlog.md` using the provided template.
-- Move completed features to `docs/planning/index.md` with full details and links to related docs.
-- Update `docs/planning/roadmap.md` for long-term or strategic features.
-- Create or update architecture, API, and guide docs as needed for significant changes.
-- Add changelog entries for all significant changes.
-
-## Templates and Checklist
-
-- Use the backlog and index entry templates from the documentation guidelines.
-- Follow the review checklist to ensure all documentation is up to date.
-
----
-
-This file should be updated as the planning process evolves or new requirements are introduced.
+Always confirm with the engineer before closing or archiving. For complex features, link to the relevant spec in `docs/specs/` or ADR in `docs/adr/`.
