@@ -26,6 +26,7 @@
 - Update README badges to live npm shield URLs and improve agent-types README
 - Add documentation skill, docs index, ADRs, guides, and API reference
 - *(planning)* Integrate Beads CLI into planning skill
+- Rewrite root README, add planning docs and workflow guide
 
 ### 🎨 Styling
 
@@ -58,4 +59,5 @@
 - *(changelog)* Update CHANGELOG.md [skip ci]
 - *(changelog)* Update CHANGELOG.md [skip ci]
 - Update SESSION.md — note pre-publish dep pinning task
+- *(changelog)* Update CHANGELOG.md [skip ci]
 - *(changelog)* Update CHANGELOG.md [skip ci]
