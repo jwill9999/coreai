@@ -63,6 +63,16 @@ git commit -m "chore: bump to x.x.x-alpha.0"
 git push
 ```
 
+## After first publish — add npm version badge to README
+
+Once packages are live on npm, add this badge to `README.md` (after the existing badges):
+
+```markdown
+[![npm](https://img.shields.io/npm/v/@conscius/agent-core?label=version)](https://www.npmjs.com/package/@conscius/agent-core)
+```
+
+This badge auto-updates on every publish — no manual maintenance needed.
+
 ## Related
 
 - [Version strategy](../../CHANGELOG.md)
