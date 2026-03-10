@@ -16,5 +16,14 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-explicit-any': 'warn',
   },
-  ignorePatterns: ['dist/', 'node_modules/', 'coverage/', 'test-output/'],
+  ignorePatterns: [
+    'dist/',
+    'node_modules/',
+    'coverage/',
+    'test-output/',
+    '.cursor/',
+    '.github/skills/',
+    '.github/agents/',
+    '.github/prompts/',
+  ],
 };

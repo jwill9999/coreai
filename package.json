@@ -36,9 +36,12 @@
     "packages/*"
   ],
   "lint-staged": {
-    "*.{ts,tsx,js,jsx,mjs,cjs}": [
+    "*.{ts,tsx,js,jsx,cjs}": [
       "prettier --write",
       "eslint --fix --max-warnings=0"
+    ],
+    "*.mjs": [
+      "prettier --write"
     ],
     "*.{json,md,yml,yaml}": [
       "prettier --write"
