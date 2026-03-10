@@ -22,6 +22,7 @@
 - Add branching strategy and changelog workflow to copilot-instructions
 - Expand CHANGELOG.md with full Epic 2 entries
 - *(agent-core)* Rewrite README with full setup, API, plugin interface, and docs links
+- Update README badges to live npm shield URLs and improve agent-types README
 
 ### 🎨 Styling
 
@@ -49,3 +50,5 @@
 - Bump to 0.3.0-alpha.0 and update SESSION.md — Epic 3 complete
 - *(changelog)* Update CHANGELOG.md [skip ci]
 - Add Nx Cloud fix-ci step for self-healing CI
+- *(changelog)* Update CHANGELOG.md [skip ci]
+- Update SESSION.md — Nx Cloud PR #11 merged to main
