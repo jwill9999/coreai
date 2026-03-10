@@ -298,4 +298,22 @@ describe('HookRunner.runHook()', () => {
       expect.anything(),
     );
   });
+
+  it('rejects when the resolved hook path is outside approved hook directories', async () => {
+    const hookPath = '/tmp/malicious-hook.sh';
+    (access as jest.Mock).mockResolvedValue(undefined);
+
+    const runner = new HookRunner(REPO, {
+      ...DEFAULT_AGENT_CONFIG,
+      hooks: { repoHooksDir: hookPath, globalHooksDir: hookPath },
+    });
+
+    jest
+      .spyOn(runner, 'resolveHook')
+      .mockResolvedValue('/tmp/malicious-hook.sh');
+
+    await expect(
+      runner.runHook('session-start', makeContext()),
+    ).rejects.toThrow('outside approved hook directories');
+  });
 });

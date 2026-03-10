@@ -13,9 +13,9 @@ export const RECENT_MESSAGES_TO_KEEP = 10;
 export interface BuiltContext {
   /** Fully assembled prompt string ready to send to the LLM. */
   prompt: string;
-  /** Whether compression was triggered this build. */
-  compressionTriggered: boolean;
-  /** Number of messages remaining after compression (if triggered). */
+  /** Whether compression summaries have been applied to this context (i.e. older messages were previously summarised). */
+  compressionApplied: boolean;
+  /** Number of messages remaining after compression (if applied). */
   messageCount: number;
 }
 
@@ -54,7 +54,7 @@ export function buildContext(context: AgentContext): BuiltContext {
 
   return {
     prompt: sections.join('\n\n---\n\n'),
-    compressionTriggered: (context.compressionSummaries?.length ?? 0) > 0,
+    compressionApplied: (context.compressionSummaries?.length ?? 0) > 0,
     messageCount: context.conversation.length,
   };
 }

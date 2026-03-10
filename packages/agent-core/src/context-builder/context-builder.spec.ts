@@ -29,7 +29,7 @@ describe('buildContext', () => {
   it('returns empty prompt for empty context', () => {
     const result = buildContext(makeContext());
     expect(result.prompt).toBe('');
-    expect(result.compressionTriggered).toBe(false);
+    expect(result.compressionApplied).toBe(false);
     expect(result.messageCount).toBe(0);
   });
 
@@ -60,7 +60,7 @@ describe('buildContext', () => {
     expect(result.prompt).toContain('Use JWT');
   });
 
-  it('sets compressionTriggered true when summaries are present', () => {
+  it('sets compressionApplied true when summaries are present', () => {
     const result = buildContext(
       makeContext({
         compressionSummaries: [
@@ -74,7 +74,7 @@ describe('buildContext', () => {
         ],
       }),
     );
-    expect(result.compressionTriggered).toBe(true);
+    expect(result.compressionApplied).toBe(true);
   });
 
   it('only includes last RECENT_MESSAGES_TO_KEEP messages', () => {

@@ -155,10 +155,35 @@ export class HookRunner {
 
   private executeHook(hookPath: string, env: NodeJS.ProcessEnv): Promise<void> {
     return new Promise((res, rej) => {
-      const { cmd, args } = resolveExecutor(hookPath);
-      const cwd = hookPath.startsWith(resolve(this.repoRoot))
+      // Security: validate hookPath is within an approved hooks directory
+      // (repo .agent/hooks or global ~/.agent/hooks) before spawning.
+      const repoHooksDir = resolve(
+        this.repoRoot,
+        this.config.hooks?.repoHooksDir ?? DEFAULT_REPO_HOOKS_DIR,
+      );
+      const rawGlobal =
+        this.config.hooks?.globalHooksDir ?? DEFAULT_GLOBAL_HOOKS_DIR;
+      const globalHooksDir = resolve(
+        rawGlobal.replace(/^~(?=$|\/)/, homedir()),
+      );
+      const absHookPath = resolve(hookPath);
+
+      if (
+        !absHookPath.startsWith(repoHooksDir + sep) &&
+        !absHookPath.startsWith(globalHooksDir + sep)
+      ) {
+        rej(
+          new Error(
+            `Hook path "${hookPath}" is outside approved hook directories`,
+          ),
+        );
+        return;
+      }
+
+      const { cmd, args } = resolveExecutor(absHookPath);
+      const cwd = absHookPath.startsWith(resolve(this.repoRoot) + sep)
         ? this.repoRoot
-        : dirname(hookPath);
+        : dirname(absHookPath);
 
       const child = spawn(cmd, args, {
         env,
