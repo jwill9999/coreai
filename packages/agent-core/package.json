@@ -5,6 +5,9 @@
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "bin": {
+    "agent": "./dist/cli.js"
+  },
   "exports": {
     "./package.json": "./package.json",
     ".": {
