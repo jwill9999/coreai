@@ -31,7 +31,7 @@ Epic 3 is fully complete and merged to `main`. Version bumped to `0.3.0-alpha.0`
 - Do NOT fork `bd` (Beads) or `mulch` — adapter plugins only
 - Hooks may only write to `SESSION.md` and `.mulch/mulch.jsonl`
 - Branching: task PR → human review → epic branch → local test → epic PR → main
-- All packages versioned in lockstep; current version: `0.2.0-alpha.0`
+- All packages versioned in lockstep; current version: `0.3.0-alpha.0`
 - GitHub Actions CI active from Epic 2 (CI-T1 completed)
 - Unit tests written at end of each epic, not per task
 - Husky pre-commit (lint-staged) + pre-push (nx affected) for local quality gates
