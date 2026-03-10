@@ -47,17 +47,16 @@ Next: human reviews and merges PRs #8 and #9, then run full suite on epic branch
 
 ## Open Issues
 
-- **SonarCloud Security Hotspot** on PR #9: `typescript:S4036` — "Searching OS commands in PATH is security-sensitive" on `execFile('bd', ...)` in `beadsAdapter.ts`. This is expected for a CLI wrapper. **Action required**: log into SonarCloud and mark as "Safe" or "Acknowledged" with justification: _"Plugin is designed specifically to call the `bd` CLI. Uses execFile (not exec), command is hardcoded, PATH lookup is intentional for a developer tool plugin."_
+None. SonarCloud Quality Gate **Passed** on both PR #8 and PR #9 (0 Security Hotspots). Both PRs are awaiting human review and merge.
 
 ## Next Steps
 
-1. **Review SonarCloud hotspot** for PR #9: mark `typescript:S4036` as "Safe" at https://sonarcloud.io/project/security_hotspots?id=jwill9999_coreai&pullRequest=9
-2. **Review and merge PR #8** (`feat/e3-t1-beads-adapter` → epic branch)
-3. **Review and merge PR #9** (`feat/e3-t4-unit-tests` → epic branch)
-4. **Pre-merge local test** on epic branch: `npx nx run-many -t typecheck,lint,test,build --all`
-5. **Open epic PR** to `main`: `git push -u origin feat/e3-agent-plugin-beads && gh pr create --base main --title "feat: Epic 3 — @coreai/agent-plugin-beads"`
-6. After epic merges to `main`: generate CHANGELOG and bump to `0.3.0-alpha.0`
-7. **Epic 4** — `@coreai/agent-plugin-mulch`
+1. **Review and merge PR #8** (`feat/e3-t1-beads-adapter` → epic branch) — CI ✅, SonarCloud ✅
+2. **Review and merge PR #9** (`feat/e3-t4-unit-tests` → epic branch) — CI ✅, SonarCloud ✅
+3. **Pre-merge local test** on epic branch: `npx nx run-many -t typecheck,lint,test,build --all`
+4. **Open epic PR** to `main`: `git push -u origin feat/e3-agent-plugin-beads && gh pr create --base main --title "feat: Epic 3 — @coreai/agent-plugin-beads"`
+5. After epic merges to `main`: generate CHANGELOG and bump to `0.3.0-alpha.0`
+6. **Epic 4** — `@coreai/agent-plugin-mulch`
 
 ---
 
