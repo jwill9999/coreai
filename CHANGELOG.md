@@ -2,16 +2,16 @@
 
 ### 🚀 Features
 
-- *(epic-1)* Scaffold @coreai/agent-types and monorepo foundation
-- *(e3-t1)* Scaffold @coreai/agent-plugin-beads with beadsAdapter, hooks, contextLoader
+- _(epic-1)_ Scaffold @coreai/agent-types and monorepo foundation
+- _(e3-t1)_ Scaffold @coreai/agent-plugin-beads with beadsAdapter, hooks, contextLoader
 
 ### 🐛 Bug Fixes
 
 - Remove duplicate codeql.yml and point badge to GitHub-native CodeQL
-- *(e3-t1)* Address Copilot review feedback
-- *(e3-t1)* Use manual Promise wrapper in runBdShow instead of promisify
-- *(e3-t4)* Fix typecheck errors and test infrastructure
-- *(e3-t4)* Fix path traversal check in contextLoader
+- _(e3-t1)_ Address Copilot review feedback
+- _(e3-t1)_ Use manual Promise wrapper in runBdShow instead of promisify
+- _(e3-t4)_ Fix typecheck errors and test infrastructure
+- _(e3-t4)_ Fix path traversal check in contextLoader
 
 ### 📚 Documentation
 
@@ -20,12 +20,12 @@
 - Add ADR-8 — Nx monorepo over separate repositories
 - Add branching strategy and changelog workflow to copilot-instructions
 - Expand CHANGELOG.md with full Epic 2 entries
-- *(agent-core)* Rewrite README with full setup, API, plugin interface, and docs links
+- _(agent-core)_ Rewrite README with full setup, API, plugin interface, and docs links
 
 ### 🧪 Testing
 
-- *(e3-t4)* Add unit tests for agent-plugin-beads (26 tests)
-- *(e3-t4)* Update tests for improved contextLoader and beadsAdapter
+- _(e3-t4)_ Add unit tests for agent-plugin-beads (26 tests)
+- _(e3-t4)_ Update tests for improved contextLoader and beadsAdapter
 
 ### ⚙️ Miscellaneous Tasks
 
@@ -39,5 +39,5 @@
 - Update SESSION.md — Epic 3 tasks complete, PRs open
 - Update SESSION.md — SonarCloud resolved, PRs ready for merge
 - Update SESSION.md — epic PR #10 open, awaiting merge to main
-- *(changelog)* Update CHANGELOG.md [skip ci]
+- _(changelog)_ Update CHANGELOG.md [skip ci]
 - Bump to 0.3.0-alpha.0 and update SESSION.md — Epic 3 complete
