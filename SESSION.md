@@ -6,34 +6,20 @@ Build the coreai agent ecosystem — a layered AI-assisted engineering workflow 
 
 ## Active Task
 
-**Epic 2 — `@coreai/agent-core`** — all tasks complete, epic PR #3 open → `main`
+**Epic 3 — `@coreai/agent-plugin-beads`** — not yet started
 
-- ✅ E2-T1 complete — context builder
-- ✅ E2-T2 complete — plugin loader
-- ✅ E2-T3 complete — hook runner
-- ✅ E2-T4 complete — CLI
-- ✅ E2-T5 complete — 57 unit tests (57/57 passing)
-- ✅ CI-T1 complete — GitHub Actions, Codecov, Husky hooks
-
-**Blocker before merging epic PR #3 → `main`:**  
-SonarCloud reports 1 Security Hotspot on PR #3. Must be reviewed at:  
-https://sonarcloud.io/project/security_hotspots?id=jwill9999_coreai&pullRequest=3  
-Either fix the code or mark as reviewed with justification.
+Next: create epic branch `feat/e3-agent-plugin-beads` from `main`, then start E3-T1.
 
 ## Progress Since Last Session
 
-- ✅ **E2-T5** — 57 unit tests across all agent-core modules (57/57 passing)
-  - context-builder (18), plugin-loader (18), hook-runner (17), cli/utils (5 → 7 after fixes)
-  - Fixed: `jest.resetAllMocks()` wiping `homedir` mock; `tsconfig.lib.json` excluding spec files; `tsconfig.spec.json` referencing lib project
-- ✅ **CI-T1** — GitHub Actions CI pipeline (format, typecheck, lint, test+coverage, build)
-  - Codecov integration with lcov reports and badge
-  - SonarCloud, CodeQL, Sourcery AI all active
-  - Badges added to README (CI, CodeQL, Codecov, SonarCloud Quality Gate, Security Rating)
-- ✅ **Husky git hooks** — pre-commit (lint-staged: Prettier + ESLint on staged files), pre-push (nx affected typecheck + test)
-- ✅ **utils.ts fix** — `toMessage()` guards `JSON.stringify` with try/catch for circular refs and BigInt
-- ✅ **PR #7** merged into `feat/e2-agent-core`
-- ✅ **Epic PR #3** (`feat/e2-agent-core` → `main`) open — CI mostly green
-- ⚠️ **SonarCloud security hotspot** on PR #3 — 1 hotspot flagged, must be reviewed before merge
+- ✅ **Epic 2 merged to `main`** — PR #3 merged, all CI green (88% coverage)
+- ✅ **CHANGELOG.md** generated with `git-cliff`
+- ✅ **Version bump** — all packages → `0.2.0-alpha.0`
+- ✅ **Husky git hooks** — pre-commit (lint-staged), pre-push (nx affected)
+- ✅ **Badge fixes** — Codecov badge corrected; duplicate `codeql.yml` removed; badge now points to GitHub-native CodeQL scanning
+- ✅ **SonarCloud hotspots** addressed: pinned GitHub Actions to commit SHAs, path validation added to hook-runner, `/tmp` hardcode removed from spec
+- ✅ **Sourcery fix** — `compressionTriggered` renamed to `compressionApplied`
+- ✅ **58 unit tests** passing (57 → 58 after additional security test)
 
 ## Decisions Made
 
@@ -44,23 +30,25 @@ Either fix the code or mark as reviewed with justification.
 - Do NOT fork `bd` (Beads) or `mulch` — adapter plugins only
 - Hooks may only write to `SESSION.md` and `.mulch/mulch.jsonl`
 - Branching: task PR → human review → epic branch → local test → epic PR → main
-- All packages versioned in lockstep at `0.1.0-alpha.0`
-- GitHub Actions CI active from Epic 2 (CI-T1 completed, not deferred)
-- Unit tests written at end of each epic (E2-T5), not per task
+- All packages versioned in lockstep; current version: `0.2.0-alpha.0`
+- GitHub Actions CI active from Epic 2 (CI-T1 completed)
+- Unit tests written at end of each epic, not per task
 - Husky pre-commit (lint-staged) + pre-push (nx affected) for local quality gates
 - Build intentionally CI-only (too slow for local hooks)
-- SonarCloud automatic analysis mode — coverage via Codecov only (cannot push to SonarCloud in auto mode)
+- SonarCloud automatic analysis mode — coverage via Codecov only
+- CodeQL via GitHub-native Settings (not codeql.yml workflow file)
 
 ## Open Issues
 
-- ⚠️ **SonarCloud security hotspot** on epic PR #3 — 1 hotspot must be reviewed/resolved before merging to `main`. Check: https://sonarcloud.io/project/security_hotspots?id=jwill9999_coreai&pullRequest=3
+None.
 
 ## Next Steps
 
-1. **Review SonarCloud security hotspot** on PR #3 — fix or mark as reviewed with justification at https://sonarcloud.io/project/security_hotspots?id=jwill9999_coreai&pullRequest=3
-2. **Merge epic PR #3** (`feat/e2-agent-core` → `main`) once SonarCloud passes
-3. **Post-merge**: run `git-cliff --output CHANGELOG.md`, bump all packages to `0.2.0-alpha.0`, commit and push
-4. **Start Epic 3** — `@coreai/agent-plugin-beads` (branch: `feat/e3-agent-plugin-beads`)
+1. **Create epic branch**: `git checkout main && git pull && git checkout -b feat/e3-agent-plugin-beads`
+2. **E3-T1**: Create task branch `feat/e3-t1-beads-adapter`, scaffold `@coreai/agent-plugin-beads` package, implement `beadsAdapter.ts` (calls `bd show <task-id>`, parses into `BeadsTask`)
+3. **E3-T2**: `hooks.ts` — `onTaskStart` injects task metadata + spec path
+4. **E3-T3**: `contextLoader.ts` — loads spec file content from task metadata
+5. **E3-T4**: Unit tests with mocked `bd` CLI output
 
 ---
 
