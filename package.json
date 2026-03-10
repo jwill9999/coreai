@@ -2,7 +2,9 @@
   "name": "@coreai/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "prepare": "husky"
+  },
   "private": true,
   "devDependencies": {
     "@nx/eslint": "^22.5.4",
@@ -16,10 +18,12 @@
     "@typescript-eslint/eslint-plugin": "^8.56.1",
     "@typescript-eslint/parser": "^8.56.1",
     "eslint": "~8.57.0",
+    "husky": "^9.1.7",
     "jest": "^30.0.2",
     "jest-environment-jsdom": "^30.0.2",
     "jest-environment-node": "^30.0.2",
     "jest-util": "^30.0.2",
+    "lint-staged": "^16.3.2",
     "nx": "22.5.4",
     "prettier": "~3.6.2",
     "ts-jest": "^29.4.0",
@@ -31,6 +35,15 @@
   "workspaces": [
     "packages/*"
   ],
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,mjs,cjs}": [
+      "prettier --write",
+      "eslint --fix --max-warnings=0"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
+  },
   "nx": {
     "includedScripts": [],
     "targets": {
