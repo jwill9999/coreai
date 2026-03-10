@@ -1,7 +1,12 @@
 # Coreai
 
 <a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+
+[![CI](https://github.com/jwill9999/coreai/actions/workflows/ci.yml/badge.svg)](https://github.com/jwill9999/coreai/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/jwill9999/coreai/actions/workflows/codeql.yml/badge.svg)](https://github.com/jwill9999/coreai/actions/workflows/codeql.yml)
 [![codecov](https://codecov.io/gh/jwill9999/coreai/graph/badge.svg?token=CODECOV_TOKEN)](https://codecov.io/gh/jwill9999/coreai)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=jwill9999_coreai&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=jwill9999_coreai)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=jwill9999_coreai&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=jwill9999_coreai)
 
 ✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
 
