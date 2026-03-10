@@ -6,12 +6,14 @@ Build the coreai agent ecosystem — a layered AI-assisted engineering workflow 
 
 ## Active Task
 
-**Epic 3 — `@coreai/agent-plugin-beads`** — all tasks complete, PRs open awaiting human review.
+**Epic 3 — `@coreai/agent-plugin-beads`** — epic PR #10 open, awaiting human review and merge to `main`.
 
-- PR #8: `feat/e3-t1-beads-adapter` → epic branch (CI ✅, awaiting review)
-- PR #9: `feat/e3-t4-unit-tests` → epic branch (CI ✅ build/test/lint, 1 SonarCloud Security Hotspot — needs manual review in SonarCloud UI)
+- PR #8 ✅ merged into epic branch
+- PR #9 ✅ merged into epic branch
+- Full suite passes on epic branch (typecheck, lint, test, build — all 3 projects)
+- **PR #10** `feat/e3-agent-plugin-beads` → `main` — CI pending, awaiting human review
 
-Next: human reviews and merges PRs #8 and #9, then run full suite on epic branch and open epic PR to `main`.
+Next: human reviews and merges PR #10, then generate CHANGELOG and bump to `0.3.0-alpha.0`.
 
 ## Progress Since Last Session
 
@@ -47,16 +49,21 @@ Next: human reviews and merges PRs #8 and #9, then run full suite on epic branch
 
 ## Open Issues
 
-None. SonarCloud Quality Gate **Passed** on both PR #8 and PR #9 (0 Security Hotspots). Both PRs are awaiting human review and merge.
+None. All Epic 3 task PRs merged cleanly. Full suite passes on epic branch. Epic PR #10 is open and awaiting human review.
 
 ## Next Steps
 
-1. **Review and merge PR #8** (`feat/e3-t1-beads-adapter` → epic branch) — CI ✅, SonarCloud ✅
-2. **Review and merge PR #9** (`feat/e3-t4-unit-tests` → epic branch) — CI ✅, SonarCloud ✅
-3. **Pre-merge local test** on epic branch: `npx nx run-many -t typecheck,lint,test,build --all`
-4. **Open epic PR** to `main`: `git push -u origin feat/e3-agent-plugin-beads && gh pr create --base main --title "feat: Epic 3 — @coreai/agent-plugin-beads"`
-5. After epic merges to `main`: generate CHANGELOG and bump to `0.3.0-alpha.0`
-6. **Epic 4** — `@coreai/agent-plugin-mulch`
+1. **Review and merge PR #10** (`feat/e3-agent-plugin-beads` → `main`) — full suite ✅
+2. After merge to `main`:
+   ```bash
+   git checkout main && git pull
+   git-cliff --output CHANGELOG.md
+   # Bump all packages/*/package.json to 0.3.0-alpha.0
+   git add CHANGELOG.md packages/*/package.json
+   git commit -m "chore: update CHANGELOG.md and bump to 0.3.0-alpha.0"
+   git push
+   ```
+3. **Epic 4** — `@coreai/agent-plugin-mulch`
 
 ---
 
@@ -82,7 +89,7 @@ Runtime orchestration: context builder, plugin loader, hook runner, CLI.
 | E2-T4 | CLI — `agent start`, `agent end`, `agent task start <id>` using `commander` | ✅ |
 | E2-T5 | Unit tests for context builder, plugin loader, hook runner, CLI (57 tests) | ✅ |
 
-### Epic 3 — `@coreai/agent-plugin-beads` ✅ (PRs open, awaiting merge)
+### Epic 3 — `@coreai/agent-plugin-beads` ✅ (epic PR #10 open → main)
 
 Wraps `bd` CLI to inject Beads task context.
 | ID | Task | Status |
