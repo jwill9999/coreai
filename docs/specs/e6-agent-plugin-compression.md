@@ -41,6 +41,7 @@ compressMessages(
 ```
 
 Groups older messages into segments by topic (or time boundary). For each segment, produces a `CompressionSummary` with:
+
 - `segmentIndex` — 0-based segment number
 - `topic` — inferred from message content (heuristic or LLM call)
 - `keyDecisions` — array of decision statements extracted from segment
@@ -54,10 +55,11 @@ Returns both the summaries and the `remaining` messages (the most recent `recent
 ### `hooks.ts`
 
 ```ts
-export const compressionPlugin: AgentPlugin
+export const compressionPlugin: AgentPlugin;
 ```
 
 `onConversationThreshold(context)`:
+
 1. Use `getMessagesToCompress` and `shouldCompress` from `@conscius/agent-core` (re-exported)
 2. If below threshold — return silently
 3. Call `compressMessages` on the messages to compress
@@ -69,6 +71,7 @@ export const compressionPlugin: AgentPlugin
 ## Key design principle: ephemeral
 
 This plugin **never writes to disk**. It only mutates `AgentContext` in memory:
+
 - `context.compressionSummaries` — summaries accumulate here
 - `context.conversation` — older messages are replaced by summaries
 
@@ -114,12 +117,12 @@ This plugin **never writes to disk**. It only mutates `AgentContext` in memory:
 
 ## Tasks (Beads)
 
-| Beads ID | Task |
-| -------- | ---- |
+| Beads ID     | Task                                        |
+| ------------ | ------------------------------------------- |
 | coreai-mbp.1 | Implement compressor (heuristic summariser) |
-| coreai-mbp.2 | Implement hooks (onConversationThreshold) |
-| coreai-mbp.3 | Unit tests for compressor |
-| coreai-mbp.4 | Integration with agent-core buildContext |
+| coreai-mbp.2 | Implement hooks (onConversationThreshold)   |
+| coreai-mbp.3 | Unit tests for compressor                   |
+| coreai-mbp.4 | Integration with agent-core buildContext    |
 
 ---
 

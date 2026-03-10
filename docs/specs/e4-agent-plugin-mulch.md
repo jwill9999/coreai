@@ -40,6 +40,7 @@ queryMulch(topic: string, repoRoot: string): Promise<MulchLesson[]>
 ```
 
 Query order (project → global):
+
 1. `{repoRoot}/.mulch/mulch.jsonl` — project lessons
 2. `~/.mulch/mulch.jsonl` — global lessons
 
@@ -58,10 +59,11 @@ Appends a lesson to `{repoRoot}/.mulch/mulch.jsonl`. Validates required fields: 
 ### `hooks.ts`
 
 ```ts
-export const mulchPlugin: AgentPlugin
+export const mulchPlugin: AgentPlugin;
 ```
 
 `onSessionStart(context)`:
+
 1. Read `context.activeTask?.description` or task title for topic hint
 2. Query project mulch then global mulch for relevant lessons
 3. Append `## Experience Lessons` block to `context.promptSegments`
@@ -125,12 +127,12 @@ export const mulchPlugin: AgentPlugin
 
 ## Tasks (Beads)
 
-| Beads ID | Task |
-| -------- | ---- |
+| Beads ID     | Task                                                 |
+| ------------ | ---------------------------------------------------- |
 | coreai-x3b.1 | Implement mulch adapter (JSONL reader + CLI wrapper) |
-| coreai-x3b.2 | Implement lesson writer |
-| coreai-x3b.3 | Implement hooks (onSessionStart) |
-| coreai-x3b.4 | Unit tests for all modules |
+| coreai-x3b.2 | Implement lesson writer                              |
+| coreai-x3b.3 | Implement hooks (onSessionStart)                     |
+| coreai-x3b.4 | Unit tests for all modules                           |
 
 ---
 

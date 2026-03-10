@@ -74,10 +74,10 @@ interface SkillsConfig {
   sources: Array<{
     name: string;
     repo: string;
-    branch?: string;       // defaults to 'main'
-    path?: string;         // defaults to '.github/skills'
+    branch?: string; // defaults to 'main'
+    path?: string; // defaults to '.github/skills'
   }>;
-  skills: string[];        // skill names to sync
+  skills: string[]; // skill names to sync
 }
 ```
 
@@ -120,17 +120,17 @@ interface SkillsConfig {
 
 ## Tasks (Beads)
 
-| Beads ID | Task |
-| -------- | ---- |
+| Beads ID     | Task                                           |
+| ------------ | ---------------------------------------------- |
 | coreai-yfl.1 | Scaffold package + CLI entry point (commander) |
-| coreai-yfl.2 | Implement manifest read/write |
-| coreai-yfl.3 | Implement gitSync (simple-git fetch + copy) |
-| coreai-yfl.4 | Implement `init` command |
-| coreai-yfl.5 | Implement `sync` command |
-| coreai-yfl.6 | Implement `pull` command |
-| coreai-yfl.7 | Unit tests |
-| coreai-yfl.8 | Integration test with real git repo |
-| coreai-yfl.9 | Publish configuration + README |
+| coreai-yfl.2 | Implement manifest read/write                  |
+| coreai-yfl.3 | Implement gitSync (simple-git fetch + copy)    |
+| coreai-yfl.4 | Implement `init` command                       |
+| coreai-yfl.5 | Implement `sync` command                       |
+| coreai-yfl.6 | Implement `pull` command                       |
+| coreai-yfl.7 | Unit tests                                     |
+| coreai-yfl.8 | Integration test with real git repo            |
+| coreai-yfl.9 | Publish configuration + README                 |
 
 ---
 

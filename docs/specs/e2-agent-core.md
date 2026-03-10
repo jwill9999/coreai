@@ -45,17 +45,19 @@ packages/agent-core/
 
 ### Constants
 
-| Constant | Value | Purpose |
-| -------- | ----- | ------- |
-| `COMPRESSION_THRESHOLD` | 30 | Trigger `onConversationThreshold` when message count ≥ this |
-| `RECENT_MESSAGES_TO_KEEP` | 10 | Always preserve last N messages uncompressed |
+| Constant                  | Value | Purpose                                                     |
+| ------------------------- | ----- | ----------------------------------------------------------- |
+| `COMPRESSION_THRESHOLD`   | 30    | Trigger `onConversationThreshold` when message count ≥ this |
+| `RECENT_MESSAGES_TO_KEEP` | 10    | Always preserve last N messages uncompressed                |
 
 ### Functions
 
 ```ts
 buildContext(context: AgentContext): BuiltContext
 ```
+
 Assembles the prompt in canonical order:
+
 1. `context.promptSegments` — plugin-injected blocks (skills, SESSION.md, task metadata)
 2. `context.compressionSummaries` — formatted as `## Segment N: topic`
 3. Last 10 `context.conversation` messages — formatted as `**role:** content`
@@ -83,20 +85,20 @@ Extensions tried in order: `.sh`, `.js`, `.mjs`, `.cjs`
 
 ### Hook names (mapped from `AgentPlugin` lifecycle keys)
 
-| Plugin lifecycle | Hook script name |
-| ---------------- | ---------------- |
-| `onSessionStart` | `session-start` |
-| `onTaskStart` | `task-start` |
+| Plugin lifecycle          | Hook script name         |
+| ------------------------- | ------------------------ |
+| `onSessionStart`          | `session-start`          |
+| `onTaskStart`             | `task-start`             |
 | `onConversationThreshold` | `conversation-threshold` |
-| `onSessionEnd` | `session-end` |
+| `onSessionEnd`            | `session-end`            |
 
 ### Environment injected into hook scripts
 
-| Variable | Value |
-| -------- | ----- |
-| `AGENT_REPO_ROOT` | absolute repo root path |
+| Variable                | Value                                        |
+| ----------------------- | -------------------------------------------- |
+| `AGENT_REPO_ROOT`       | absolute repo root path                      |
 | `AGENT_APPROVED_WRITES` | colon-separated list of approved write paths |
-| `AGENT_ACTIVE_TASK_ID` | current Beads task ID (or empty string) |
+| `AGENT_ACTIVE_TASK_ID`  | current Beads task ID (or empty string)      |
 
 ### Write permissions
 
@@ -113,10 +115,14 @@ Extensions tried in order: `.sh`, `.js`, `.mjs`, `.cjs`
 ### Config file
 
 `.agent/config.json` — read on startup, created on first run:
+
 ```json
 {
   "plugins": [],
-  "hooks": { "repoHooksDir": ".agent/hooks", "globalHooksDir": "~/.agent/hooks" },
+  "hooks": {
+    "repoHooksDir": ".agent/hooks",
+    "globalHooksDir": "~/.agent/hooks"
+  },
   "permissions": { "allowWrite": ["SESSION.md", ".mulch/mulch.jsonl"] },
   "approvedWrites": {}
 }
@@ -129,18 +135,20 @@ Extensions tried in order: `.sh`, `.js`, `.mjs`, `.cjs`
 Dynamically imports plugin modules by path (npm package name or file path).
 
 Expected module shape:
+
 ```ts
-export default beadsPlugin;  // default export
+export default beadsPlugin; // default export
 // OR
-export const plugin = beadsPlugin;  // named export
+export const plugin = beadsPlugin; // named export
 ```
 
 Lifecycle dispatch:
+
 ```ts
-loader.runSessionStart(context)
-loader.runTaskStart(context)
-loader.runConversationThreshold(context)
-loader.runSessionEnd(context)
+loader.runSessionStart(context);
+loader.runTaskStart(context);
+loader.runConversationThreshold(context);
+loader.runSessionEnd(context);
 ```
 
 Error handling: collects all plugin errors per lifecycle event; throws `AggregateError` when multiple plugins fail.

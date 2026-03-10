@@ -44,6 +44,7 @@ packages/agent-plugin-guardrails/
 ```
 
 Each step:
+
 - Returns `{ passed: boolean, output: string }`
 - On failure, pipeline stops (fail-fast) and reports the failing step
 - On pass, continues to next step
@@ -78,10 +79,11 @@ Each check runs via `execFile('npx', ['nx', ...], { cwd: repoRoot })` — same m
 ### `hooks.ts`
 
 ```ts
-export const guardrailsPlugin: AgentPlugin
+export const guardrailsPlugin: AgentPlugin;
 ```
 
 `onTaskStart(context)`:
+
 1. Check if `context.activeTask?.status === 'review'`
 2. If not in review — return silently
 3. Run `runPipeline(context.repoRoot, derivedProjectName)`
@@ -93,6 +95,7 @@ export const guardrailsPlugin: AgentPlugin
 ## Deriving project name
 
 The project name for `nx` commands is derived from the active Beads task or `context.activeTask`. Strategy (in order):
+
 1. `context.activeTask?.description` — look for `packages/{name}` pattern
 2. `BD_PROJECT` env var
 3. Run on all affected (`--all`) if no project can be inferred
@@ -124,13 +127,13 @@ The project name for `nx` commands is derived from the active Beads task or `con
 
 ## Tasks (Beads)
 
-| Beads ID | Task |
-| -------- | ---- |
-| coreai-7mm.1 | Implement pipeline orchestrator |
-| coreai-7mm.2 | Implement format + lint checks |
-| coreai-7mm.3 | Implement typecheck + test checks |
+| Beads ID     | Task                                            |
+| ------------ | ----------------------------------------------- |
+| coreai-7mm.1 | Implement pipeline orchestrator                 |
+| coreai-7mm.2 | Implement format + lint checks                  |
+| coreai-7mm.3 | Implement typecheck + test checks               |
 | coreai-7mm.4 | Implement hooks (onTaskStart with review check) |
-| coreai-7mm.5 | Unit tests for pipeline |
+| coreai-7mm.5 | Unit tests for pipeline                         |
 
 ---
 

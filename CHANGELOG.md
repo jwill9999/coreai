@@ -2,19 +2,19 @@
 
 ### 🚀 Features
 
-- *(epic-1)* Scaffold @coreai/agent-types and monorepo foundation
-- *(e3-t1)* Scaffold @coreai/agent-plugin-beads with beadsAdapter, hooks, contextLoader
-- *(nx-cloud)* Setup nx cloud workspace
+- _(epic-1)_ Scaffold @coreai/agent-types and monorepo foundation
+- _(e3-t1)_ Scaffold @coreai/agent-plugin-beads with beadsAdapter, hooks, contextLoader
+- _(nx-cloud)_ Setup nx cloud workspace
 - Rename project from @coreai to @conscius (Conscius)
 - Add static version badge to README; update version bump checklist
 
 ### 🐛 Bug Fixes
 
 - Remove duplicate codeql.yml and point badge to GitHub-native CodeQL
-- *(e3-t1)* Address Copilot review feedback
-- *(e3-t1)* Use manual Promise wrapper in runBdShow instead of promisify
-- *(e3-t4)* Fix typecheck errors and test infrastructure
-- *(e3-t4)* Fix path traversal check in contextLoader
+- _(e3-t1)_ Address Copilot review feedback
+- _(e3-t1)_ Use manual Promise wrapper in runBdShow instead of promisify
+- _(e3-t4)_ Fix typecheck errors and test infrastructure
+- _(e3-t4)_ Fix path traversal check in contextLoader
 - Correct SonarCloud badge project key to jwill9999_coreai
 
 ### 📚 Documentation
@@ -24,14 +24,14 @@
 - Add ADR-8 — Nx monorepo over separate repositories
 - Add branching strategy and changelog workflow to copilot-instructions
 - Expand CHANGELOG.md with full Epic 2 entries
-- *(agent-core)* Rewrite README with full setup, API, plugin interface, and docs links
+- _(agent-core)_ Rewrite README with full setup, API, plugin interface, and docs links
 - Update README badges to live npm shield URLs and improve agent-types README
 - Add documentation skill, docs index, ADRs, guides, and API reference
-- *(planning)* Integrate Beads CLI into planning skill
+- _(planning)_ Integrate Beads CLI into planning skill
 - Rewrite root README, add planning docs and workflow guide
-- *(publishing)* Add npm version badge step to post-publish checklist
+- _(publishing)_ Add npm version badge step to post-publish checklist
 - Replace original specs with per-epic source-of-truth specs
-- *(session)* Fix stale version reference 0.2.0 → 0.3.0-alpha.0
+- _(session)_ Fix stale version reference 0.2.0 → 0.3.0-alpha.0
 
 ### 🎨 Styling
 
@@ -40,8 +40,8 @@
 
 ### 🧪 Testing
 
-- *(e3-t4)* Add unit tests for agent-plugin-beads (26 tests)
-- *(e3-t4)* Update tests for improved contextLoader and beadsAdapter
+- _(e3-t4)_ Add unit tests for agent-plugin-beads (26 tests)
+- _(e3-t4)_ Update tests for improved contextLoader and beadsAdapter
 
 ### ⚙️ Miscellaneous Tasks
 
@@ -55,31 +55,31 @@
 - Update SESSION.md — Epic 3 tasks complete, PRs open
 - Update SESSION.md — SonarCloud resolved, PRs ready for merge
 - Update SESSION.md — epic PR #10 open, awaiting merge to main
-- *(changelog)* Update CHANGELOG.md [skip ci]
+- _(changelog)_ Update CHANGELOG.md [skip ci]
 - Bump to 0.3.0-alpha.0 and update SESSION.md — Epic 3 complete
-- *(changelog)* Update CHANGELOG.md [skip ci]
+- _(changelog)_ Update CHANGELOG.md [skip ci]
 - Add Nx Cloud fix-ci step for self-healing CI
-- *(changelog)* Update CHANGELOG.md [skip ci]
+- _(changelog)_ Update CHANGELOG.md [skip ci]
 - Update SESSION.md — Nx Cloud PR #11 merged to main
-- *(changelog)* Update CHANGELOG.md [skip ci]
-- *(changelog)* Update CHANGELOG.md [skip ci]
+- _(changelog)_ Update CHANGELOG.md [skip ci]
+- _(changelog)_ Update CHANGELOG.md [skip ci]
 - Update SESSION.md — note pre-publish dep pinning task
-- *(changelog)* Update CHANGELOG.md [skip ci]
-- *(changelog)* Update CHANGELOG.md [skip ci]
-- *(changelog)* Update CHANGELOG.md [skip ci]
-- *(context)* Add USE WHEN triggers to session+pr-review skills, trim copilot-instructions.md
-- *(changelog)* Update CHANGELOG.md [skip ci]
+- _(changelog)_ Update CHANGELOG.md [skip ci]
+- _(changelog)_ Update CHANGELOG.md [skip ci]
+- _(changelog)_ Update CHANGELOG.md [skip ci]
+- _(context)_ Add USE WHEN triggers to session+pr-review skills, trim copilot-instructions.md
+- _(changelog)_ Update CHANGELOG.md [skip ci]
 - Update SESSION.md - document context optimisation work
-- *(context)* Add git-workflow and guardrails skills with USE WHEN triggers
-- *(changelog)* Update CHANGELOG.md [skip ci]
-- *(changelog)* Update CHANGELOG.md [skip ci]
-- *(changelog)* Update CHANGELOG.md [skip ci]
+- _(context)_ Add git-workflow and guardrails skills with USE WHEN triggers
+- _(changelog)_ Update CHANGELOG.md [skip ci]
+- _(changelog)_ Update CHANGELOG.md [skip ci]
+- _(changelog)_ Update CHANGELOG.md [skip ci]
 - Bump root package.json to 0.3.0-alpha.0
-- *(git-workflow)* Include root package.json in version bump commands
-- *(changelog)* Update CHANGELOG.md [skip ci]
-- *(changelog)* Update CHANGELOG.md [skip ci]
-- *(changelog)* Update CHANGELOG.md [skip ci]
+- _(git-workflow)_ Include root package.json in version bump commands
+- _(changelog)_ Update CHANGELOG.md [skip ci]
+- _(changelog)_ Update CHANGELOG.md [skip ci]
+- _(changelog)_ Update CHANGELOG.md [skip ci]
 - Fix remaining coreai references in cliff.toml and package-lock
-- *(vscode)* Add SonarLint connected mode configuration
-- *(changelog)* Update CHANGELOG.md [skip ci]
-- *(beads)* Export issue snapshot for new developer onboarding
+- _(vscode)_ Add SonarLint connected mode configuration
+- _(changelog)_ Update CHANGELOG.md [skip ci]
+- _(beads)_ Export issue snapshot for new developer onboarding

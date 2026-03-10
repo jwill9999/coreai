@@ -27,30 +27,39 @@ packages/agent-types/
 ## Exported interfaces
 
 ### `MulchLesson`
+
 Experience lesson stored in `.mulch/mulch.jsonl`. Required fields: `id`, `topic`, `summary`, `recommendation`, `created`.
 
 ### `BeadsTaskStatus`
+
 Union: `'todo' | 'in_progress' | 'review' | 'blocked' | 'done'`
 
 ### `BeadsTask`
+
 Active task from Beads. Fields: `id`, `title`, `status`, `description?`, `specPath?`, `dependencies?`, `assignee?`.
 
 > **Note:** `specPath` maps from `external_ref` in `bd show --json` output.
 
 ### `ConversationMessage`
+
 `{ role: 'user' | 'assistant' | 'system', content: string }`
 
 ### `ConversationSegment`
+
 `{ index: number, topic: string, messages: ConversationMessage[] }`
 
 ### `CompressionSummary`
+
 `{ segmentIndex, topic, keyDecisions: string[], constraints: string[], outcome: string }`
 
 ### `AgentConfig`
+
 Shape of `.agent/config.json`: `plugins?`, `hooks?`, `permissions?`, `approvedWrites?`.
 
 ### `AgentContext`
+
 Passed to every plugin hook:
+
 ```ts
 {
   repoRoot: string;           // absolute path to repo root
@@ -63,6 +72,7 @@ Passed to every plugin hook:
 ```
 
 ### `AgentPlugin`
+
 ```ts
 {
   name: string;

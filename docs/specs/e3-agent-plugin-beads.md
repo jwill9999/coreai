@@ -61,10 +61,11 @@ loadSpecContent(specPath: string, repoRoot: string): Promise<string | null>
 ### `hooks.ts`
 
 ```ts
-export const beadsPlugin: AgentPlugin
+export const beadsPlugin: AgentPlugin;
 ```
 
 `onTaskStart(context)`:
+
 1. Reads `context.activeTask?.id` or falls back to `process.env.BD_TASK_ID`
 2. If no task ID — returns silently
 3. Calls `fetchBeadsTask(taskId, context.repoRoot)`
@@ -105,6 +106,7 @@ export const beadsPlugin: AgentPlugin
 ## tsconfig notes
 
 `tsconfig.spec.json` must set:
+
 ```json
 {
   "compilerOptions": {
@@ -112,9 +114,11 @@ export const beadsPlugin: AgentPlugin
   }
 }
 ```
+
 Required to avoid TS5098 conflict with `moduleResolution: nodenext` in base `tsconfig.base.json` when compiling test files under `node10` resolution (Jest/CommonJS).
 
 Also requires:
+
 ```json
 {
   "include": ["src/**/*.ts"],

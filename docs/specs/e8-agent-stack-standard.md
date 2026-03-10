@@ -52,6 +52,7 @@ createAgentStack(repoRoot: string, config?: Partial<AgentConfig>): Promise<Agent
 4. Returns `AgentStack` with `run()` method
 
 `run(context)` orchestration:
+
 ```
 1. pluginLoader.runSessionStart(context)
 2. pluginLoader.runTaskStart(context)
@@ -119,11 +120,11 @@ console.log(result.prompt);
 
 ## Tasks (Beads)
 
-| Beads ID | Task |
-| -------- | ---- |
+| Beads ID     | Task                                            |
+| ------------ | ----------------------------------------------- |
 | coreai-zsh.1 | Scaffold package + wire all plugin dependencies |
-| coreai-zsh.2 | Implement createAgentStack() + run() |
-| coreai-zsh.3 | Integration tests |
+| coreai-zsh.2 | Implement createAgentStack() + run()            |
+| coreai-zsh.3 | Integration tests                               |
 
 ---
 

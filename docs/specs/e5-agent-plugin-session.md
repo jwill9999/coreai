@@ -52,15 +52,17 @@ Writes to `{repoRoot}/SESSION.md`. Must be an approved write path (checked via `
 ### `hooks.ts`
 
 ```ts
-export const sessionPlugin: AgentPlugin
+export const sessionPlugin: AgentPlugin;
 ```
 
 `onSessionStart(context)`:
+
 1. Read `SESSION.md`
 2. If content exists, append `## Session Context (SESSION.md)` block to `context.promptSegments`
 3. Return silently if file not found
 
 `onSessionEnd(context)`:
+
 1. Generate updated `SESSION.md` from `context` (active task, recent decisions, next steps)
 2. Write to repo root
 
@@ -74,11 +76,17 @@ When writing `SESSION.md`, the plugin must produce (at minimum):
 # SESSION.md
 
 ## Current Objective
+
 ## Active Task
+
 ## Progress Since Last Session
+
 ## Decisions Made
+
 ## Open Issues
+
 ## Next Steps
+
 ## Epic and Task Status
 ```
 
@@ -121,12 +129,12 @@ The plugin should preserve existing content structure where possible and update 
 
 ## Tasks (Beads)
 
-| Beads ID | Task |
-| -------- | ---- |
-| coreai-vq3.1 | Implement session reader |
-| coreai-vq3.2 | Implement session writer (atomic) |
+| Beads ID     | Task                                            |
+| ------------ | ----------------------------------------------- |
+| coreai-vq3.1 | Implement session reader                        |
+| coreai-vq3.2 | Implement session writer (atomic)               |
 | coreai-vq3.3 | Implement hooks (onSessionStart + onSessionEnd) |
-| coreai-vq3.4 | Unit tests for all modules |
+| coreai-vq3.4 | Unit tests for all modules                      |
 
 ---
 
