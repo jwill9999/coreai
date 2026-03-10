@@ -65,7 +65,8 @@ Package-level API documentation for all published Conscius packages.
 
 Feature tracking and backlog — managed by the `planning` skill.
 
-| Document                             | Description                   |
-| ------------------------------------ | ----------------------------- |
-| [Feature index](./planning/index.md) | Active and completed features |
-| [Backlog](./planning/backlog.md)     | Planned items not yet started |
+| Document                                  | Description                                         |
+| ----------------------------------------- | --------------------------------------------------- |
+| [Planning workflow](./planning/README.md) | How to use the planning skill and Beads integration |
+| [Feature index](./planning/index.md)      | Active and completed epics, features, and tasks     |
+| [Backlog](./planning/backlog.md)          | Planned items not yet started                       |
