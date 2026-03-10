@@ -77,7 +77,10 @@ gh pr create --base main --title "feat: Epic {N} — {Epic Name}" --body "..."
 ```bash
 git checkout main && git pull
 git-cliff --output CHANGELOG.md
-git add CHANGELOG.md package.json packages/*/package.json
+# Bump version in: package.json, packages/*/package.json
+# Also update the static version badge in README.md: ![version](https://img.shields.io/badge/version-X.X.X--alpha.0-blue)
+# (Replace with npm badge once packages are published to npm)
+git add CHANGELOG.md package.json packages/*/package.json README.md
 git commit -m "chore: update CHANGELOG.md and bump to 0.{N+1}.0-alpha.0"
 git push
 ```
