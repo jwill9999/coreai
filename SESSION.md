@@ -6,18 +6,14 @@ Build the coreai agent ecosystem — a layered AI-assisted engineering workflow 
 
 ## Active Task
 
-**Epic 3 — `@coreai/agent-plugin-beads`** — epic PR #10 open, awaiting human review and merge to `main`.
+**Epic 4 — `@coreai/agent-plugin-mulch`** — not yet started.
 
-- PR #8 ✅ merged into epic branch
-- PR #9 ✅ merged into epic branch
-- Full suite passes on epic branch (typecheck, lint, test, build — all 3 projects)
-- **PR #10** `feat/e3-agent-plugin-beads` → `main` — CI pending, awaiting human review
-
-Next: human reviews and merges PR #10, then generate CHANGELOG and bump to `0.3.0-alpha.0`.
+Epic 3 is fully complete and merged to `main`. Version bumped to `0.3.0-alpha.0`.
 
 ## Progress Since Last Session
 
-- ✅ **Epic 2 merged to `main`** — PR #3 merged, all CI green (88% coverage)
+- ✅ **Epic 3 merged to `main`** — PR #10 merged, all CI green (32 tests)
+- ✅ **Version bump** — all packages → `0.3.0-alpha.0`
 - ✅ **CHANGELOG.md** generated with `git-cliff`
 - ✅ **Version bump** — all packages → `0.2.0-alpha.0`
 - ✅ **Husky git hooks** — pre-commit (lint-staged), pre-push (nx affected)
@@ -49,21 +45,20 @@ Next: human reviews and merges PR #10, then generate CHANGELOG and bump to `0.3.
 
 ## Open Issues
 
-None. All Epic 3 task PRs merged cleanly. Full suite passes on epic branch. Epic PR #10 is open and awaiting human review.
+None.
 
 ## Next Steps
 
-1. **Review and merge PR #10** (`feat/e3-agent-plugin-beads` → `main`) — full suite ✅
-2. After merge to `main`:
+1. **Start Epic 4** — `@coreai/agent-plugin-mulch`
    ```bash
    git checkout main && git pull
-   git-cliff --output CHANGELOG.md
-   # Bump all packages/*/package.json to 0.3.0-alpha.0
-   git add CHANGELOG.md packages/*/package.json
-   git commit -m "chore: update CHANGELOG.md and bump to 0.3.0-alpha.0"
-   git push
+   git checkout -b feat/e4-agent-plugin-mulch
+   git checkout -b feat/e4-t1-mulch-adapter
    ```
-3. **Epic 4** — `@coreai/agent-plugin-mulch`
+2. Implement E4-T1: `mulchAdapter.ts` — calls `mulch search <topic>`, parses JSONL
+3. E4-T2: `hooks.ts` — `onSessionStart` searches mulch for relevant topics
+4. E4-T3: `lessonWriter.ts` — calls `mulch add` to persist new lessons at session end
+5. E4-T4: Unit tests with mocked `mulch` CLI
 
 ---
 
@@ -89,7 +84,7 @@ Runtime orchestration: context builder, plugin loader, hook runner, CLI.
 | E2-T4 | CLI — `agent start`, `agent end`, `agent task start <id>` using `commander` | ✅ |
 | E2-T5 | Unit tests for context builder, plugin loader, hook runner, CLI (57 tests) | ✅ |
 
-### Epic 3 — `@coreai/agent-plugin-beads` ✅ (epic PR #10 open → main)
+### Epic 3 — `@coreai/agent-plugin-beads` ✅
 
 Wraps `bd` CLI to inject Beads task context.
 | ID | Task | Status |
