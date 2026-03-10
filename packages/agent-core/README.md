@@ -3,7 +3,7 @@
 The runtime orchestration engine for the coreai agent ecosystem. It assembles prompt context, loads plugins, runs lifecycle hooks, and exposes a CLI for managing agent sessions and tasks.
 
 [![CI](https://github.com/jwill9999/coreai/actions/workflows/ci.yml/badge.svg)](https://github.com/jwill9999/coreai/actions/workflows/ci.yml)
-[![npm version](https://img.shields.io/badge/version-0.3.0--alpha.0-blue)](./package.json)
+[![npm version](https://img.shields.io/npm/v/@coreai/agent-core)](https://www.npmjs.com/package/@coreai/agent-core)
 
 ---
 

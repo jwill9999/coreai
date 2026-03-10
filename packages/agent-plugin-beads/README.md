@@ -2,6 +2,9 @@
 
 Wraps the `bd` CLI to inject [Beads](https://github.com/bead-tools/beads) task context into an agent session.
 
+[![CI](https://github.com/jwill9999/coreai/actions/workflows/ci.yml/badge.svg)](https://github.com/jwill9999/coreai/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/@coreai/agent-plugin-beads)](https://www.npmjs.com/package/@coreai/agent-plugin-beads)
+
 ## What it does
 
 When `onTaskStart` fires, the plugin:
