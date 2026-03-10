@@ -12,17 +12,15 @@ Epic 3 is fully complete and merged to `main`. Version bumped to `0.3.0-alpha.0`
 
 ## Progress Since Last Session
 
+- ✅ **Context optimisation** — `copilot-instructions.md` trimmed 367 → 221 lines (40% reduction) by extracting 5 verbose sections into on-demand skills
+- ✅ **5 new skills created** — `session`, `pr-review`, `git-workflow`, `guardrails`, `docs`; all with `USE WHEN` triggers, `$ARGUMENTS`, and live shell context (`!` prefix)
+- ✅ **Planning skill rewritten** — full Beads dual-write integration; `/new-epic`, `/new-feature`, `/add-task`, `/update-status`, `/sync-beads` commands
+- ✅ **Root README rewritten** — replaced Nx stub with proper Conscius README (packages, quick start, architecture table)
+- ✅ **Docs structure scaffolded** — `docs/adr/` (3 ADRs), `docs/guides/` (getting-started, adding-a-plugin, publishing), `docs/api/` (agent-types, agent-core), `docs/planning/` (index, backlog, workflow guide)
+- ✅ **@conscius npm org created** — https://www.npmjs.com/org/conscius
 - ✅ **Epic 3 merged to `main`** — PR #10 merged, all CI green (32 tests)
 - ✅ **Version bump** — all packages → `0.3.0-alpha.0`
 - ✅ **Nx Cloud setup merged to `main`** — PR #11 merged (self-healing CI + nx.json config)
-- ✅ **CHANGELOG.md** generated with `git-cliff`
-- ✅ **Version bump** — all packages → `0.2.0-alpha.0`
-- ✅ **Husky git hooks** — pre-commit (lint-staged), pre-push (nx affected)
-- ✅ **Badge fixes** — Codecov badge corrected; duplicate `codeql.yml` removed; badge now points to GitHub-native CodeQL scanning
-- ✅ **SonarCloud hotspots** addressed: pinned GitHub Actions to commit SHAs, path validation added to hook-runner, `/tmp` hardcode removed from spec
-- ✅ **Sourcery fix** — `compressionTriggered` renamed to `compressionApplied`
-- ✅ **58 unit tests** passing (57 → 58 after additional security test)
-- ✅ **Epic 3 (E3-T1 → E3-T4)** — `@conscius/agent-plugin-beads` fully implemented (27 tests)
 
 ## Decisions Made
 
