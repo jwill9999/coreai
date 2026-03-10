@@ -6,9 +6,12 @@ Build the coreai agent ecosystem — a layered AI-assisted engineering workflow 
 
 ## Active Task
 
-**Epic 3 — `@coreai/agent-plugin-beads`** — not yet started
+**Epic 3 — `@coreai/agent-plugin-beads`** — all tasks complete, PRs open awaiting human review.
 
-Next: create epic branch `feat/e3-agent-plugin-beads` from `main`, then start E3-T1.
+- PR #8: `feat/e3-t1-beads-adapter` → epic branch (CI ✅, awaiting review)
+- PR #9: `feat/e3-t4-unit-tests` → epic branch (CI ✅ build/test/lint, 1 SonarCloud Security Hotspot — needs manual review in SonarCloud UI)
+
+Next: human reviews and merges PRs #8 and #9, then run full suite on epic branch and open epic PR to `main`.
 
 ## Progress Since Last Session
 
@@ -20,6 +23,7 @@ Next: create epic branch `feat/e3-agent-plugin-beads` from `main`, then start E3
 - ✅ **SonarCloud hotspots** addressed: pinned GitHub Actions to commit SHAs, path validation added to hook-runner, `/tmp` hardcode removed from spec
 - ✅ **Sourcery fix** — `compressionTriggered` renamed to `compressionApplied`
 - ✅ **58 unit tests** passing (57 → 58 after additional security test)
+- ✅ **Epic 3 (E3-T1 → E3-T4)** — `@coreai/agent-plugin-beads` fully implemented (27 tests)
 
 ## Decisions Made
 
@@ -37,18 +41,23 @@ Next: create epic branch `feat/e3-agent-plugin-beads` from `main`, then start E3
 - Build intentionally CI-only (too slow for local hooks)
 - SonarCloud automatic analysis mode — coverage via Codecov only
 - CodeQL via GitHub-native Settings (not codeql.yml workflow file)
+- **lint-staged**: `.mjs` files get prettier-only (no ESLint) to avoid "File ignored by default" warnings
+- **`tsconfig.spec.json` with relative imports**: must include `src/**/*.ts` AND `references: [{path: './tsconfig.lib.json'}]` — see agent-plugin-beads as pattern
+- **`promisify(execFile)` + Jest mocks**: don't use — loses `util.promisify.custom` symbol; use manual Promise wrapper instead
 
 ## Open Issues
 
-None.
+- **SonarCloud Security Hotspot** on PR #9: `typescript:S4036` — "Searching OS commands in PATH is security-sensitive" on `execFile('bd', ...)` in `beadsAdapter.ts`. This is expected for a CLI wrapper. **Action required**: log into SonarCloud and mark as "Safe" or "Acknowledged" with justification: _"Plugin is designed specifically to call the `bd` CLI. Uses execFile (not exec), command is hardcoded, PATH lookup is intentional for a developer tool plugin."_
 
 ## Next Steps
 
-1. **Create epic branch**: `git checkout main && git pull && git checkout -b feat/e3-agent-plugin-beads`
-2. **E3-T1**: Create task branch `feat/e3-t1-beads-adapter`, scaffold `@coreai/agent-plugin-beads` package, implement `beadsAdapter.ts` (calls `bd show <task-id>`, parses into `BeadsTask`)
-3. **E3-T2**: `hooks.ts` — `onTaskStart` injects task metadata + spec path
-4. **E3-T3**: `contextLoader.ts` — loads spec file content from task metadata
-5. **E3-T4**: Unit tests with mocked `bd` CLI output
+1. **Review SonarCloud hotspot** for PR #9: mark `typescript:S4036` as "Safe" at https://sonarcloud.io/project/security_hotspots?id=jwill9999_coreai&pullRequest=9
+2. **Review and merge PR #8** (`feat/e3-t1-beads-adapter` → epic branch)
+3. **Review and merge PR #9** (`feat/e3-t4-unit-tests` → epic branch)
+4. **Pre-merge local test** on epic branch: `npx nx run-many -t typecheck,lint,test,build --all`
+5. **Open epic PR** to `main`: `git push -u origin feat/e3-agent-plugin-beads && gh pr create --base main --title "feat: Epic 3 — @coreai/agent-plugin-beads"`
+6. After epic merges to `main`: generate CHANGELOG and bump to `0.3.0-alpha.0`
+7. **Epic 4** — `@coreai/agent-plugin-mulch`
 
 ---
 
@@ -74,15 +83,15 @@ Runtime orchestration: context builder, plugin loader, hook runner, CLI.
 | E2-T4 | CLI — `agent start`, `agent end`, `agent task start <id>` using `commander` | ✅ |
 | E2-T5 | Unit tests for context builder, plugin loader, hook runner, CLI (57 tests) | ✅ |
 
-### Epic 3 — `@coreai/agent-plugin-beads` ⬜
+### Epic 3 — `@coreai/agent-plugin-beads` ✅ (PRs open, awaiting merge)
 
 Wraps `bd` CLI to inject Beads task context.
 | ID | Task | Status |
 |----|------|--------|
-| E3-T1 | `beadsAdapter.ts` — calls `bd show <task-id>`, parses into `BeadsTask` | ⬜ |
-| E3-T2 | `hooks.ts` — `onTaskStart` injects task metadata + spec path | ⬜ |
-| E3-T3 | `contextLoader.ts` — loads spec file content from task metadata | ⬜ |
-| E3-T4 | Unit tests with mocked `bd` CLI output | ⬜ |
+| E3-T1 | `beadsAdapter.ts` — calls `bd show <task-id>`, parses into `BeadsTask` | ✅ |
+| E3-T2 | `hooks.ts` — `onTaskStart` injects task metadata + spec path | ✅ |
+| E3-T3 | `contextLoader.ts` — loads spec file content from task metadata | ✅ |
+| E3-T4 | Unit tests with mocked `bd` CLI output | ✅ |
 
 ### Epic 4 — `@coreai/agent-plugin-mulch` ⬜
 
