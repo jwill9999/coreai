@@ -156,10 +156,10 @@ export class HookRunner {
 
       child.on('error', rej);
       child.on('close', (code) => {
-        if (code !== 0) {
-          rej(new Error(`Hook "${hookPath}" exited with code ${code}`));
-        } else {
+        if (code === 0) {
           res();
+        } else {
+          rej(new Error(`Hook "${hookPath}" exited with code ${code}`));
         }
       });
     });
