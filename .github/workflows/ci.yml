@@ -30,7 +30,7 @@ jobs:
         run: npm ci
 
       - name: Format check
-        run: npx nx format:check
+        run: npx nx format:check --all
 
       - name: Typecheck
         run: npx nx run-many -t typecheck --all
