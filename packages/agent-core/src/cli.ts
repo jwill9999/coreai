@@ -3,6 +3,7 @@ import type { AgentPlugin } from '@coreai/agent-types';
 import { Command } from 'commander';
 import { HookRunner, HOOK_NAMES } from './hook-runner/index.js';
 import { PluginLoader } from './plugin-loader/index.js';
+import { toMessage } from './utils.js';
 
 type HookName = keyof Omit<AgentPlugin, 'name'>;
 
@@ -50,12 +51,6 @@ async function runLifecycle(
   const { context, loader, runner } = await bootstrap(opts);
   await loaderFn(loader, context);
   await runner.runHook(HOOK_NAMES[hook], context);
-}
-
-function toMessage(err: unknown): string {
-  if (err instanceof Error) return err.message;
-  if (typeof err === 'string') return err;
-  return JSON.stringify(err);
 }
 
 function wrapAction<Args extends unknown[]>(
