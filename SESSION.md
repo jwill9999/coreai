@@ -7,7 +7,8 @@ Build the coreai agent ecosystem — a layered AI-assisted engineering workflow 
 **Epic 2 — `@coreai/agent-core`** (in progress)
 - ✅ E2-T1 complete — context builder merged into `feat/e2-agent-core`
 - ✅ E2-T2 complete — plugin loader merged into `feat/e2-agent-core`
-- ⬜ E2-T3 next — hook runner
+- ✅ E2-T3 complete — hook runner merged into `feat/e2-agent-core`
+- ⬜ E2-T4 next — CLI (`agent start`, `agent end`, `agent task start <id>`)
 
 ## Progress Since Last Session
 - ✅ **Epic 1 complete** — `@coreai/agent-types` scaffolded and pushed to GitHub
@@ -27,6 +28,11 @@ Build the coreai agent ecosystem — a layered AI-assisted engineering workflow 
 - ✅ E2-T2 — plugin loader (`PluginLoader` class, all 4 lifecycle hook runners)
   - Bug fix applied: plugin hook isolation via per-plugin try/catch + `AggregateError`
   - Merged into `feat/e2-agent-core` ✅
+- ✅ E2-T3 — hook runner (`HookRunner` class, `HOOK_NAMES`, `DEFAULT_AGENT_CONFIG`)
+  - Resolves `repo/.agent/hooks/` → `~/.agent/hooks/`; `.sh` via `sh`, JS via `node`
+  - `isApprovedWrite()`, `ensureConfig()` with first-run TTY-guarded prompt
+  - Fixes applied: cross-platform path normalisation, explicit `cwd`, non-null assertions removed, negated condition
+  - Merged into `feat/e2-agent-core` ✅
 
 ## Decisions Made
 - Nx monorepo — always prefer `npx nx add @nx/<plugin>` over manual config
@@ -44,8 +50,8 @@ Build the coreai agent ecosystem — a layered AI-assisted engineering workflow 
 - None currently.
 
 ## Next Steps
-1. Create `feat/e2-t3-hook-runner` from updated epic branch `feat/e2-agent-core`
-2. Implement E2-T3 — hook runner (resolves `repo/.agent/hooks/` then `~/.agent/hooks/`, enforces write permissions, first-run permission prompt → `.agent/config.json`)
+1. Create `feat/e2-t4-cli` from updated epic branch `feat/e2-agent-core`
+2. Implement E2-T4 — CLI (`agent start`, `agent end`, `agent task start <id>`) using `commander`
 
 ---
 
@@ -65,7 +71,7 @@ Runtime orchestration: context builder, plugin loader, hook runner, CLI.
 |----|------|--------|
 | E2-T1 | Context builder — assembles prompt in injection order; triggers compression at 30–40 messages | ✅ |
 | E2-T2 | Plugin loader — loads plugins from config, calls all lifecycle hooks | ✅ |
-| E2-T3 | Hook runner — resolves `repo/.agent/hooks/` then `~/.agent/hooks/`; enforces write permissions; first-run prompt → `.agent/config.json` | ⬜ |
+| E2-T3 | Hook runner — resolves `repo/.agent/hooks/` then `~/.agent/hooks/`; enforces write permissions; first-run prompt → `.agent/config.json` | ✅ |
 | E2-T4 | CLI — `agent start`, `agent end`, `agent task start <id>` using `commander` | ⬜ |
 | E2-T5 | Unit tests for context builder and plugin loader | ⬜ |
 
