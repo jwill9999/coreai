@@ -47,7 +47,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: jwill9999/conscius
-          files: packages/agent-types/test-output/jest/coverage/lcov.info,packages/agent-core/test-output/jest/coverage/lcov.info,packages/agent-plugin-beads/test-output/jest/coverage/lcov.info
+          files: packages/agent-core/test-output/jest/coverage/lcov.info,packages/agent-plugin-beads/test-output/jest/coverage/lcov.info
           flags: unittests
           fail_ci_if_error: false
 
