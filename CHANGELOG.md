@@ -90,3 +90,5 @@
 - Disable nx cache for test step to ensure coverage files are written
 - *(changelog)* Update CHANGELOG.md [skip ci]
 - Exclude CHANGELOG.md from Prettier
+- *(changelog)* Update CHANGELOG.md [skip ci]
+- Fix Codecov coverage detection on main
