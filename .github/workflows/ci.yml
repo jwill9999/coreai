@@ -40,17 +40,14 @@ jobs:
         run: npx nx run-many -t lint --all
 
       - name: Test
-        run: npx nx run-many -t test --all --no-cache -- --coverage
+        run: npx nx run-many -t test --all --skip-nx-cache -- --coverage
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: jwill9999/conscius
-          files: |
-            packages/agent-types/test-output/jest/coverage/lcov.info,
-            packages/agent-core/test-output/jest/coverage/lcov.info,
-            packages/agent-plugin-beads/test-output/jest/coverage/lcov.info
+          files: packages/agent-types/test-output/jest/coverage/lcov.info,packages/agent-core/test-output/jest/coverage/lcov.info,packages/agent-plugin-beads/test-output/jest/coverage/lcov.info
           flags: unittests
           fail_ci_if_error: false
 
