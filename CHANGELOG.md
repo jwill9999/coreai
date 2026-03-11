@@ -88,3 +88,5 @@
 - Update SESSION.md and SUMMARY.md for session end
 - *(changelog)* Update CHANGELOG.md [skip ci]
 - Disable nx cache for test step to ensure coverage files are written
+- *(changelog)* Update CHANGELOG.md [skip ci]
+- Exclude CHANGELOG.md from Prettier
