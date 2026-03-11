@@ -97,3 +97,5 @@
 - Add workflow_dispatch to allow manual CI triggers
 - *(changelog)* Update CHANGELOG.md [skip ci]
 - Fix test cache skip and Codecov files path syntax
+- *(changelog)* Update CHANGELOG.md [skip ci]
+- Remove agent-types from Codecov upload
