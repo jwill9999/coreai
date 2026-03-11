@@ -92,3 +92,6 @@
 - Exclude CHANGELOG.md from Prettier
 - *(changelog)* Update CHANGELOG.md [skip ci]
 - Fix Codecov coverage detection on main
+- *(changelog)* Update CHANGELOG.md [skip ci]
+- Add codecov.yml with carryforward flags
+- Add workflow_dispatch to allow manual CI triggers
