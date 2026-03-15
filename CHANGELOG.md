@@ -32,6 +32,7 @@
 - *(publishing)* Add npm version badge step to post-publish checklist
 - Replace original specs with per-epic source-of-truth specs
 - *(session)* Fix stale version reference 0.2.0 → 0.3.0-alpha.0
+- *(tooling)* Add context7 workflow guidance
 
 ### 🎨 Styling
 
@@ -104,3 +105,4 @@
 - *(changelog)* Update CHANGELOG.md [skip ci]
 - Update SESSION.md and SUMMARY.md
 - Main Add to gitignore tmux
+- *(changelog)* Update CHANGELOG.md [skip ci]
