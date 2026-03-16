@@ -478,4 +478,11 @@ describe('queryMulch', () => {
       'queryMulch: topic must not be empty',
     );
   });
+
+  it('rejects topics with control characters before invoking mulch', async () => {
+    await expect(queryMulch('docker\nnetworking', tempRoot)).rejects.toThrow(
+      'queryMulch: topic contains unsupported control characters',
+    );
+    expect(mockExecFile).not.toHaveBeenCalled();
+  });
 });

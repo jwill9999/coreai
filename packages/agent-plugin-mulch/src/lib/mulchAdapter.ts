@@ -76,11 +76,28 @@ function matchesTopic(lesson: MulchLesson, topic: string): boolean {
   );
 }
 
+function assertSafeTopic(topic: string): void {
+  const hasControlCharacter = [...topic].some((character) => {
+    const codePoint = character.codePointAt(0);
+    return (
+      codePoint !== undefined &&
+      ((codePoint >= 0 && codePoint <= 31) || codePoint === 127)
+    );
+  });
+
+  if (hasControlCharacter) {
+    throw new Error(
+      'queryMulch: topic contains unsupported control characters',
+    );
+  }
+}
+
 function runMulchSearch(topic: string, repoRoot: string): Promise<string> {
   return new Promise((resolve, reject) => {
+    // execFile runs without a shell, so argument handling stays literal.
     execFile('mulch', ['search', topic], { cwd: repoRoot }, (err, stdout) => {
       if (err) {
-        reject(err);
+        reject(err instanceof Error ? err : new Error(String(err)));
       } else {
         resolve(String(stdout));
       }
@@ -114,8 +131,9 @@ function isCommandNotFound(err: unknown): boolean {
     return false;
   }
 
-  if (typeof execError.message === 'string') {
-    const message = execError.message;
+  const { message } = execError;
+
+  if (typeof message === 'string') {
     const mentionsMulch = message.includes('mulch');
     const mentionsNotFound =
       message.includes('command not found') || message.includes('ENOENT');
@@ -155,6 +173,8 @@ export async function queryMulch(
   if (!trimmedTopic) {
     throw new Error('queryMulch: topic must not be empty');
   }
+
+  assertSafeTopic(trimmedTopic);
 
   try {
     const stdout = await runMulchSearch(trimmedTopic, repoRoot);
