@@ -6,7 +6,7 @@ Build the Conscius agent ecosystem — a layered AI-assisted engineering workflo
 
 ## Active Task
 
-**Epic 4 — `@conscius/agent-plugin-mulch`** — E4-T1 (`mulchAdapter.ts`) implemented and validated on `feat/e4-t1-mulch-adapter`.
+**Epic 4 — `@conscius/agent-plugin-mulch`** — E4-T2 (`hooks.ts`) implemented and validated on `feat/e4-t2-mulch-hooks`.
 
 Epic 3 is fully complete and merged to `main`. Version bumped to `0.3.0-alpha.0`.
 
@@ -19,6 +19,8 @@ Epic 3 is fully complete and merged to `main`. Version bumped to `0.3.0-alpha.0`
 - 🔧 **Codecov debugging (unresolved)** — multiple CI fixes attempted: `workflow_dispatch` trigger added, `codecov.yml` with carryforward flags, `--no-cache` → `--skip-nx-cache`, YAML `files:` syntax fix, `agent-types` empty lcov removed, `sed` step to prefix lcov `SF:` paths for monorepo. Codecov still shows "Missing Head Report" on all main commits. Root cause unconfirmed.
 - ✅ **Epic 4 started** — committed and pushed the latest documentation/tooling updates to `main`, created `feat/e4-agent-plugin-mulch`, then created task branch `feat/e4-t1-mulch-adapter`
 - ✅ **E4-T1 complete locally** — scaffolded `packages/agent-plugin-mulch` with Nx, implemented `queryMulch()` with CLI + JSONL/file fallback, aligned package config with `agent-plugin-beads`, and validated with `npx nx run-many -t typecheck,lint,test,build --projects=@conscius/agent-plugin-mulch`
+- ✅ **E4-T1 PR opened** — PR #13 `feat(e4-t1): implement mulch adapter` targets `feat/e4-agent-plugin-mulch`
+- ✅ **E4-T2 complete locally** — created stacked branch `feat/e4-t2-mulch-hooks`, implemented `mulchPlugin.onSessionStart`, added hook tests, and validated with `npx nx run-many -t typecheck,lint,test,build --projects=@conscius/agent-plugin-mulch`
 
 ## Decisions Made
 
@@ -48,12 +50,12 @@ Epic 3 is fully complete and merged to `main`. Version bumped to `0.3.0-alpha.0`
 
 ## Next Steps
 
-1. **Commit E4-T1 on `feat/e4-t1-mulch-adapter`**
-   - Conventional commit scope: `e4-t1`
-   - Open PR from `feat/e4-t1-mulch-adapter` → `feat/e4-agent-plugin-mulch`
-2. **Start E4-T2** — implement `hooks.ts` to query Mulch on `onSessionStart`
-3. **Then E4-T3** — implement `lessonWriter.ts` to append to `.mulch/mulch.jsonl`
-4. **Then E4-T4** — add/expand unit tests for hooks and lesson writer
+1. **Commit E4-T2 on `feat/e4-t2-mulch-hooks`**
+   - Conventional commit scope: `e4-t2`
+   - Open PR from `feat/e4-t2-mulch-hooks` → `feat/e4-agent-plugin-mulch` or stack it after PR #13 as preferred
+2. **Start E4-T3** — implement `lessonWriter.ts` to append to `.mulch/mulch.jsonl`
+3. **Then E4-T4** — add/expand unit tests for hooks and lesson writer
+4. **Merge E4 task branches back into `feat/e4-agent-plugin-mulch` after review**
 5. **Codecov remains on hold** — resume later with the PR-branch probe
 
 ---
@@ -96,7 +98,7 @@ Wraps `mulch` CLI to surface experience lessons.
 | ID | Task | Status |
 |----|------|--------|
 | E4-T1 | `mulchAdapter.ts` — calls `mulch search <topic>`, parses JSONL | ✅ |
-| E4-T2 | `hooks.ts` — `onSessionStart` searches mulch for relevant topics | ⬜ |
+| E4-T2 | `hooks.ts` — `onSessionStart` searches mulch for relevant topics | ✅ |
 | E4-T3 | `lessonWriter.ts` — calls `mulch add` to persist new lessons at session end | ⬜ |
 | E4-T4 | Unit tests with mocked `mulch` CLI | ⬜ |
 
