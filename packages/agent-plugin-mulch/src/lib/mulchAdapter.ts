@@ -1,7 +1,8 @@
 import { execFile } from 'node:child_process';
+import { constants } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { homedir } from 'node:os';
-import { join } from 'node:path';
+import { delimiter, join } from 'node:path';
 import type { MulchLesson } from '@conscius/agent-types';
 
 function isStringArray(value: unknown): value is string[] {
@@ -92,16 +93,74 @@ function assertSafeTopic(topic: string): void {
   }
 }
 
-function runMulchSearch(topic: string, repoRoot: string): Promise<string> {
+function createCommandNotFoundError(): NodeJS.ErrnoException & {
+  syscall?: string;
+  path?: string;
+  spawnargs?: string[];
+} {
+  const error = new Error(
+    'mulch executable not found',
+  ) as NodeJS.ErrnoException & {
+    syscall?: string;
+    path?: string;
+    spawnargs?: string[];
+  };
+
+  error.code = 'ENOENT';
+  error.syscall = 'spawn';
+  error.path = 'mulch';
+  error.spawnargs = ['mulch'];
+
+  return error;
+}
+
+async function resolveMulchExecutable(): Promise<string> {
+  const searchPath = process.env['PATH'];
+
+  if (!searchPath) {
+    throw createCommandNotFoundError();
+  }
+
+  for (const directory of searchPath.split(delimiter)) {
+    if (!directory) {
+      continue;
+    }
+
+    const candidate = join(directory, 'mulch');
+
+    try {
+      await import('node:fs/promises').then(({ access }) =>
+        access(candidate, constants.X_OK),
+      );
+      return candidate;
+    } catch {
+      // Keep searching PATH entries for an executable mulch binary.
+    }
+  }
+
+  throw createCommandNotFoundError();
+}
+
+async function runMulchSearch(
+  topic: string,
+  repoRoot: string,
+): Promise<string> {
+  const mulchExecutable = await resolveMulchExecutable();
+
   return new Promise((resolve, reject) => {
     // execFile runs without a shell, so argument handling stays literal.
-    execFile('mulch', ['search', topic], { cwd: repoRoot }, (err, stdout) => {
-      if (err) {
-        reject(err instanceof Error ? err : new Error(String(err)));
-      } else {
-        resolve(String(stdout));
-      }
-    });
+    execFile(
+      mulchExecutable,
+      ['search', topic],
+      { cwd: repoRoot },
+      (err, stdout) => {
+        if (err) {
+          reject(err instanceof Error ? err : new Error(String(err)));
+        } else {
+          resolve(String(stdout));
+        }
+      },
+    );
   });
 }
 
@@ -119,9 +178,11 @@ function isCommandNotFound(err: unknown): boolean {
   if (execError.code === 'ENOENT') {
     const isSpawnSyscall =
       execError.syscall === 'spawn mulch' || execError.syscall === 'spawn';
-    const isMulchPath = execError.path === 'mulch';
+    const isMulchPath =
+      execError.path === 'mulch' || execError.path?.endsWith('/mulch') === true;
     const isMulchSpawnArg = Array.isArray(execError.spawnargs)
-      ? execError.spawnargs[0] === 'mulch'
+      ? execError.spawnargs[0] === 'mulch' ||
+        execError.spawnargs[0]?.endsWith('/mulch') === true
       : false;
 
     if (isSpawnSyscall && (isMulchPath || isMulchSpawnArg)) {

@@ -1,16 +1,21 @@
 import { execFile } from 'node:child_process';
-import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { access, mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { homedir, tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { queryMulch } from '../mulchAdapter.js';
 
 jest.mock('node:child_process');
+jest.mock('node:fs/promises', () => ({
+  ...jest.requireActual('node:fs/promises'),
+  access: jest.fn(),
+}));
 jest.mock('node:os', () => ({
   ...jest.requireActual('node:os'),
   homedir: jest.fn(),
 }));
 
 const mockExecFile = execFile as jest.MockedFunction<typeof execFile>;
+const mockAccess = access as jest.MockedFunction<typeof access>;
 const mockHomedir = homedir as jest.MockedFunction<typeof homedir>;
 
 function mockExecFileSuccess(stdout: string) {
@@ -64,9 +69,17 @@ describe('queryMulch', () => {
 
   beforeEach(async () => {
     jest.clearAllMocks();
+    process.env['PATH'] = '/usr/local/bin:/opt/homebrew/bin';
     tempRoot = await mkdtemp(join(tmpdir(), 'mulch-root-'));
     tempHome = await mkdtemp(join(tmpdir(), 'mulch-home-'));
     mockHomedir.mockReturnValue(tempHome);
+    mockAccess.mockImplementation(async (path) => {
+      if (String(path).endsWith('/usr/local/bin/mulch')) {
+        return;
+      }
+
+      throw Object.assign(new Error('not found'), { code: 'ENOENT' });
+    });
   });
 
   afterEach(async () => {
@@ -228,7 +241,7 @@ describe('queryMulch', () => {
     await queryMulch('jest', tempRoot);
 
     expect(mockExecFile).toHaveBeenCalledWith(
-      'mulch',
+      '/usr/local/bin/mulch',
       ['search', 'jest'],
       { cwd: tempRoot },
       expect.any(Function),
