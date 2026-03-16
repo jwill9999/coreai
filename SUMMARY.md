@@ -192,3 +192,25 @@
 - 3 CI commits pushed to main (1be62fc, 0d4a0ee, cf9e1b2); all CI runs pass but Codecov still shows "Missing Head Report"
 - Root cause unconfirmed — none of the attempted fixes resolved it
 - **Next session must start with the PR branch probe** before continuing with Epic 4
+
+---
+
+## Segment 7 — Epic 4 PR Feedback Hardening & T1/T2 Merge
+
+**Topic:** Hardening the PR review loop while landing the first two `@conscius/agent-plugin-mulch` task branches
+
+**Key Decisions:**
+
+- Review feedback is not considered done when code is changed locally; it is done only after the corresponding GitHub thread/comment is rechecked and explicitly resolved
+- Use IDE diagnostics as the first local source for Sonar/Sourcery findings before querying GitHub
+- Before the final push for a PR feedback fix, rerun local diagnostics and targeted Nx validation to catch regressions before creating another commit
+- Prefer GitHub PR feedback over a Sonar MCP integration for the current review workflow
+- Keep VS Code, Cursor, and Copilot CLI MCP configs separate because they use different schemas (`servers` vs `mcpServers`)
+
+**Constraints:**
+
+- Docker-backed MCP servers should be avoided where practical; call it out explicitly when Docker is the only viable option
+- `SUMMARY.md` remains append-only, so this segment records the workflow hardening and merge outcomes without rewriting earlier segments
+- Codecov remains unresolved and on hold; it should stay tracked in session handoff rather than being mixed into Epic 4 completion claims
+
+**Outcome:** PR #13 (E4-T1) and PR #16 (E4-T2) were both fixed, revalidated, had their Sourcery review threads resolved, and were merged into `feat/e4-agent-plugin-mulch`. Epic 4 is now ready to continue with E4-T3 (`lessonWriter.ts`) from the updated epic branch.

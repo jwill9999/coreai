@@ -6,7 +6,7 @@ Build the Conscius agent ecosystem — a layered AI-assisted engineering workflo
 
 ## Active Task
 
-**Epic 4 — `@conscius/agent-plugin-mulch`** — E4-T2 (`hooks.ts`) implemented and validated on `feat/e4-t2-mulch-hooks`.
+**Epic 4 — `@conscius/agent-plugin-mulch`** — E4-T1 and E4-T2 are merged into `feat/e4-agent-plugin-mulch`; next active task is E4-T3 (`lessonWriter.ts`).
 
 Epic 3 is fully complete and merged to `main`. Version bumped to `0.3.0-alpha.0`.
 
@@ -19,8 +19,9 @@ Epic 3 is fully complete and merged to `main`. Version bumped to `0.3.0-alpha.0`
 - 🔧 **Codecov debugging (unresolved)** — multiple CI fixes attempted: `workflow_dispatch` trigger added, `codecov.yml` with carryforward flags, `--no-cache` → `--skip-nx-cache`, YAML `files:` syntax fix, `agent-types` empty lcov removed, `sed` step to prefix lcov `SF:` paths for monorepo. Codecov still shows "Missing Head Report" on all main commits. Root cause unconfirmed.
 - ✅ **Epic 4 started** — committed and pushed the latest documentation/tooling updates to `main`, created `feat/e4-agent-plugin-mulch`, then created task branch `feat/e4-t1-mulch-adapter`
 - ✅ **E4-T1 complete locally** — scaffolded `packages/agent-plugin-mulch` with Nx, implemented `queryMulch()` with CLI + JSONL/file fallback, aligned package config with `agent-plugin-beads`, and validated with `npx nx run-many -t typecheck,lint,test,build --projects=@conscius/agent-plugin-mulch`
-- ✅ **E4-T1 PR opened** — PR #13 `feat(e4-t1): implement mulch adapter` targets `feat/e4-agent-plugin-mulch`
-- ✅ **E4-T2 complete locally** — created stacked branch `feat/e4-t2-mulch-hooks`, implemented `mulchPlugin.onSessionStart`, added hook tests, and validated with `npx nx run-many -t typecheck,lint,test,build --projects=@conscius/agent-plugin-mulch`
+- ✅ **E4-T1 merged** — PR #13 (`feat/e4-t1-mulch-adapter` → `feat/e4-agent-plugin-mulch`) is merged after fixing Sonar/Sourcery feedback, rerunning local IDE diagnostics plus package-level Nx checks, and resolving all satisfied review threads
+- ✅ **E4-T2 merged** — PR #16 (`feat/e4-t2-mulch-hooks` → `feat/e4-agent-plugin-mulch`) is merged after adding the missing `activeTask`-absent hook test, rerunning package-level Nx checks, and resolving the final Sourcery thread
+- ✅ **PR review workflow hardened** — GitHub PR feedback now follows a closure loop: check IDE diagnostics first, fix locally, rerun diagnostics and targeted Nx validation before push, then resolve the matching GitHub review item only after verification
 
 ## Decisions Made
 
@@ -41,6 +42,7 @@ Epic 3 is fully complete and merged to `main`. Version bumped to `0.3.0-alpha.0`
 - **lint-staged**: `.mjs` files get prettier-only (no ESLint) to avoid "File ignored by default" warnings
 - **`tsconfig.spec.json` with relative imports**: must include `src/**/*.ts` AND `references: [{path: './tsconfig.lib.json'}]` — see agent-plugin-beads as pattern
 - **`promisify(execFile)` + Jest mocks**: don't use — loses `util.promisify.custom` symbol; use manual Promise wrapper instead
+- **PR feedback loop**: before the final push, rerun local IDE diagnostics and targeted Nx checks so Sonar/Sourcery regressions are caught before a new commit; after the push, resolve the corresponding GitHub thread only once the rerun feedback is clean
 
 ## Open Issues
 
@@ -50,12 +52,10 @@ Epic 3 is fully complete and merged to `main`. Version bumped to `0.3.0-alpha.0`
 
 ## Next Steps
 
-1. **Commit E4-T2 on `feat/e4-t2-mulch-hooks`**
-   - Conventional commit scope: `e4-t2`
-   - Open PR from `feat/e4-t2-mulch-hooks` → `feat/e4-agent-plugin-mulch` or stack it after PR #13 as preferred
-2. **Start E4-T3** — implement `lessonWriter.ts` to append to `.mulch/mulch.jsonl`
-3. **Then E4-T4** — add/expand unit tests for hooks and lesson writer
-4. **Merge E4 task branches back into `feat/e4-agent-plugin-mulch` after review**
+1. **Start E4-T3** — create `feat/e4-t3-mulch-lesson-writer` from `feat/e4-agent-plugin-mulch` and implement `lessonWriter.ts` to append to `.mulch/mulch.jsonl`
+2. **Then E4-T4** — add/expand unit tests for hooks and lesson writer
+3. **Run the Epic 4 local pre-merge suite** once E4-T3 and E4-T4 are complete
+4. **Open the Epic 4 PR to `main`** after all Epic 4 tasks are merged into `feat/e4-agent-plugin-mulch`
 5. **Codecov remains on hold** — resume later with the PR-branch probe
 
 ---
