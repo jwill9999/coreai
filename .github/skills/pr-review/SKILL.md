@@ -21,12 +21,13 @@ After opening any PR, **proactively** fetch CI/CD feedback before declaring work
 
 ## Checkpoints
 
-| Checkpoint                        | Action                                                                                                            |
-| --------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| After pushing a task branch       | Check CI run status via `list_workflow_runs`                                                                      |
-| After opening a PR                | Poll `get_check_runs` until CI passes or fails                                                                    |
-| Before recommending merge         | Read PR comments for SonarCloud quality gate and Sourcery AI review; fix any flagged bugs/vulnerabilities         |
-| Before opening an epic PR to main | Verify all task PRs merged cleanly; run full suite locally (`npx nx run-many -t typecheck,lint,test,build --all`) |
+| Checkpoint                        | Action                                                                                                                                                 |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| After pushing a task branch       | If a PR exists, run `npm run pr:feedback -- --branch <current-branch>` and inspect the output                                                          |
+| After opening a PR                | Poll PR checks until they settle, then rerun `npm run pr:feedback -- --pr <number>`                                                                    |
+| After fixing review feedback      | Rerun local IDE diagnostics first, then rerun `npm run pr:feedback`; verify the finding is gone and resolve/close the corresponding feedback item      |
+| Before recommending merge         | Use the feedback script to review SonarCloud/Sourcery signals; fix any flagged bugs/vulnerabilities, then close the loop on the related feedback items |
+| Before opening an epic PR to main | Verify all task PRs merged cleanly; run full suite locally (`npx nx run-many -t typecheck,lint,test,build --all`)                                      |
 
 ## Tools
 
@@ -34,6 +35,31 @@ After opening any PR, **proactively** fetch CI/CD feedback before declaring work
 - `github-mcp-server-pull_request_read` with `get_check_runs` — check CI pass/fail on a PR
 - `github-mcp-server-issue_read` with `get_comments` — read SonarCloud and Sourcery bot feedback
 - `github-mcp-server-get_job_logs` — fetch logs for failed CI jobs
+- `ide-get_diagnostics` — first local source for SonarQube/Sourcery diagnostics before querying GitHub
+- `npm run pr:feedback -- --pr <number>` — repo-local summary of PR checks plus SonarCloud/Sourcery comment counts
+
+## Default post-push workflow
+
+After any `git push` to a task branch with an open PR:
+
+```bash
+npm run pr:feedback -- --branch "$(git branch --show-current)"
+```
+
+If checks are still pending, poll the PR checks first and rerun the script once they complete.
+
+## Feedback closure loop
+
+When fixing SonarCloud or Sourcery feedback, do not stop at the code change.
+
+1. Check local IDE diagnostics first (`ide-get_diagnostics`) to confirm what is currently flagged.
+2. Implement the fix on the correct source branch.
+3. Rerun local validation plus `npm run pr:feedback -- --pr <number>`.
+4. Verify the specific finding is no longer present in IDE diagnostics, PR checks, or PR comments.
+5. Resolve or close the corresponding feedback item:
+   - GitHub review thread/comment: resolve it once the fix is confirmed.
+   - SonarCloud hotspot/issue: mark reviewed only after the fix is verified, with justification if required.
+6. Do not declare the PR ready while known feedback remains open, stale-but-unresolved, or unverified.
 
 ## Bot feedback to action
 
