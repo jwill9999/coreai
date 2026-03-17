@@ -214,3 +214,31 @@
 - Codecov remains unresolved and on hold; it should stay tracked in session handoff rather than being mixed into Epic 4 completion claims
 
 **Outcome:** PR #13 (E4-T1) and PR #16 (E4-T2) were both fixed, revalidated, had their Sourcery review threads resolved, and were merged into `feat/e4-agent-plugin-mulch`. Epic 4 is now ready to continue with E4-T3 (`lessonWriter.ts`) from the updated epic branch.
+
+---
+
+## Segment 8 — Epic 4 Completion, Mulch Alignment & Explicit Session-End Persistence
+
+**Topic:** Finishing `@conscius/agent-plugin-mulch` while aligning the repo to upstream `ml` without over-architecting legacy support
+
+**Key Decisions:**
+
+- Upstream `ml` is the canonical direction for new Mulch docs, skills, and integration work
+- Legacy `mulch` compatibility should stay lightweight rather than becoming a broad dual-command abstraction
+- Agent write permissions should support repo-rooted directory-prefix entries ending in `/`, allowing canonical upstream `.mulch/expertise/` while retaining legacy `.mulch/mulch.jsonl`
+- Session-end Mulch persistence should be explicit: `AgentContext.pendingMulchLessons` supplies lessons; no heuristic extraction from conversation/session data
+
+**Constraints:**
+
+- Existing repo code and docs still contain legacy `mulch` / `.mulch/mulch.jsonl` assumptions, so alignment had to be incremental
+- IDE diagnostics were unavailable during part of this work because the IDE MCP socket was not accepting connections, so validation relied on targeted Nx checks plus formatting checks
+- `SUMMARY.md` remains append-only, so this segment records Epic 4 completion without rewriting earlier Epic 4 context
+
+**Outcome:**
+
+- Added `.github/skills/mulch/SKILL.md`
+- Implemented `writeMulchLesson()` and tests
+- Added `pendingMulchLessons?: MulchLesson[]` to `AgentContext`
+- Wired `agent-plugin-mulch` `onSessionEnd` to persist explicit pending lessons
+- Updated permission guards for canonical upstream Mulch expertise storage with lightweight legacy compatibility
+- Synced Beads state and closed Epic 4 (`coreai-x3b`)

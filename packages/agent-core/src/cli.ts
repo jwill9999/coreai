@@ -23,6 +23,7 @@ async function bootstrap(opts: BootstrapOptions = {}) {
   const context = {
     repoRoot,
     config,
+    pendingMulchLessons: [] as never[],
     promptSegments: [] as string[],
     conversation: [] as never[],
     compressionSummaries: [] as never[],

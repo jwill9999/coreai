@@ -87,9 +87,12 @@ describe('DEFAULT_AGENT_CONFIG', () => {
     expect(DEFAULT_AGENT_CONFIG.hooks?.globalHooksDir).toBe('~/.agent/hooks');
   });
 
-  it('allows writing to SESSION.md and .mulch/mulch.jsonl', () => {
+  it('allows writing to SESSION.md, upstream Mulch expertise files, and the legacy mulch JSONL file', () => {
     expect(DEFAULT_AGENT_CONFIG.permissions?.allowWrite).toContain(
       'SESSION.md',
+    );
+    expect(DEFAULT_AGENT_CONFIG.permissions?.allowWrite).toContain(
+      '.mulch/expertise/',
     );
     expect(DEFAULT_AGENT_CONFIG.permissions?.allowWrite).toContain(
       '.mulch/mulch.jsonl',
@@ -167,6 +170,22 @@ describe('HookRunner.isApprovedWrite()', () => {
       permissions: { allowWrite: ['.mulch/mulch.jsonl'] },
     });
     expect(runner.isApprovedWrite('.mulch/mulch.jsonl')).toBe(true);
+  });
+
+  it('treats allowWrite entries ending in / as approved directory prefixes', () => {
+    const runner = new HookRunner(REPO, {
+      permissions: { allowWrite: ['.mulch/expertise/'] },
+    });
+    expect(runner.isApprovedWrite('.mulch/expertise/testing.jsonl')).toBe(true);
+  });
+
+  it('does not match sibling paths for approved directory prefixes', () => {
+    const runner = new HookRunner(REPO, {
+      permissions: { allowWrite: ['.mulch/expertise/'] },
+    });
+    expect(runner.isApprovedWrite('.mulch/expertise-notes/testing.jsonl')).toBe(
+      false,
+    );
   });
 
   it('returns false for a path not in either list', () => {

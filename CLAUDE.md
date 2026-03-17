@@ -110,7 +110,7 @@ Errors: single plugin errors re-thrown directly; multiple errors wrapped in `Agg
 
 ### Permission Guards (Layer 7)
 
-- Default approved writes: `SESSION.md`, `.mulch/mulch.jsonl`
+- Default approved writes: `SESSION.md`, `.mulch/expertise/`, `.mulch/mulch.jsonl`
 - Per-file approval tracking via `config.approvedWrites`
 - First-run prompt saves to `.agent/config.json`
 

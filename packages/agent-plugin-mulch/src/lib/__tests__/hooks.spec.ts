@@ -1,12 +1,19 @@
 import type { AgentContext, MulchLesson } from '@conscius/agent-types';
 import { mulchPlugin } from '../hooks.js';
 import { queryMulch } from '../mulchAdapter.js';
+import { writeMulchLesson } from '../lessonWriter.js';
 
 jest.mock('../mulchAdapter.js', () => ({
   queryMulch: jest.fn(),
 }));
+jest.mock('../lessonWriter.js', () => ({
+  writeMulchLesson: jest.fn(),
+}));
 
 const mockQueryMulch = queryMulch as jest.MockedFunction<typeof queryMulch>;
+const mockWriteMulchLesson = writeMulchLesson as jest.MockedFunction<
+  typeof writeMulchLesson
+>;
 
 function createContext(overrides: Partial<AgentContext> = {}): AgentContext {
   return {
@@ -143,5 +150,49 @@ describe('mulchPlugin', () => {
 
     expect(mockQueryMulch).toHaveBeenCalledWith('Jest configuration', '/repo');
     expect(context.promptSegments).toEqual([]);
+  });
+
+  it('returns silently when there are no pending lessons at session end', async () => {
+    const context = createContext();
+
+    await mulchPlugin.onSessionEnd?.(context);
+
+    expect(mockWriteMulchLesson).not.toHaveBeenCalled();
+  });
+
+  it('persists each explicitly supplied pending lesson at session end', async () => {
+    const lessons: MulchLesson[] = [
+      {
+        id: 'lesson-1',
+        topic: 'typescript',
+        summary: 'Jest tsconfig needs customConditions set to null',
+        recommendation: 'Override customConditions in tsconfig.spec.json',
+        created: '2026-03-17T00:00:00.000Z',
+      },
+      {
+        id: 'lesson-2',
+        topic: 'mulch',
+        summary: 'Explicit lessons should be supplied via AgentContext',
+        recommendation: 'Populate pendingMulchLessons before onSessionEnd',
+        created: '2026-03-17T00:05:00.000Z',
+      },
+    ];
+
+    const context = createContext({
+      pendingMulchLessons: lessons,
+    });
+
+    await mulchPlugin.onSessionEnd?.(context);
+
+    expect(mockWriteMulchLesson).toHaveBeenNthCalledWith(
+      1,
+      lessons[0],
+      '/repo',
+    );
+    expect(mockWriteMulchLesson).toHaveBeenNthCalledWith(
+      2,
+      lessons[1],
+      '/repo',
+    );
   });
 });

@@ -64,10 +64,10 @@ export interface AgentConfig {
     globalHooksDir?: string;
   };
   permissions?: {
-    /** Files the agent is allowed to write to. */
+    /** Exact file paths or repo-rooted directory prefixes ending in `/`. */
     allowWrite?: string[];
   };
-  /** Tracks first-run write approval per file path. */
+  /** Tracks first-run write approval per exact file path. */
   approvedWrites?: Record<string, boolean>;
 }
 
@@ -79,6 +79,8 @@ export interface AgentContext {
   config: AgentConfig;
   /** Active Beads task, if one is in progress. */
   activeTask?: BeadsTask;
+  /** Explicit Mulch lessons queued for persistence at session end. */
+  pendingMulchLessons?: MulchLesson[];
   /** Compiled prompt context segments for the current session. */
   promptSegments: string[];
   /** Full conversation history for the current session. */

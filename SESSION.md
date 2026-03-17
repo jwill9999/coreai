@@ -6,7 +6,7 @@ Build the Conscius agent ecosystem — a layered AI-assisted engineering workflo
 
 ## Active Task
 
-**Epic 4 — `@conscius/agent-plugin-mulch`** — E4-T1 and E4-T2 are merged into `feat/e4-agent-plugin-mulch`; next active task is E4-T3 (`lessonWriter.ts`).
+**Epic 4 — `@conscius/agent-plugin-mulch`** — implementation is complete locally on `feat/e4-agent-plugin-mulch`; next repo-level step is to commit/push the epic branch changes, then decide the next task branch.
 
 Epic 3 is fully complete and merged to `main`. Version bumped to `0.3.0-alpha.0`.
 
@@ -22,7 +22,8 @@ Epic 3 is fully complete and merged to `main`. Version bumped to `0.3.0-alpha.0`
 - ✅ **E4-T1 merged** — PR #13 (`feat/e4-t1-mulch-adapter` → `feat/e4-agent-plugin-mulch`) is merged after fixing Sonar/Sourcery feedback, rerunning local IDE diagnostics plus package-level Nx checks, and resolving all satisfied review threads
 - ✅ **E4-T2 merged** — PR #16 (`feat/e4-t2-mulch-hooks` → `feat/e4-agent-plugin-mulch`) is merged after adding the missing `activeTask`-absent hook test, rerunning package-level Nx checks, and resolving the final Sourcery thread
 - ✅ **PR review workflow hardened** — GitHub PR feedback now follows a closure loop: check IDE diagnostics first, fix locally, rerun diagnostics and targeted Nx validation before push, then resolve the matching GitHub review item only after verification
-- ✅ **End-of-session checkpoint complete** — epic branch `feat/e4-agent-plugin-mulch` is clean and pushed with handoff docs updated; next session should begin from E4-T3 on a fresh task branch from this epic branch
+- ✅ **Epic 4 completed locally** — implemented explicit `lessonWriter.ts`, `pendingMulchLessons` session-end wiring, upstream-`ml`-aligned write permissions, Mulch skill/docs updates, and synced/closed the Epic 4 Beads tasks
+- 🔄 **Epic 4 branch needs final commit/push** — current work is on `feat/e4-agent-plugin-mulch` and should be pushed before deciding the next task branch
 
 ## Decisions Made
 
@@ -31,7 +32,7 @@ Epic 3 is fully complete and merged to `main`. Version bumped to `0.3.0-alpha.0`
 - `tsconfig.spec.json` must set `"customConditions": null` (avoids TS5098 with Jest/node10)
 - Node 24 via nvm; ESLint 8 using legacy `.eslintrc.*` format
 - Do NOT fork `bd` (Beads) or `mulch` — adapter plugins only
-- Hooks may only write to `SESSION.md` and `.mulch/mulch.jsonl`
+- Hooks may write to `SESSION.md`, canonical upstream `.mulch/expertise/`, and legacy `.mulch/mulch.jsonl`
 - Branching: task PR → human review → epic branch → local test → epic PR → main
 - All packages versioned in lockstep; current version: `0.3.0-alpha.0`
 - GitHub Actions CI active from Epic 2 (CI-T1 completed)
@@ -53,11 +54,10 @@ Epic 3 is fully complete and merged to `main`. Version bumped to `0.3.0-alpha.0`
 
 ## Next Steps
 
-1. **Start E4-T3** — create `feat/e4-t3-mulch-lesson-writer` from `feat/e4-agent-plugin-mulch` and implement `lessonWriter.ts` to append to `.mulch/mulch.jsonl`
-2. **Then E4-T4** — add/expand unit tests for hooks and lesson writer
-3. **Run the Epic 4 local pre-merge suite** once E4-T3 and E4-T4 are complete
-4. **Open the Epic 4 PR to `main`** after all Epic 4 tasks are merged into `feat/e4-agent-plugin-mulch`
-5. **Codecov remains on hold** — resume later with the PR-branch probe
+1. **Commit and push `feat/e4-agent-plugin-mulch`** — Epic 4 implementation and doc updates are complete locally but not yet pushed
+2. **Open the Epic 4 PR to `main`** once the epic branch push is complete
+3. **Choose the next task branch** — likely from ready Epic 9 work (`coreai-yfl.8`, `coreai-yfl.9`, or `coreai-yfl.1`)
+4. **Codecov remains on hold** — resume later with the PR-branch probe
 
 ---
 
@@ -93,15 +93,15 @@ Wraps `bd` CLI to inject Beads task context.
 | E3-T3 | `contextLoader.ts` — loads spec file content from task metadata | ✅ |
 | E3-T4 | Unit tests with mocked `bd` CLI output | ✅ |
 
-### Epic 4 — `@conscius/agent-plugin-mulch` ⬜
+### Epic 4 — `@conscius/agent-plugin-mulch` ✅
 
-Wraps `mulch` CLI to surface experience lessons.
+Surfaces Mulch experience lessons at session start and persists explicit pending lessons at session end.
 | ID | Task | Status |
 |----|------|--------|
 | E4-T1 | `mulchAdapter.ts` — calls `mulch search <topic>`, parses JSONL | ✅ |
 | E4-T2 | `hooks.ts` — `onSessionStart` searches mulch for relevant topics | ✅ |
-| E4-T3 | `lessonWriter.ts` — calls `mulch add` to persist new lessons at session end | ⬜ |
-| E4-T4 | Unit tests with mocked `mulch` CLI | ⬜ |
+| E4-T3 | `lessonWriter.ts` — explicit helper persists supplied lessons; `onSessionEnd` consumes `pendingMulchLessons` | ✅ |
+| E4-T4 | Unit tests with mocked Mulch adapter/writer paths | ✅ |
 
 ### Epic 5 — `@conscius/agent-plugin-session` ⬜
 

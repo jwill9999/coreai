@@ -26,13 +26,13 @@ The runtime orchestration engine for the Conscius agent ecosystem. It assembles 
 
 `agent-core` is the central runtime that powers all Conscius agent workflows:
 
-| Responsibility           | Details                                                                                                         |
-| ------------------------ | --------------------------------------------------------------------------------------------------------------- |
-| **Plugin orchestration** | Dynamically loads ESM plugins; calls `onSessionStart`, `onTaskStart`, `onConversationThreshold`, `onSessionEnd` |
-| **Context assembly**     | Builds the final prompt from plugin segments, compression summaries, and recent conversation messages           |
-| **Hook runner**          | Executes shell/JS scripts from `.agent/hooks/` (repo) or `~/.agent/hooks/` (global)                             |
-| **CLI**                  | `agent start`, `agent end`, `agent task start <id>` commands                                                    |
-| **Permission guards**    | Enforces approved write paths — only `SESSION.md` and `.mulch/mulch.jsonl` by default                           |
+| Responsibility           | Details                                                                                                                  |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------ |
+| **Plugin orchestration** | Dynamically loads ESM plugins; calls `onSessionStart`, `onTaskStart`, `onConversationThreshold`, `onSessionEnd`          |
+| **Context assembly**     | Builds the final prompt from plugin segments, compression summaries, and recent conversation messages                    |
+| **Hook runner**          | Executes shell/JS scripts from `.agent/hooks/` (repo) or `~/.agent/hooks/` (global)                                      |
+| **CLI**                  | `agent start`, `agent end`, `agent task start <id>` commands                                                             |
+| **Permission guards**    | Enforces approved write paths — `SESSION.md`, upstream Mulch expertise files, and the legacy Mulch JSONL file by default |
 
 ---
 
@@ -77,17 +77,17 @@ On first run, `agent start` creates `.agent/config.json` in your repo root:
     "globalHooksDir": "~/.agent/hooks",
   },
   "permissions": {
-    "allowWrite": ["SESSION.md", ".mulch/mulch.jsonl"],
+    "allowWrite": ["SESSION.md", ".mulch/expertise/", ".mulch/mulch.jsonl"],
   },
 }
 ```
 
-| Field                    | Description                                                    |
-| ------------------------ | -------------------------------------------------------------- |
-| `plugins`                | npm package names or relative file paths to load as plugins    |
-| `hooks.repoHooksDir`     | Repo-local hook scripts directory (takes priority over global) |
-| `hooks.globalHooksDir`   | Global hook scripts directory                                  |
-| `permissions.allowWrite` | Files plugins are allowed to write to                          |
+| Field                    | Description                                                      |
+| ------------------------ | ---------------------------------------------------------------- |
+| `plugins`                | npm package names or relative file paths to load as plugins      |
+| `hooks.repoHooksDir`     | Repo-local hook scripts directory (takes priority over global)   |
+| `hooks.globalHooksDir`   | Global hook scripts directory                                    |
+| `permissions.allowWrite` | Exact file paths or repo-rooted directory prefixes ending in `/` |
 
 ---
 
@@ -185,6 +185,7 @@ interface AgentContext {
   repoRoot: string; // Absolute path to repo root
   config: AgentConfig; // .agent/config.json contents
   activeTask?: BeadsTask; // Current task (set by agent task start)
+  pendingMulchLessons?: MulchLesson[]; // Explicit lessons to persist at session end
   promptSegments: string[]; // Push markdown strings here to inject into prompt
   conversation: ConversationMessage[]; // Full conversation history
   compressionSummaries: CompressionSummary[]; // Compressed older conversation segments

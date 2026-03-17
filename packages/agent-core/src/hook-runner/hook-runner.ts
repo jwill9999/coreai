@@ -22,7 +22,11 @@ const HOOK_EXTENSIONS = ['.sh', '.js', '.mjs', '.cjs'] as const;
 
 const DEFAULT_REPO_HOOKS_DIR = '.agent/hooks';
 const DEFAULT_GLOBAL_HOOKS_DIR = '~/.agent/hooks';
-const DEFAULT_ALLOW_WRITE = ['SESSION.md', '.mulch/mulch.jsonl'];
+const DEFAULT_ALLOW_WRITE = [
+  'SESSION.md',
+  '.mulch/expertise/',
+  '.mulch/mulch.jsonl',
+];
 
 /** Executor to use based on file extension. */
 function resolveExecutor(hookPath: string): { cmd: string; args: string[] } {
@@ -107,7 +111,8 @@ export class HookRunner {
    * Returns true when the given file path (relative to repoRoot or absolute)
    * is explicitly approved for writing in the current config. Checks
    * `approvedWrites` first, then falls back to the `permissions.allowWrite`
-   * list.
+   * list, where entries ending in `/` are treated as approved directory
+   * prefixes rooted at the repository.
    */
   isApprovedWrite(filePath: string): boolean {
     const normalized = this.normalizeWritePath(filePath);
@@ -116,7 +121,11 @@ export class HookRunner {
     if (perFileApproval === true) return true;
     if (perFileApproval === false) return false;
 
-    return this.config.permissions?.allowWrite?.includes(normalized) ?? false;
+    return (
+      this.config.permissions?.allowWrite?.some((allowedPath) =>
+        this.matchesAllowedWrite(normalized, allowedPath),
+      ) ?? false
+    );
   }
 
   /**
@@ -207,6 +216,27 @@ export class HookRunner {
     const abs = resolve(repoAbs, filePath);
     const rel = relative(repoAbs, abs);
     return rel.startsWith('..' + sep) || rel === '..' ? abs : rel;
+  }
+
+  private matchesAllowedWrite(
+    normalizedPath: string,
+    allowedPath: string,
+  ): boolean {
+    const isDirectoryPrefix =
+      allowedPath.endsWith('/') || allowedPath.endsWith(sep);
+    const trimmedAllowed = isDirectoryPrefix
+      ? allowedPath.slice(0, -1)
+      : allowedPath;
+    const normalizedAllowed = this.normalizeWritePath(trimmedAllowed);
+
+    if (!isDirectoryPrefix) {
+      return normalizedPath === normalizedAllowed;
+    }
+
+    return (
+      normalizedPath === normalizedAllowed ||
+      normalizedPath.startsWith(normalizedAllowed + sep)
+    );
   }
 
   private static promptWritePermissions(
