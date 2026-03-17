@@ -242,3 +242,23 @@
 - Wired `agent-plugin-mulch` `onSessionEnd` to persist explicit pending lessons
 - Updated permission guards for canonical upstream Mulch expertise storage with lightweight legacy compatibility
 - Synced Beads state and closed Epic 4 (`coreai-x3b`)
+
+---
+
+## Segment 9 — Mulch Automation Scope Follow-up
+
+**Topic:** Deciding how much Mulch lesson capture should be automated versus explicit before MVP release
+
+**Key Decisions:**
+
+- Current Mulch persistence remains explicit through `AgentContext.pendingMulchLessons`
+- Any future conversation-derived lesson capture should be treated as a separate design decision, not assumed by the current plugin behavior
+- A sensible future direction is high-confidence candidate detection with optional review before persistence
+
+**Constraints:**
+
+- The repo already supports Mulch lesson injection on session start and explicit persistence on session end, so further automation is optimization rather than a blocker for Epic 4 completion
+- Candidate lessons must be stable, reusable, and verified; one-off observations should not be written as durable memory
+- `SUMMARY.md` is append-only, so this note records the follow-up discussion rather than rewriting the Epic 4 completion segment
+
+**Outcome:** Add a future planning discussion to review whether Mulch auto-learning belongs in the MVP release scope or should be scheduled as a post-release enhancement.

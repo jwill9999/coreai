@@ -6,7 +6,7 @@ Build the Conscius agent ecosystem — a layered AI-assisted engineering workflo
 
 ## Active Task
 
-**Epic 4 — `@conscius/agent-plugin-mulch`** — implementation is complete locally on `feat/e4-agent-plugin-mulch`; next repo-level step is to commit/push the epic branch changes, then decide the next task branch.
+**Epic 4 — `@conscius/agent-plugin-mulch`** — implementation is complete and pushed on `feat/e4-agent-plugin-mulch`; next repo-level step is to open the epic PR to `main` and decide the next task branch.
 
 Epic 3 is fully complete and merged to `main`. Version bumped to `0.3.0-alpha.0`.
 
@@ -23,7 +23,7 @@ Epic 3 is fully complete and merged to `main`. Version bumped to `0.3.0-alpha.0`
 - ✅ **E4-T2 merged** — PR #16 (`feat/e4-t2-mulch-hooks` → `feat/e4-agent-plugin-mulch`) is merged after adding the missing `activeTask`-absent hook test, rerunning package-level Nx checks, and resolving the final Sourcery thread
 - ✅ **PR review workflow hardened** — GitHub PR feedback now follows a closure loop: check IDE diagnostics first, fix locally, rerun diagnostics and targeted Nx validation before push, then resolve the matching GitHub review item only after verification
 - ✅ **Epic 4 completed locally** — implemented explicit `lessonWriter.ts`, `pendingMulchLessons` session-end wiring, upstream-`ml`-aligned write permissions, Mulch skill/docs updates, and synced/closed the Epic 4 Beads tasks
-- 🔄 **Epic 4 branch needs final commit/push** — current work is on `feat/e4-agent-plugin-mulch` and should be pushed before deciding the next task branch
+- ✅ **Epic 4 branch pushed** — `feat/e4-agent-plugin-mulch` now includes the completed Epic 4 implementation commit and is up to date with origin
 
 ## Decisions Made
 
@@ -52,10 +52,12 @@ Epic 3 is fully complete and merged to `main`. Version bumped to `0.3.0-alpha.0`
 
 - **🚨 Codecov "Missing Head Report" — unresolved, on hold** — Codecov shows no coverage on every main commit. Attempts so far: `workflow_dispatch` trigger, `codecov.yml` carryforward, `--skip-nx-cache`, YAML path fix, removed empty `agent-types` lcov, added `sed` to prefix `SF:` paths. None resolved it. **Resume with the diagnostic PR-branch probe:** create a short-lived branch, push, open a PR, and check if Codecov picks up the report. If yes → problem is main-specific (the `[skip ci]` changelog bot commit always landing on HEAD with no coverage). If no → a config regression was introduced and a before/after comparison is needed.
 
+- **Mulch auto-learning design still needs planning** — the current plugin only persists explicit `pendingMulchLessons`; we still need to decide whether high-confidence conversation-derived lessons should be auto-queued before MVP or deferred until after release.
+
 ## Next Steps
 
-1. **Commit and push `feat/e4-agent-plugin-mulch`** — Epic 4 implementation and doc updates are complete locally but not yet pushed
-2. **Open the Epic 4 PR to `main`** once the epic branch push is complete
+1. **Open the Epic 4 PR to `main`** — `feat/e4-agent-plugin-mulch` is pushed and ready for review
+2. **Discuss Mulch auto-learning scope** — decide whether high-confidence lesson candidates should be auto-queued before MVP or planned for a later release
 3. **Choose the next task branch** — likely from ready Epic 9 work (`coreai-yfl.8`, `coreai-yfl.9`, or `coreai-yfl.1`)
 4. **Codecov remains on hold** — resume later with the PR-branch probe
 
