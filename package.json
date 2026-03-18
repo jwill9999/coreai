@@ -3,7 +3,8 @@
   "version": "0.3.0-alpha.0",
   "license": "MIT",
   "scripts": {
-    "prepare": "husky"
+    "prepare": "husky",
+    "pr:feedback": "node scripts/check-pr-feedback.mjs"
   },
   "private": true,
   "devDependencies": {

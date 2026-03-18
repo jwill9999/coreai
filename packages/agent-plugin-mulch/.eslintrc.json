@@ -1,0 +1,10 @@
+{
+  "extends": ["../../.eslintrc.js"],
+  "rules": {
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      { "argsIgnorePattern": "^_" }
+    ]
+  },
+  "ignorePatterns": ["jest.config.cts", "dist/"]
+}

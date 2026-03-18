@@ -11,6 +11,9 @@
     },
     {
       "path": "./packages/agent-plugin-beads"
+    },
+    {
+      "path": "./packages/agent-plugin-mulch"
     }
   ]
 }

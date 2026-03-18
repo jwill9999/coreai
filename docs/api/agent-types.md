@@ -40,20 +40,22 @@ export interface AgentContext {
   repoRoot: string;
   config: AgentConfig;
   activeTask?: BeadsTask;
+  pendingMulchLessons?: MulchLesson[];
   promptSegments: string[];
   conversation: ConversationMessage[];
   compressionSummaries: CompressionSummary[];
 }
 ```
 
-| Field                  | Type                     | Description                                                       |
-| ---------------------- | ------------------------ | ----------------------------------------------------------------- |
-| `repoRoot`             | `string`                 | Absolute path to the repository root                              |
-| `config`               | `AgentConfig`            | Loaded agent configuration (`.agent/config.json`)                 |
-| `activeTask`           | `BeadsTask \| undefined` | The currently active Beads task, if any                           |
-| `promptSegments`       | `string[]`               | Compiled prompt segments for the session — plugins append to this |
-| `conversation`         | `ConversationMessage[]`  | Full conversation history for the current session                 |
-| `compressionSummaries` | `CompressionSummary[]`   | Compression summaries replacing earlier conversation segments     |
+| Field                  | Type                         | Description                                                       |
+| ---------------------- | ---------------------------- | ----------------------------------------------------------------- |
+| `repoRoot`             | `string`                     | Absolute path to the repository root                              |
+| `config`               | `AgentConfig`                | Loaded agent configuration (`.agent/config.json`)                 |
+| `activeTask`           | `BeadsTask \| undefined`     | The currently active Beads task, if any                           |
+| `pendingMulchLessons`  | `MulchLesson[] \| undefined` | Explicit Mulch lessons queued for persistence at session end      |
+| `promptSegments`       | `string[]`                   | Compiled prompt segments for the session — plugins append to this |
+| `conversation`         | `ConversationMessage[]`      | Full conversation history for the current session                 |
+| `compressionSummaries` | `CompressionSummary[]`       | Compression summaries replacing earlier conversation segments     |
 
 ---
 
@@ -104,7 +106,8 @@ export type BeadsTaskStatus =
 
 ## `MulchLesson`
 
-A persistent lesson stored in `.mulch/mulch.jsonl`.
+A persistent lesson stored in Mulch expertise storage. In legacy layouts this
+was `.mulch/mulch.jsonl`; upstream Mulch uses `.mulch/expertise/<domain>.jsonl`.
 
 ```typescript
 export interface MulchLesson {

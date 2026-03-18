@@ -6,7 +6,7 @@ Build the Conscius agent ecosystem — a layered AI-assisted engineering workflo
 
 ## Active Task
 
-**Epic 4 — `@conscius/agent-plugin-mulch`** — not yet started.
+**Epic 4 — `@conscius/agent-plugin-mulch`** — implementation is complete and pushed on `feat/e4-agent-plugin-mulch`; next repo-level step is to open the epic PR to `main` and decide the next task branch.
 
 Epic 3 is fully complete and merged to `main`. Version bumped to `0.3.0-alpha.0`.
 
@@ -17,6 +17,13 @@ Epic 3 is fully complete and merged to `main`. Version bumped to `0.3.0-alpha.0`
 - ✅ **Beads onboarding** — exported 49 issues to `.beads/issues.jsonl` (committed); updated `.beads/README.md` with new developer setup: `bd init --from-jsonl`
 - ✅ **SESSION.md version fixed** — stale `0.2.0-alpha.0` reference corrected to `0.3.0-alpha.0`
 - 🔧 **Codecov debugging (unresolved)** — multiple CI fixes attempted: `workflow_dispatch` trigger added, `codecov.yml` with carryforward flags, `--no-cache` → `--skip-nx-cache`, YAML `files:` syntax fix, `agent-types` empty lcov removed, `sed` step to prefix lcov `SF:` paths for monorepo. Codecov still shows "Missing Head Report" on all main commits. Root cause unconfirmed.
+- ✅ **Epic 4 started** — committed and pushed the latest documentation/tooling updates to `main`, created `feat/e4-agent-plugin-mulch`, then created task branch `feat/e4-t1-mulch-adapter`
+- ✅ **E4-T1 complete locally** — scaffolded `packages/agent-plugin-mulch` with Nx, implemented `queryMulch()` with CLI + JSONL/file fallback, aligned package config with `agent-plugin-beads`, and validated with `npx nx run-many -t typecheck,lint,test,build --projects=@conscius/agent-plugin-mulch`
+- ✅ **E4-T1 merged** — PR #13 (`feat/e4-t1-mulch-adapter` → `feat/e4-agent-plugin-mulch`) is merged after fixing Sonar/Sourcery feedback, rerunning local IDE diagnostics plus package-level Nx checks, and resolving all satisfied review threads
+- ✅ **E4-T2 merged** — PR #16 (`feat/e4-t2-mulch-hooks` → `feat/e4-agent-plugin-mulch`) is merged after adding the missing `activeTask`-absent hook test, rerunning package-level Nx checks, and resolving the final Sourcery thread
+- ✅ **PR review workflow hardened** — GitHub PR feedback now follows a closure loop: check IDE diagnostics first, fix locally, rerun diagnostics and targeted Nx validation before push, then resolve the matching GitHub review item only after verification
+- ✅ **Epic 4 completed locally** — implemented explicit `lessonWriter.ts`, `pendingMulchLessons` session-end wiring, upstream-`ml`-aligned write permissions, Mulch skill/docs updates, and synced/closed the Epic 4 Beads tasks
+- ✅ **Epic 4 branch pushed** — `feat/e4-agent-plugin-mulch` now includes the completed Epic 4 implementation commit and is up to date with origin
 
 ## Decisions Made
 
@@ -25,7 +32,7 @@ Epic 3 is fully complete and merged to `main`. Version bumped to `0.3.0-alpha.0`
 - `tsconfig.spec.json` must set `"customConditions": null` (avoids TS5098 with Jest/node10)
 - Node 24 via nvm; ESLint 8 using legacy `.eslintrc.*` format
 - Do NOT fork `bd` (Beads) or `mulch` — adapter plugins only
-- Hooks may only write to `SESSION.md` and `.mulch/mulch.jsonl`
+- Hooks may write to `SESSION.md`, canonical upstream `.mulch/expertise/`, and legacy `.mulch/mulch.jsonl`
 - Branching: task PR → human review → epic branch → local test → epic PR → main
 - All packages versioned in lockstep; current version: `0.3.0-alpha.0`
 - GitHub Actions CI active from Epic 2 (CI-T1 completed)
@@ -37,30 +44,22 @@ Epic 3 is fully complete and merged to `main`. Version bumped to `0.3.0-alpha.0`
 - **lint-staged**: `.mjs` files get prettier-only (no ESLint) to avoid "File ignored by default" warnings
 - **`tsconfig.spec.json` with relative imports**: must include `src/**/*.ts` AND `references: [{path: './tsconfig.lib.json'}]` — see agent-plugin-beads as pattern
 - **`promisify(execFile)` + Jest mocks**: don't use — loses `util.promisify.custom` symbol; use manual Promise wrapper instead
+- **PR feedback loop**: before the final push, rerun local IDE diagnostics and targeted Nx checks so Sonar/Sourcery regressions are caught before a new commit; after the push, resolve the corresponding GitHub thread only once the rerun feedback is clean
 
 ## Open Issues
 
 - **Pre-publish: pin `"*"` inter-package deps** — `@conscius/agent-core` and `@conscius/agent-plugin-beads` both declare `"@conscius/agent-types": "*"`. Safe inside the npm workspace but must be pinned to `"^x.x.x"` before first `npm publish`. Also apply to `agent-stack-standard` when created.
 
-- **🚨 Codecov "Missing Head Report" — unresolved, urgent** — Codecov shows no coverage on every main commit. Attempts so far: `workflow_dispatch` trigger, `codecov.yml` carryforward, `--skip-nx-cache`, YAML path fix, removed empty `agent-types` lcov, added `sed` to prefix `SF:` paths. None resolved it. **Diagnostic plan for next session:** create a short-lived branch, push, open a PR, and check if Codecov picks up the report. If yes → problem is main-specific (the `[skip ci]` changelog bot commit always landing on HEAD with no coverage). If no → a config regression was introduced and a before/after comparison is needed.
+- **🚨 Codecov "Missing Head Report" — unresolved, on hold** — Codecov shows no coverage on every main commit. Attempts so far: `workflow_dispatch` trigger, `codecov.yml` carryforward, `--skip-nx-cache`, YAML path fix, removed empty `agent-types` lcov, added `sed` to prefix `SF:` paths. None resolved it. **Resume with the diagnostic PR-branch probe:** create a short-lived branch, push, open a PR, and check if Codecov picks up the report. If yes → problem is main-specific (the `[skip ci]` changelog bot commit always landing on HEAD with no coverage). If no → a config regression was introduced and a before/after comparison is needed.
+
+- **Mulch auto-learning design still needs planning** — the current plugin only persists explicit `pendingMulchLessons`; we still need to decide whether high-confidence conversation-derived lessons should be auto-queued before MVP or deferred until after release.
 
 ## Next Steps
 
-1. **Diagnose Codecov — PR branch test first**
-   - Create a throwaway branch (e.g. `fix/codecov-probe`), push it, open a PR
-   - Check if Codecov receives a coverage report on the PR
-   - If yes → problem is main-specific; investigate `[skip ci]` changelog commit on HEAD
-   - If no → config regression; compare against last known working state
-2. **Once Codecov is resolved, start Epic 4** — `@conscius/agent-plugin-mulch`
-   ```bash
-   git checkout main && git pull
-   git checkout -b feat/e4-agent-plugin-mulch
-   git checkout -b feat/e4-t1-mulch-adapter
-   ```
-3. Implement E4-T1: `mulchAdapter.ts` — calls `mulch search <topic>`, parses JSONL
-4. E4-T2: `hooks.ts` — `onSessionStart` searches mulch for relevant topics
-5. E4-T3: `lessonWriter.ts` — calls `mulch add` to persist new lessons at session end
-6. E4-T4: Unit tests with mocked `mulch` CLI
+1. **Open the Epic 4 PR to `main`** — `feat/e4-agent-plugin-mulch` is pushed and ready for review
+2. **Discuss Mulch auto-learning scope** — decide whether high-confidence lesson candidates should be auto-queued before MVP or planned for a later release
+3. **Choose the next task branch** — likely from ready Epic 9 work (`coreai-yfl.8`, `coreai-yfl.9`, or `coreai-yfl.1`)
+4. **Codecov remains on hold** — resume later with the PR-branch probe
 
 ---
 
@@ -96,15 +95,15 @@ Wraps `bd` CLI to inject Beads task context.
 | E3-T3 | `contextLoader.ts` — loads spec file content from task metadata | ✅ |
 | E3-T4 | Unit tests with mocked `bd` CLI output | ✅ |
 
-### Epic 4 — `@conscius/agent-plugin-mulch` ⬜
+### Epic 4 — `@conscius/agent-plugin-mulch` ✅
 
-Wraps `mulch` CLI to surface experience lessons.
+Surfaces Mulch experience lessons at session start and persists explicit pending lessons at session end.
 | ID | Task | Status |
 |----|------|--------|
-| E4-T1 | `mulchAdapter.ts` — calls `mulch search <topic>`, parses JSONL | ⬜ |
-| E4-T2 | `hooks.ts` — `onSessionStart` searches mulch for relevant topics | ⬜ |
-| E4-T3 | `lessonWriter.ts` — calls `mulch add` to persist new lessons at session end | ⬜ |
-| E4-T4 | Unit tests with mocked `mulch` CLI | ⬜ |
+| E4-T1 | `mulchAdapter.ts` — calls `mulch search <topic>`, parses JSONL | ✅ |
+| E4-T2 | `hooks.ts` — `onSessionStart` searches mulch for relevant topics | ✅ |
+| E4-T3 | `lessonWriter.ts` — explicit helper persists supplied lessons; `onSessionEnd` consumes `pendingMulchLessons` | ✅ |
+| E4-T4 | Unit tests with mocked Mulch adapter/writer paths | ✅ |
 
 ### Epic 5 — `@conscius/agent-plugin-session` ⬜
 

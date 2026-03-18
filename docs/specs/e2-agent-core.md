@@ -102,10 +102,10 @@ Extensions tried in order: `.sh`, `.js`, `.mjs`, `.cjs`
 
 ### Write permissions
 
-- Default allow list: `['SESSION.md', '.mulch/mulch.jsonl']`
+- Default allow list: `['SESSION.md', '.mulch/expertise/', '.mulch/mulch.jsonl']`
 - Persisted in `.agent/config.json`
 - First run: prompts user interactively (skipped in non-TTY / CI)
-- `isApprovedWrite(filePath)` — checks `approvedWrites` map first, then `permissions.allowWrite` list
+- `isApprovedWrite(filePath)` — checks `approvedWrites` map first, then `permissions.allowWrite` list; entries ending in `/` act as repo-rooted directory prefixes
 
 ### Security
 
@@ -123,7 +123,9 @@ Extensions tried in order: `.sh`, `.js`, `.mjs`, `.cjs`
     "repoHooksDir": ".agent/hooks",
     "globalHooksDir": "~/.agent/hooks"
   },
-  "permissions": { "allowWrite": ["SESSION.md", ".mulch/mulch.jsonl"] },
+  "permissions": {
+    "allowWrite": ["SESSION.md", ".mulch/expertise/", ".mulch/mulch.jsonl"]
+  },
   "approvedWrites": {}
 }
 ```

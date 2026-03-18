@@ -1,5 +1,10 @@
 #!/usr/bin/env node
-import type { AgentPlugin } from '@conscius/agent-types';
+import type {
+  AgentPlugin,
+  CompressionSummary,
+  ConversationMessage,
+  MulchLesson,
+} from '@conscius/agent-types';
 import { Command } from 'commander';
 import { HookRunner, HOOK_NAMES } from './hook-runner/index.js';
 import { PluginLoader } from './plugin-loader/index.js';
@@ -23,9 +28,10 @@ async function bootstrap(opts: BootstrapOptions = {}) {
   const context = {
     repoRoot,
     config,
+    pendingMulchLessons: [] as MulchLesson[],
     promptSegments: [] as string[],
-    conversation: [] as never[],
-    compressionSummaries: [] as never[],
+    conversation: [] as ConversationMessage[],
+    compressionSummaries: [] as CompressionSummary[],
     ...(opts.taskId
       ? {
           activeTask: {

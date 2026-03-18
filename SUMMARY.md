@@ -192,3 +192,73 @@
 - 3 CI commits pushed to main (1be62fc, 0d4a0ee, cf9e1b2); all CI runs pass but Codecov still shows "Missing Head Report"
 - Root cause unconfirmed — none of the attempted fixes resolved it
 - **Next session must start with the PR branch probe** before continuing with Epic 4
+
+---
+
+## Segment 7 — Epic 4 PR Feedback Hardening & T1/T2 Merge
+
+**Topic:** Hardening the PR review loop while landing the first two `@conscius/agent-plugin-mulch` task branches
+
+**Key Decisions:**
+
+- Review feedback is not considered done when code is changed locally; it is done only after the corresponding GitHub thread/comment is rechecked and explicitly resolved
+- Use IDE diagnostics as the first local source for Sonar/Sourcery findings before querying GitHub
+- Before the final push for a PR feedback fix, rerun local diagnostics and targeted Nx validation to catch regressions before creating another commit
+- Prefer GitHub PR feedback over a Sonar MCP integration for the current review workflow
+- Keep VS Code, Cursor, and Copilot CLI MCP configs separate because they use different schemas (`servers` vs `mcpServers`)
+
+**Constraints:**
+
+- Docker-backed MCP servers should be avoided where practical; call it out explicitly when Docker is the only viable option
+- `SUMMARY.md` remains append-only, so this segment records the workflow hardening and merge outcomes without rewriting earlier segments
+- Codecov remains unresolved and on hold; it should stay tracked in session handoff rather than being mixed into Epic 4 completion claims
+
+**Outcome:** PR #13 (E4-T1) and PR #16 (E4-T2) were both fixed, revalidated, had their Sourcery review threads resolved, and were merged into `feat/e4-agent-plugin-mulch`. Epic 4 is now ready to continue with E4-T3 (`lessonWriter.ts`) from the updated epic branch.
+
+---
+
+## Segment 8 — Epic 4 Completion, Mulch Alignment & Explicit Session-End Persistence
+
+**Topic:** Finishing `@conscius/agent-plugin-mulch` while aligning the repo to upstream `ml` without over-architecting legacy support
+
+**Key Decisions:**
+
+- Upstream `ml` is the canonical direction for new Mulch docs, skills, and integration work
+- Legacy `mulch` compatibility should stay lightweight rather than becoming a broad dual-command abstraction
+- Agent write permissions should support repo-rooted directory-prefix entries ending in `/`, allowing canonical upstream `.mulch/expertise/` while retaining legacy `.mulch/mulch.jsonl`
+- Session-end Mulch persistence should be explicit: `AgentContext.pendingMulchLessons` supplies lessons; no heuristic extraction from conversation/session data
+
+**Constraints:**
+
+- Existing repo code and docs still contain legacy `mulch` / `.mulch/mulch.jsonl` assumptions, so alignment had to be incremental
+- IDE diagnostics were unavailable during part of this work because the IDE MCP socket was not accepting connections, so validation relied on targeted Nx checks plus formatting checks
+- `SUMMARY.md` remains append-only, so this segment records Epic 4 completion without rewriting earlier Epic 4 context
+
+**Outcome:**
+
+- Added `.github/skills/mulch/SKILL.md`
+- Implemented `writeMulchLesson()` and tests
+- Added `pendingMulchLessons?: MulchLesson[]` to `AgentContext`
+- Wired `agent-plugin-mulch` `onSessionEnd` to persist explicit pending lessons
+- Updated permission guards for canonical upstream Mulch expertise storage with lightweight legacy compatibility
+- Synced Beads state and closed Epic 4 (`coreai-x3b`)
+
+---
+
+## Segment 9 — Mulch Automation Scope Follow-up
+
+**Topic:** Deciding how much Mulch lesson capture should be automated versus explicit before MVP release
+
+**Key Decisions:**
+
+- Current Mulch persistence remains explicit through `AgentContext.pendingMulchLessons`
+- Any future conversation-derived lesson capture should be treated as a separate design decision, not assumed by the current plugin behavior
+- A sensible future direction is high-confidence candidate detection with optional review before persistence
+
+**Constraints:**
+
+- The repo already supports Mulch lesson injection on session start and explicit persistence on session end, so further automation is optimization rather than a blocker for Epic 4 completion
+- Candidate lessons must be stable, reusable, and verified; one-off observations should not be written as durable memory
+- `SUMMARY.md` is append-only, so this note records the follow-up discussion rather than rewriting the Epic 4 completion segment
+
+**Outcome:** Add a future planning discussion to review whether Mulch auto-learning belongs in the MVP release scope or should be scheduled as a post-release enhancement.

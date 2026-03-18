@@ -1,0 +1,25 @@
+{
+  "name": "@conscius/agent-plugin-mulch",
+  "version": "0.3.0-alpha.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "@conscius/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "!**/*.tsbuildinfo"
+  ],
+  "dependencies": {
+    "@conscius/agent-types": "*",
+    "tslib": "^2.3.0"
+  }
+}

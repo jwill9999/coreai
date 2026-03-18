@@ -1,6 +1,6 @@
 ---
 name: planning
-description: Plan, document, and manage epics, features, tasks, and backlog items for the Conscius project. Creates entries in both the markdown planning docs (docs/planning/) and the Beads task graph (bd CLI). Use this skill for all planning work. Supported slash commands: /new-epic, /new-feature, /add-task, /update-status, /close-feature, /archive-feature, /new-backlog, /move-to-feature, /list-features, /list-backlog, /sync-beads, /help /planning
+description: 'Plan, document, and manage epics, features, tasks, and backlog items for the Conscius project. Creates entries in both the markdown planning docs (docs/planning/) and the Beads task graph (bd CLI). Use this skill for all planning work. Supported slash commands: /new-epic, /new-feature, /add-task, /update-status, /close-feature, /archive-feature, /new-backlog, /move-to-feature, /list-features, /list-backlog, /sync-beads, /help /planning'
 ---
 
 argument-hint:

@@ -1,6 +1,6 @@
 ---
 name: docs
-description: Create, update, audit, and maintain documentation for the Conscius monorepo. Use this skill when writing or editing guides, API references, Architecture Decision Records (ADRs), spec documents, package READMEs, or the docs index. Triggers on tasks involving docs, documentation, guides, ADRs, API reference, README updates, or doc audits. Supported slash commands: /new-guide, /update-guide, /new-adr, /update-adr, /new-api-ref, /docs-audit, /docs-index, /help /docs
+description: 'Create, update, audit, and maintain documentation for the Conscius monorepo. Use this skill when writing or editing guides, API references, Architecture Decision Records (ADRs), spec documents, package READMEs, or the docs index. Triggers on tasks involving docs, documentation, guides, ADRs, API reference, README updates, or doc audits. Supported slash commands: /new-guide, /update-guide, /new-adr, /update-adr, /new-api-ref, /docs-audit, /docs-index, /help /docs'
 ---
 
 # Documentation Instructions

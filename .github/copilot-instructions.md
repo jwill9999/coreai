@@ -166,7 +166,8 @@ When generating a new package, apply Jest and ESLint config using the same patte
 Hooks and agents may only write to:
 
 - `SESSION.md` (session continuity)
-- `.mulch/mulch.jsonl` (experience lessons)
+- `.mulch/expertise/` (canonical upstream Mulch expertise storage)
+- `.mulch/mulch.jsonl` (legacy Mulch compatibility only)
 
 All other repository files are **read-only** from agent/hook context.
 
@@ -181,8 +182,9 @@ repo/.agent/hooks/   ← project-specific (takes priority)
 
 Lessons are stored in JSONL. Required fields: `id`, `topic`, `summary`, `recommendation`, `created`.
 
-- Project lessons: `.mulch/mulch.jsonl`
-- Global lessons: `~/.mulch/mulch.jsonl`
+- Canonical upstream project lessons: `.mulch/expertise/<domain>.jsonl`
+- Canonical upstream config: `.mulch/mulch.config.yaml`
+- Legacy project lessons: `.mulch/mulch.jsonl`
 - Query order: project mulch → global mulch
 
 ### SESSION.md and SUMMARY.md
