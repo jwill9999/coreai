@@ -2,8 +2,12 @@ import { appendFile, mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { MulchLesson } from '@conscius/agent-types';
 
-const LEGACY_MULCH_DIR = '.mulch';
-const LEGACY_MULCH_FILE = 'mulch.jsonl';
+const MULCH_DIR = '.mulch';
+/**
+ * Agent-written lessons land here for human review before being promoted to
+ * the live memory store (`.mulch/mulch.jsonl`) via `ml` or manual edit.
+ */
+const CANDIDATES_FILE = 'candidates.jsonl';
 
 function assertRequiredString(
   value: string | undefined,
@@ -34,9 +38,9 @@ function validateLesson(lesson: MulchLesson): void {
 }
 
 /**
- * Writes an explicitly supplied lesson using the repository's current
- * transitional MulchLesson JSONL shape. Automatic lesson discovery for
- * onSessionEnd remains a separate concern.
+ * Stages an explicitly supplied lesson in `.mulch/candidates.jsonl` for
+ * human review. Lessons must be promoted to `.mulch/mulch.jsonl` (via `ml`
+ * or manual edit) before they influence future session context.
  */
 export async function writeMulchLesson(
   lesson: MulchLesson,
@@ -44,9 +48,9 @@ export async function writeMulchLesson(
 ): Promise<void> {
   validateLesson(lesson);
 
-  const mulchDir = join(repoRoot, LEGACY_MULCH_DIR);
-  const mulchFile = join(mulchDir, LEGACY_MULCH_FILE);
+  const mulchDir = join(repoRoot, MULCH_DIR);
+  const candidatesFile = join(mulchDir, CANDIDATES_FILE);
 
   await mkdir(mulchDir, { recursive: true });
-  await appendFile(mulchFile, `${JSON.stringify(lesson)}\n`, 'utf8');
+  await appendFile(candidatesFile, `${JSON.stringify(lesson)}\n`, 'utf8');
 }

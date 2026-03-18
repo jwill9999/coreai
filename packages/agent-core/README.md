@@ -77,7 +77,11 @@ On first run, `agent start` creates `.agent/config.json` in your repo root:
     "globalHooksDir": "~/.agent/hooks",
   },
   "permissions": {
-    "allowWrite": ["SESSION.md", ".mulch/expertise/", ".mulch/mulch.jsonl"],
+    "allowWrite": [
+      "SESSION.md",
+      ".mulch/expertise/",
+      ".mulch/candidates.jsonl",
+    ],
   },
 }
 ```

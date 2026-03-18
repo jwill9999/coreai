@@ -167,7 +167,7 @@ Hooks and agents may only write to:
 
 - `SESSION.md` (session continuity)
 - `.mulch/expertise/` (canonical upstream Mulch expertise storage)
-- `.mulch/mulch.jsonl` (legacy Mulch compatibility only)
+- `.mulch/candidates.jsonl` (lesson staging — human reviews before promoting to `.mulch/mulch.jsonl`)
 
 All other repository files are **read-only** from agent/hook context.
 

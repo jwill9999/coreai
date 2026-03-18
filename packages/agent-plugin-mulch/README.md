@@ -24,7 +24,10 @@ For this repository, the canonical future direction is upstream Mulch via `ml`.
   because the remaining Epic 4 work has not yet completed the alignment.
 - Explicit lesson persistence currently uses the existing transitional
   `MulchLesson` JSONL format via `writeMulchLesson()`.
-- Automatic persistence now uses explicit `context.pendingMulchLessons` during
+- Lessons are **staged** to `.mulch/candidates.jsonl` for human review.
+  Promote reviewed lessons to `.mulch/mulch.jsonl` via `ml` or manual edit
+  before they influence future session context.
+- Automatic persistence uses explicit `context.pendingMulchLessons` during
   `onSessionEnd`; heuristic lesson discovery is intentionally out of scope.
 
 ## Usage

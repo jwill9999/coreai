@@ -17,7 +17,7 @@ Current implementation snapshot:
 - `hooks.ts` exists and injects lessons during `onSessionStart`
 - `lessonWriter.ts` now supports explicit writing of supplied `MulchLesson` records
 - adapter and hook tests exist
-- `onSessionEnd` now persists explicit lessons from `AgentContext.pendingMulchLessons`
+- `onSessionEnd` now stages explicit lessons from `AgentContext.pendingMulchLessons` to `.mulch/candidates.jsonl` for human review
 
 ---
 

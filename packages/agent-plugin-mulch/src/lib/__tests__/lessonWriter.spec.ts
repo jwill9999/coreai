@@ -29,7 +29,7 @@ describe('writeMulchLesson', () => {
     await writeMulchLesson(lesson, tempRoot);
 
     const fileContents = await readFile(
-      join(tempRoot, '.mulch', 'mulch.jsonl'),
+      join(tempRoot, '.mulch', 'candidates.jsonl'),
       'utf8',
     );
 
@@ -56,7 +56,7 @@ describe('writeMulchLesson', () => {
     await writeMulchLesson(second, tempRoot);
 
     const fileContents = await readFile(
-      join(tempRoot, '.mulch', 'mulch.jsonl'),
+      join(tempRoot, '.mulch', 'candidates.jsonl'),
       'utf8',
     );
 

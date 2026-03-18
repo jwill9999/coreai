@@ -25,7 +25,7 @@ const DEFAULT_GLOBAL_HOOKS_DIR = '~/.agent/hooks';
 const DEFAULT_ALLOW_WRITE = [
   'SESSION.md',
   '.mulch/expertise/',
-  '.mulch/mulch.jsonl',
+  '.mulch/candidates.jsonl',
 ];
 
 /** Executor to use based on file extension. */
