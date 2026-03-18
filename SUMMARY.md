@@ -303,3 +303,27 @@
 - Candidates file (`.mulch/candidates.jsonl`) is the only agent-writable Mulch path; engineer promotes to live store via `ml record`
 
 **Outcome:** `main` is clean at `0.4.0-alpha.0` with no open code tasks. Epic 4 and all pre-Epic-5 design work is complete. Next session starts Epic 5 (`@conscius/agent-plugin-session`, `coreai-vq3`).
+
+---
+
+## Segment 12 — Backlog Refinement & Mulch Pipeline Gap Discovery
+
+**Topic:** Backlog grooming, storage layer clarification, and discovery of missing candidate review UX
+
+**Key Decisions:**
+
+- Reviewed Memory Qualification Layer proposal; adapted it to current architecture (no new package, uses existing `MulchLesson` fields, `classification` replaces `pattern.length` heuristic); created `coreai-ot8` as P4 backlog
+- Identified that `candidates.jsonl` has no review loop — lessons stage silently and are never surfaced; created `coreai-8ji` (P1 MVP) to close this gap with `promoteMulchLesson()`, `rejectMulchLesson()`, and session-end surfacing
+- `coreai-8ji` must be completed before Epic 5 to avoid polluting E5 scope
+- Epic 9 (skillshare) must not start without a prior discussion to re-evaluate scope; note added to `coreai-yfl` in Beads and Copilot memory stored
+- Established storage triage rule: planning flags → Beads note + Copilot memory; engineering lessons → Mulch candidates; Copilot memory alone is insufficient (ages out)
+- Staged storage-triage lesson to `.mulch/candidates.jsonl` (id: lesson-storage-triage-001)
+- SESSION.md and SUMMARY.md purpose clarified: SESSION.md = live working memory for next session; SUMMARY.md = compressed episodic history for token efficiency
+
+**Constraints:**
+
+- `coreai-8ji` scope is strictly limited to `agent-plugin-mulch` — no E5 work begins until it is done
+- Promotion must follow CLI-first / file-fallback pattern consistent with `queryMulch`
+- Human always retains final say on lesson promotion — no auto-promotion
+
+**Outcome:** `main` clean at `0.4.0-alpha.0`. Next session picks up `coreai-8ji` (Mulch candidate review, P1) before starting Epic 5.

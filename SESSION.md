@@ -20,6 +20,7 @@ Epic 4 is fully complete and merged to `main`. Version bumped to `0.4.0-alpha.0`
 - ✅ **Type validation added to `lessonWriter.ts`** — rejects unknown `type` values at write time
 - ✅ **Research-first convention lesson staged** — `.mulch/candidates.jsonl` contains: always research upstream package capabilities before building an integration layer
 - ✅ **Beads task `coreai-wzy` closed** — taxonomy alignment complete
+- ✅ **Backlog refinement session** — reviewed and adapted Memory Qualification Layer plan; created `coreai-ot8` (P4 backlog); identified candidate review UX gap; created `coreai-8ji` (P1 MVP) to close the mulch write pipeline; staged storage-triage Mulch lesson; noted E9 must be discussed before starting
 
 ## Decisions Made
 
