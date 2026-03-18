@@ -24,6 +24,9 @@ function isMulchLesson(value: unknown): value is MulchLesson {
     typeof lesson['summary'] === 'string' &&
     typeof lesson['recommendation'] === 'string' &&
     typeof lesson['created'] === 'string' &&
+    (lesson['type'] === undefined || typeof lesson['type'] === 'string') &&
+    (lesson['classification'] === undefined ||
+      typeof lesson['classification'] === 'string') &&
     (lesson['task_id'] === undefined ||
       typeof lesson['task_id'] === 'string') &&
     (lesson['files'] === undefined || isStringArray(lesson['files'])) &&

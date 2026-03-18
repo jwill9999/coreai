@@ -1,14 +1,64 @@
 // ─── Mulch ────────────────────────────────────────────────────────────────────
 
+/**
+ * Record types from the upstream `ml` CLI.
+ * Use this when writing lessons so that `ml record --type <value>` maps
+ * directly from the staged candidate — no translation required.
+ *
+ * - `convention`  — stable project rules and norms
+ * - `pattern`     — reusable implementation approaches
+ * - `failure`     — mistakes and how to avoid them
+ * - `decision`    — architectural choices and tradeoffs
+ * - `reference`   — important files, endpoints, or resources
+ * - `guide`       — recurring procedures and step-by-step workflows
+ */
+export const MULCH_LESSON_TYPES = [
+  'convention',
+  'pattern',
+  'failure',
+  'decision',
+  'reference',
+  'guide',
+] as const;
+
+export type MulchLessonType = (typeof MULCH_LESSON_TYPES)[number];
+
+/**
+ * Durability classification from the upstream `ml` CLI (`--classification`).
+ *
+ * - `foundational`   — long-lived, broadly reusable
+ * - `tactical`       — useful for current architecture or tooling
+ * - `observational`  — temporary findings likely to expire
+ */
+export const MULCH_LESSON_CLASSIFICATIONS = [
+  'foundational',
+  'tactical',
+  'observational',
+] as const;
+
+export type MulchLessonClassification =
+  (typeof MULCH_LESSON_CLASSIFICATIONS)[number];
+
 export interface MulchLesson {
   id: string;
   topic: string;
   summary: string;
   recommendation: string;
   created: string;
+  /**
+   * Record type aligned with `ml record --type <value>`.
+   * Required when writing new lessons; optional for reading legacy records.
+   */
+  type?: MulchLessonType;
+  /**
+   * Durability classification aligned with `ml record --classification`.
+   * Optional — defaults to `tactical` if omitted when promoting via `ml`.
+   */
+  classification?: MulchLessonClassification;
+  /** Free-form tags aligned with `ml record --tag`. Zero or more allowed. */
+  tags?: string[];
   task_id?: string;
   files?: string[];
-  tags?: string[];
   service?: string;
 }
 

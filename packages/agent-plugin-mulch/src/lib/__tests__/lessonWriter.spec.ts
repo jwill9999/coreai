@@ -23,6 +23,8 @@ describe('writeMulchLesson', () => {
       summary: 'Jest tsconfig needs customConditions set to null',
       recommendation: 'Override customConditions in tsconfig.spec.json',
       created: '2026-03-17T00:00:00.000Z',
+      type: 'failure',
+      classification: 'tactical',
       tags: ['jest', 'typescript'],
     };
 
@@ -94,6 +96,24 @@ describe('writeMulchLesson', () => {
       ),
     ).rejects.toThrow(
       'writeMulchLesson: created must be a valid ISO 8601 string',
+    );
+  });
+
+  it('fails when type is not a valid ml record type', async () => {
+    await expect(
+      writeMulchLesson(
+        {
+          id: 'lesson-1',
+          topic: 'typescript',
+          summary: 'Bad type example',
+          recommendation: 'Use a valid ml record type',
+          created: '2026-03-17T00:00:00.000Z',
+          type: 'bug-pattern' as never,
+        },
+        tempRoot,
+      ),
+    ).rejects.toThrow(
+      'writeMulchLesson: type "bug-pattern" is not a valid ml record type',
     );
   });
 });

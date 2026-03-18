@@ -1,6 +1,6 @@
 import { appendFile, mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
-import type { MulchLesson } from '@conscius/agent-types';
+import { MULCH_LESSON_TYPES, type MulchLesson } from '@conscius/agent-types';
 
 const MULCH_DIR = '.mulch';
 /**
@@ -33,6 +33,15 @@ function validateLesson(lesson: MulchLesson): void {
   if (!ISO_8601_RE.test(lesson.created)) {
     throw new Error(
       'writeMulchLesson: created must be a valid ISO 8601 string',
+    );
+  }
+
+  if (
+    lesson.type !== undefined &&
+    !(MULCH_LESSON_TYPES as readonly string[]).includes(lesson.type)
+  ) {
+    throw new Error(
+      `writeMulchLesson: type "${lesson.type}" is not a valid ml record type`,
     );
   }
 }
