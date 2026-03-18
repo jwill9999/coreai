@@ -24,6 +24,7 @@
 - *(e4-t1)* Address review feedback loop
 - *(e4-t1)* Address sonar and review findings
 - *(e4)* Address Sourcery PR feedback
+- *(mulch)* Stage lessons to candidates.jsonl for human review
 
 ### 📚 Documentation
 
@@ -43,6 +44,7 @@
 - *(tooling)* Add context7 workflow guidance
 - *(e4)* Update session handoff
 - Update session handoff
+- Add segment 10 — Epic 4 merge and version bump
 
 ### 🎨 Styling
 
@@ -122,3 +124,4 @@
 - Refresh session checkpoint
 - *(changelog)* Update CHANGELOG.md [skip ci]
 - Bump version to 0.4.0-alpha.0
+- *(changelog)* Update CHANGELOG.md [skip ci]
