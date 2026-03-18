@@ -7,6 +7,9 @@
 - *(nx-cloud)* Setup nx cloud workspace
 - Rename project from @coreai to @conscius (Conscius)
 - Add static version badge to README; update version bump checklist
+- *(e4-t1)* Implement mulch adapter
+- *(e4-t2)* Add mulch session hooks
+- *(agent-plugin-mulch)* Complete epic 4 implementation
 
 ### 🐛 Bug Fixes
 
@@ -16,6 +19,11 @@
 - *(e3-t4)* Fix typecheck errors and test infrastructure
 - *(e3-t4)* Fix path traversal check in contextLoader
 - Correct SonarCloud badge project key to jwill9999_coreai
+- *(e4-t1)* Address mulch adapter review feedback
+- *(tooling)* Remove subprocesses from pr feedback script
+- *(e4-t1)* Address review feedback loop
+- *(e4-t1)* Address sonar and review findings
+- *(e4)* Address Sourcery PR feedback
 
 ### 📚 Documentation
 
@@ -33,6 +41,8 @@
 - Replace original specs with per-epic source-of-truth specs
 - *(session)* Fix stale version reference 0.2.0 → 0.3.0-alpha.0
 - *(tooling)* Add context7 workflow guidance
+- *(e4)* Update session handoff
+- Update session handoff
 
 ### 🎨 Styling
 
@@ -44,6 +54,7 @@
 
 - *(e3-t4)* Add unit tests for agent-plugin-beads (26 tests)
 - *(e3-t4)* Update tests for improved contextLoader and beadsAdapter
+- *(e4-t2)* Cover missing activeTask hook case
 
 ### ⚙️ Miscellaneous Tasks
 
@@ -106,3 +117,6 @@
 - Update SESSION.md and SUMMARY.md
 - Main Add to gitignore tmux
 - *(changelog)* Update CHANGELOG.md [skip ci]
+- *(changelog)* Update CHANGELOG.md [skip ci]
+- *(tooling)* Harden pr feedback workflow
+- Refresh session checkpoint
