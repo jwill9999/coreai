@@ -6,21 +6,22 @@ Build the Conscius agent ecosystem — a layered AI-assisted engineering workflo
 
 ## Active Task
 
-**Epic 5 — `@conscius/agent-plugin-session`** — next on the critical path. No branch created yet.
+**`coreai-f7m` — Refactor mulchAdapter: replace `mulch search` with `ml prime`** (P1).
+
+No branch created yet. Implementation plan complete and architecturally reviewed. Ready to begin coding.
 
 Epic 4 is fully complete and merged to `main`. Version bumped to `0.4.0-alpha.0`.
 
 ## Progress Since Last Session
 
-- ✅ **Epic 4 PR #17 merged** — Sourcery review fixed: `never[]` → concrete types in `cli.ts`; static `access` import in `mulchAdapter.ts`; ISO 8601 regex in `lessonWriter.ts`
-- ✅ **Version bumped to `0.4.0-alpha.0`** — all 4 packages updated in lockstep
-- ✅ **All Beads tasks closed for Epics 1–4** — confirmed in `bd list`
-- ✅ **Mulch lesson staging implemented** — agent writes to `.mulch/candidates.jsonl` (not live store); engineer promotes via `ml record` after review; human-in-the-loop safety model
-- ✅ **`MulchLesson` type aligned with upstream `ml` schema** — replaced custom `MULCH_LESSON_TAGS` with `MULCH_LESSON_TYPES` (`convention | pattern | failure | decision | reference | guide`), added `MULCH_LESSON_CLASSIFICATIONS` (`foundational | tactical | observational`), reverted `tags` to free-form `string[]`. All 28 tests pass.
-- ✅ **Type validation added to `lessonWriter.ts`** — rejects unknown `type` values at write time
-- ✅ **Research-first convention lesson staged** — `.mulch/candidates.jsonl` contains: always research upstream package capabilities before building an integration layer
-- ✅ **Beads task `coreai-wzy` closed** — taxonomy alignment complete
-- ✅ **Backlog refinement session** — reviewed and adapted Memory Qualification Layer plan; created `coreai-ot8` (P4 backlog); identified candidate review UX gap; created `coreai-8ji` (P1 MVP) to close the mulch write pipeline; staged storage-triage Mulch lesson; noted E9 must be discussed before starting
+- ✅ **Full audit of `agent-plugin-mulch`** — identified the entire adapter as non-functional: neither `ml` nor `mulch` installed, fallback files don't exist, `pendingMulchLessons` never populated, no `.agent/config.json` to load the plugin
+- ✅ **Upstream CLI source audit** — verified `@os-eco/mulch-cli` v0.6.3 commands (`ml prime`, `ml init`, `ml record`, `ml add`, `ml doctor`, `ml validate`) against source code with line-number citations
+- ✅ **Architecture decision: thin bridge to `ml prime`** — drop ~200 lines of custom JSONL parsing/fallback/dedup; replace with ~40 lines shelling out to `ml prime` (all domains, budget-limited)
+- ✅ **MVP decision: drop staging pipeline** — `onSessionEnd` removed from plugin; `lessonWriter.ts` retained as utility export; recording is engineer's responsibility via `ml record`
+- ✅ **`coreai-8ji` closed** — superseded by `coreai-f7m` (staging pipeline dropped for MVP)
+- ✅ **`coreai-f7m` created** (P1) — full design, acceptance criteria, testing strategy, and notes populated in Beads
+- ✅ **Architectural review completed** — 16 assumptions verified against upstream source; 6 corrections applied (empty-domain edge case accepted, version req → ≥ 0.6.3, 10s timeout added, `access()` over deprecated `exists()`, domain explanation added to README)
+- ✅ **Implementation plan written** — `.copilot/session-state/849bc280-31f9-4b7c-921a-b6b92a075659/plan.md` with full README structure, 26 test cases, 6 manual checks, exact error messages
 
 ## Decisions Made
 
@@ -53,18 +54,22 @@ Epic 4 is fully complete and merged to `main`. Version bumped to `0.4.0-alpha.0`
 
 ## Next Steps
 
-> ⚠️ **Do NOT start Epic 5 yet.** Complete `coreai-8ji` first — it closes the Mulch write pipeline and must not bleed into E5 scope.
+> ⚠️ **Do NOT start Epic 5 yet.** Complete `coreai-f7m` first — it replaces the non-functional mulch adapter and must not bleed into E5 scope.
 
-1. **`coreai-8ji` — Mulch candidate review** (P1, do this first)
-   - Branch: `feat/mulch-candidate-review`
-   - Surface staged candidates at session end; implement `promoteMulchLesson()` and `rejectMulchLesson()` in `lessonWriter.ts`; wire into `onSessionEnd` in `hooks.ts`
-   - CLI-first / file-fallback pattern for promotion (consistent with `queryMulch`)
+1. **`coreai-f7m` — Refactor mulchAdapter** (P1, do this first)
+   - Create branch `feat/mulch-ml-prime-refactor` from `main`
+   - Claim task: `bd update coreai-f7m --claim`
+   - Implement per plan.md:
+     1. Replace `mulchAdapter.ts` (~200 lines → ~40 lines)
+     2. Simplify `hooks.ts` (add `ensureMlReady`, remove `onSessionEnd`/`getTopicHint`/`formatLesson`)
+     3. Rewrite `mulchAdapter.spec.ts` (12 new tests)
+     4. Update `hooks.spec.ts` (9 tests)
+     5. Rewrite `README.md`
+   - Run quality gates: `npx nx run-many -t typecheck,lint,test --projects=agent-plugin-mulch,agent-types`
+   - Manual testing checklist (M1–M6) requires bun installed
+   - Push, open PR, merge to `main`
 2. **Then start Epic 5** — create branch `feat/e5-agent-plugin-session`; claim `coreai-vq3` in Beads
-3. **E5-T1** — `sessionReader.ts`: reads and parses `SESSION.md` from repo root
-4. **E5-T2** — `sessionWriter.ts`: writes structured `SESSION.md`; validates under 500 words
-5. **E5-T3** — `hooks.ts`: `onSessionStart` (load) and `onSessionEnd` (write)
-6. **E5-T4** — unit tests
-7. **Codecov remains on hold** — resume later with the PR-branch probe
+3. **Codecov remains on hold** — resume later with the PR-branch probe
 
 ---
 

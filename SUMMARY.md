@@ -327,3 +327,30 @@
 - Human always retains final say on lesson promotion — no auto-promotion
 
 **Outcome:** `main` clean at `0.4.0-alpha.0`. Next session picks up `coreai-8ji` (Mulch candidate review, P1) before starting Epic 5.
+
+---
+
+## Segment 13 — Mulch Plugin Review & ml-prime Refactor Planning
+
+**Topic:** Full audit of `agent-plugin-mulch`, discovery that the adapter is entirely non-functional, and design of a replacement that bridges to upstream `ml prime`
+
+**Key Decisions:**
+
+- The entire `mulchAdapter.ts` (~265 lines) is non-functional: no `ml`/`mulch` CLI installed, fallback reads a non-existent file, `pendingMulchLessons` is never populated, no `.agent/config.json` exists to load the plugin
+- Replace the custom adapter with a thin bridge to `ml prime` (upstream CLI) — drops ~200 lines of custom JSONL parsing, fallback reading, PATH resolution, deduplication
+- `ml prime` takes **domain names** (not free-text topics) — the `topicHint`/`getTopicHint()` pattern is removed; call `ml prime` with no args to inject all domains, budget-limited to 4000 tokens
+- `ml` requires **Bun** runtime (`#!/usr/bin/env bun`, raw TypeScript source) — Bun is a documented prerequisite
+- Drop the staging pipeline for MVP: `onSessionEnd` removed from plugin, `lessonWriter.ts` retained as utility export, lesson recording is engineer's responsibility via `ml record`
+- `coreai-8ji` (candidate review) closed as superseded by `coreai-f7m`
+- Breaking API change: `queryMulch(topic, repoRoot): Promise<MulchLesson[]>` → `queryMulch(repoRoot): Promise<string>` — no external consumers exist
+- Empty-domain edge case accepted: `ml prime` outputs guidance text even with no domains; this is upstream design intent and provides useful agent awareness
+- All `execFile` calls get 10s timeout; `.mulch/` existence check uses `access()` not deprecated `fs.exists()`
+
+**Constraints:**
+
+- Plugin scope is strictly `agent-plugin-mulch` — no changes to agent-core, agent-types, or other packages
+- Minimum CLI version set to `≥ 0.6.3` (only verified version)
+- All 26 automated tests mock `execFile` — no bun/ml required in CI
+- 6 manual tests (M1–M6) require real bun + ml installation
+
+**Outcome:** Full implementation plan created with README structure, 26 test cases, exact error messages, and architectural review. Beads task `coreai-f7m` populated with design, acceptance criteria, and notes. Ready to implement.
