@@ -1,17 +1,17 @@
 import type { MemorySegment, MemorySegmentType } from './public-types.js';
 
-const TYPES: MemorySegmentType[] = [
+const TYPES = new Set<MemorySegmentType>([
   'system',
   'instruction',
   'context',
   'experience',
-];
+]);
 
 const PRIORITY_MIN = -100;
 const PRIORITY_MAX = 100;
 
 export function validateMemorySegment(seg: MemorySegment): void {
-  if (!TYPES.includes(seg.type)) {
+  if (!TYPES.has(seg.type)) {
     throw new Error(`Invalid MemorySegment.type: ${String(seg.type)}`);
   }
   if (typeof seg.content !== 'string' || seg.content.trim().length === 0) {
