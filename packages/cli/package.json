@@ -1,0 +1,28 @@
+{
+  "name": "@conscius/cli",
+  "version": "0.5.0-alpha.0",
+  "type": "module",
+  "main": "./dist/cli.js",
+  "types": "./dist/cli.d.ts",
+  "bin": {
+    "conscius": "./dist/cli.js"
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "@conscius/source": "./src/cli.ts",
+      "types": "./dist/cli.d.ts",
+      "import": "./dist/cli.js",
+      "default": "./dist/cli.js"
+    }
+  },
+  "files": [
+    "dist",
+    "!**/*.tsbuildinfo"
+  ],
+  "dependencies": {
+    "@conscius/runtime": "*",
+    "commander": "^14.0.3",
+    "tslib": "^2.3.0"
+  }
+}

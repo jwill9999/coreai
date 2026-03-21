@@ -9,7 +9,8 @@
 
 ## Overview
 
-Shared TypeScript interfaces and types used across all packages in the monorepo. No runtime logic — types only.
+Shared TypeScript interfaces, type aliases, and exportable constants used across
+all packages in the monorepo. No runtime behavior beyond constant exports.
 
 ---
 
@@ -18,17 +19,36 @@ Shared TypeScript interfaces and types used across all packages in the monorepo.
 ```
 packages/agent-types/
 └── src/
-    └── lib/
-        └── agent-types.ts    ← all interfaces in one file
+  ├── index.ts              ← public barrel
+  └── lib/
+    └── agent-types.ts    ← all interfaces, type aliases, and constants
 ```
 
 ---
 
-## Exported interfaces
+## Exported types and interfaces
 
 ### `MulchLesson`
 
-Experience lesson stored in `.mulch/mulch.jsonl`. Required fields: `id`, `topic`, `summary`, `recommendation`, `created`.
+Experience lesson shape shared across Mulch-related packages.
+
+Required fields: `id`, `topic`, `summary`, `recommendation`, `created`
+
+Optional fields:
+
+- `type?: MulchLessonType`
+- `classification?: MulchLessonClassification`
+- `tags?: string[]`
+- `task_id?: string`
+- `files?: string[]`
+- `service?: string`
+
+Related exports:
+
+- `MULCH_LESSON_TYPES`
+- `MulchLessonType`
+- `MULCH_LESSON_CLASSIFICATIONS`
+- `MulchLessonClassification`
 
 ### `BeadsTaskStatus`
 
@@ -65,6 +85,7 @@ Passed to every plugin hook:
   repoRoot: string;           // absolute path to repo root
   config: AgentConfig;
   activeTask?: BeadsTask;
+  pendingMulchLessons?: MulchLesson[];
   promptSegments: string[];
   conversation: ConversationMessage[];
   compressionSummaries: CompressionSummary[];
@@ -87,9 +108,10 @@ Passed to every plugin hook:
 
 ## Key decisions
 
-- Single file (`agent-types.ts`) — no sub-modules, easy to import
+- Single definition file (`agent-types.ts`) behind a small public barrel (`src/index.ts`)
 - `BeadsTaskStatus` does **not** include `'open'` or `'closed'` (Beads native statuses) — mapped in `beadsAdapter.ts`
 - `specPath` on `BeadsTask` comes from `external_ref` in Beads JSON — chosen because Beads has no native spec field
+- E1 is a contract layer that can be consumed independently of `@conscius/agent-core`
 
 ---
 

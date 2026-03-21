@@ -1,6 +1,7 @@
 import { access } from 'node:fs/promises';
 import { join } from 'node:path';
-import type { AgentContext, AgentPlugin } from '@conscius/agent-types';
+import type { RuntimeContext } from '@conscius/runtime';
+import { definePlugin } from '@conscius/runtime';
 import {
   assertMlRunnable,
   queryMulch,
@@ -31,12 +32,12 @@ export async function ensureMlReady(repoRoot: string): Promise<void> {
 
 /**
  * `agent-plugin-mulch` — injects experience lessons from `ml prime`
- * into the agent prompt when a session starts.
+ * into structured memory when a session starts.
  */
-export const mulchPlugin: AgentPlugin = {
+const mulchPlugin = definePlugin({
   name: 'agent-plugin-mulch',
 
-  async onSessionStart(context: AgentContext): Promise<void> {
+  async onSessionStart(context: RuntimeContext): Promise<void> {
     await ensureMlReady(context.repoRoot);
 
     const output = await queryMulch(context.repoRoot);
@@ -45,8 +46,12 @@ export const mulchPlugin: AgentPlugin = {
       return;
     }
 
-    context.promptSegments.push(output);
+    context.memorySegments.push({
+      type: 'experience',
+      content: output,
+    });
   },
-};
+});
 
+export { mulchPlugin };
 export default mulchPlugin;

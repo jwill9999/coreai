@@ -23,7 +23,7 @@ Run the full quality suite to confirm everything is wired correctly:
 npx nx run-many -t typecheck,lint,test,build --all
 ```
 
-All four packages should pass: `@conscius/agent-types`, `@conscius/agent-core`, `@conscius/agent-plugin-beads`, `@conscius/agent-plugin-mulch`.
+All packages should pass: `@conscius/runtime`, `@conscius/cli`, `@conscius/agent-plugin-beads`, `@conscius/agent-plugin-mulch`.
 
 ## Workspace layout
 
@@ -42,7 +42,7 @@ packages/
 | Typecheck all     | `npx nx run-many -t typecheck --all`     |
 | Lint all          | `npx nx run-many -t lint --all`          |
 | Test all          | `npx nx run-many -t test --all`          |
-| Build one package | `npx nx build agent-core`                |
+| Build one package | `npx nx build @conscius/runtime`         |
 | Run affected only | `npx nx affected -t typecheck,lint,test` |
 | Format check      | `npx nx format:check`                    |
 | Format write      | `npx nx format:write`                    |

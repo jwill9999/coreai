@@ -1,5 +1,5 @@
 import { access } from 'node:fs/promises';
-import type { AgentContext } from '@conscius/agent-types';
+import type { RuntimeContext } from '@conscius/runtime';
 import { mulchPlugin, ensureMlReady } from '../hooks.js';
 import {
   assertMlRunnable,
@@ -29,11 +29,14 @@ const mockRunMlInit = runMlInit as jest.MockedFunction<typeof runMlInit>;
 const mockQueryMulch = queryMulch as jest.MockedFunction<typeof queryMulch>;
 const mockAccess = access as jest.MockedFunction<typeof access>;
 
-function createContext(overrides: Partial<AgentContext> = {}): AgentContext {
+function createContext(
+  overrides: Partial<RuntimeContext> = {},
+): RuntimeContext {
   return {
     repoRoot: '/repo',
     config: {},
-    promptSegments: [],
+    memorySegments: [],
+    pendingMulchLessons: [],
     conversation: [],
     compressionSummaries: [],
     ...overrides,
@@ -118,15 +121,18 @@ describe('mulchPlugin', () => {
     expect(mulchPlugin.onSessionEnd).toBeUndefined();
   });
 
-  it('pushes ml prime output to promptSegments', async () => {
+  it('pushes ml prime output to memorySegments as experience', async () => {
     mockQueryMulch.mockResolvedValue('## Experience\n\nSome lessons...');
 
     const context = createContext();
     await mulchPlugin.onSessionStart?.(context);
 
     expect(mockQueryMulch).toHaveBeenCalledWith('/repo');
-    expect(context.promptSegments).toEqual([
-      '## Experience\n\nSome lessons...',
+    expect(context.memorySegments).toEqual([
+      {
+        type: 'experience',
+        content: '## Experience\n\nSome lessons...',
+      },
     ]);
   });
 
@@ -136,7 +142,7 @@ describe('mulchPlugin', () => {
     const context = createContext();
     await mulchPlugin.onSessionStart?.(context);
 
-    expect(context.promptSegments).toEqual([]);
+    expect(context.memorySegments).toEqual([]);
   });
 
   it('throws when ml is not installed', async () => {

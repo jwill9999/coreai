@@ -93,7 +93,7 @@ Runtime orchestration: context builder, plugin loader, hook runner, CLI.
 | E2-T1 | Context builder — assembles prompt in injection order; triggers compression at 30–40 messages | ✅ |
 | E2-T2 | Plugin loader — loads plugins from config, calls all lifecycle hooks | ✅ |
 | E2-T3 | Hook runner — resolves `repo/.agent/hooks/` then `~/.agent/hooks/`; enforces write permissions; first-run prompt → `.agent/config.json` | ✅ |
-| E2-T4 | CLI — `agent start`, `agent end`, `agent task start <id>` using `commander` | ✅ |
+| E2-T4 | CLI — `conscius start`, `conscius end`, `conscius task start <id>` using `commander` | ✅ |
 | E2-T5 | Unit tests for context builder, plugin loader, hook runner, CLI (57 tests) | ✅ |
 
 ### Epic 3 — `@conscius/agent-plugin-beads` ✅

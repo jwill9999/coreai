@@ -15,8 +15,8 @@ This guide covers the pre-publish checklist and the process for publishing `@con
 Before running `npm publish` on any package:
 
 - [ ] Pin cross-package `"*"` deps to a concrete version
-  - `packages/agent-core/package.json`: `"@conscius/agent-types": "*"` → `"^x.x.x"`
-  - `packages/agent-plugin-beads/package.json`: same
+  - e.g. `packages/agent-plugin-beads/package.json`: `"@conscius/runtime": "*"` → `"^x.x.x"`
+  - e.g. `packages/cli/package.json`: `"@conscius/runtime": "*"` → `"^x.x.x"`
 - [ ] Confirm all packages build cleanly: `npx nx run-many -t build --all`
 - [ ] Confirm all tests pass: `npx nx run-many -t test --all`
 - [ ] Confirm version numbers are correct in all `packages/*/package.json`
@@ -27,27 +27,27 @@ Before running `npm publish` on any package:
 Before first publish, replace the `"*"` wildcard with a pinned version:
 
 ```json
-// packages/agent-core/package.json
+// packages/cli/package.json
 {
   "dependencies": {
-    "@conscius/agent-types": "^0.4.0-alpha.0"
+    "@conscius/runtime": "^0.5.0-alpha.0"
   }
 }
 ```
 
-Repeat for `agent-plugin-beads`. Run `npm install` after editing.
+Repeat for plugins that depend on `@conscius/runtime`. Run `npm install` after editing.
 
 ## Publish order
 
 Packages must be published in dependency order:
 
-1. `@conscius/agent-types` (no internal deps)
-2. `@conscius/agent-core` (depends on `agent-types`)
-3. `@conscius/agent-plugin-beads` (depends on `agent-types`)
+1. `@conscius/runtime` (no internal `@conscius/*` deps)
+2. `@conscius/cli` (depends on `runtime`)
+3. `@conscius/agent-plugin-beads` / `@conscius/agent-plugin-mulch` (depend on `runtime`)
 
 ```bash
-cd packages/agent-types && npm publish --access public
-cd ../agent-core && npm publish --access public
+cd packages/runtime && npm publish --access public
+cd ../cli && npm publish --access public
 cd ../agent-plugin-beads && npm publish --access public
 ```
 
@@ -65,13 +65,11 @@ git push
 
 ## After first publish — add npm version badge to README
 
-Once packages are live on npm, add this badge to `README.md` (after the existing badges):
+Once packages are live on npm, add badges as needed, for example:
 
 ```markdown
-[![npm](https://img.shields.io/npm/v/@conscius/agent-core?label=version)](https://www.npmjs.com/package/@conscius/agent-core)
+[![npm](https://img.shields.io/npm/v/@conscius/runtime?label=runtime)](https://www.npmjs.com/package/@conscius/runtime)
 ```
-
-This badge auto-updates on every publish — no manual maintenance needed.
 
 ## Related
 

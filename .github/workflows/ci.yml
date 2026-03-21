@@ -46,15 +46,17 @@ jobs:
         run: |
           # lcov SF: paths are relative to each package dir (e.g. src/utils.ts).
           # Codecov resolves them from the repo root, so prefix with the package path.
-          sed -i 's|^SF:src/|SF:packages/agent-core/src/|g' packages/agent-core/test-output/jest/coverage/lcov.info || true
+          sed -i 's|^SF:src/|SF:packages/runtime/src/|g' packages/runtime/test-output/jest/coverage/lcov.info || true
+          sed -i 's|^SF:src/|SF:packages/cli/src/|g' packages/cli/test-output/jest/coverage/lcov.info || true
           sed -i 's|^SF:src/|SF:packages/agent-plugin-beads/src/|g' packages/agent-plugin-beads/test-output/jest/coverage/lcov.info || true
+          sed -i 's|^SF:src/|SF:packages/agent-plugin-mulch/src/|g' packages/agent-plugin-mulch/test-output/jest/coverage/lcov.info || true
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: jwill9999/conscius
-          files: packages/agent-core/test-output/jest/coverage/lcov.info,packages/agent-plugin-beads/test-output/jest/coverage/lcov.info
+          files: packages/runtime/test-output/jest/coverage/lcov.info,packages/cli/test-output/jest/coverage/lcov.info,packages/agent-plugin-beads/test-output/jest/coverage/lcov.info,packages/agent-plugin-mulch/test-output/jest/coverage/lcov.info
           flags: unittests
           fail_ci_if_error: false
 

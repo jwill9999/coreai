@@ -1,5 +1,5 @@
 import { execFile } from 'node:child_process';
-import type { BeadsTask, BeadsTaskStatus } from '@conscius/agent-types';
+import type { BeadsTask, BeadsTaskStatus } from '@conscius/runtime';
 
 /** Raw shape returned by `bd show --json <id>`. */
 interface BdShowResult {

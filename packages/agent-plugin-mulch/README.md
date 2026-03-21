@@ -9,19 +9,19 @@ Injects [Mulch](https://github.com/os-eco/mulch) experience lessons into the age
 
 At `onSessionStart`, the plugin:
 
-1. Resolves `ml` on `$ throws with install instructions if missing.PATH`
-2. Verifies Bun is installed (required to run ` throws with Bun install instructions if missing.ml`)
+1. Resolves `ml` on `$PATH` and throws with install instructions if missing.
+2. Verifies Bun is installed (required to run `ml`) and throws with Bun install instructions if missing.
 3. Auto-initialises `.mulch/` via `ml init` if `mulch.config.yaml` is absent.
-4. Runs `ml prime` (all domains, budget-limited ~4000 tokens) and pushes the formatted markdown output directly into `context.promptSegments`.
+4. Runs `ml prime` (all domains, budget-limited ~4000 tokens) and pushes the raw markdown output into `context.memorySegments` as type `experience`.
 
-The plugin has **no ` lesson recording is the engineer's responsibility (see below).onSessionEnd`**
+The plugin has **no `onSessionEnd`** hook; lesson recording remains an explicit engineer action (see below).
 
 ## Prerequisites
 
-| Requirement               | How to install                              |
-| ------------------------- | ------------------------------------------- | ------------ |
-| ** 1.0**                  | `curl -fsSL https://bun.sh/install \| bash` | Bun          |
-| **`@os-eco/mulch- 0.6.3** | installed automatically via `npm install`   | Bundled cli` |
+| Requirement                      | How to install                              |
+| -------------------------------- | ------------------------------------------- |
+| **Bun >= 1.0**                   | `curl -fsSL https://bun.sh/install \| bash` |
+| **`@os-eco/mulch-cli` >= 0.6.3** | Installed automatically via `npm install`   |
 
 `@os-eco/mulch-cli` is declared as a package dependency so `npm install` handles it automatically. Bun is the only external prerequisite.
 
@@ -31,7 +31,7 @@ The plugin has **no ` lesson recording is the engineer's responsibility (see bel
 # 1. Ensure Bun is installed (one-time, system-wide)
 curl -fsSL https://bun.sh/install | bash
 
-# 2. Install the  @os-eco/mulch-cli is bundledpackage
+# 2. Install the package (`@os-eco/mulch-cli` is bundled)
 npm install @conscius/agent-plugin-mulch
 
 # 3. ml init runs automatically when mulch.config.yaml is absent on first onSessionStart
@@ -46,11 +46,18 @@ import { mulchPlugin } from '@conscius/agent-plugin-mulch';
 const agent = createAgent({ plugins: [mulchPlugin] });
 ```
 
-`promptSegments` will contain the raw `ml prime` markdown output after `onSessionStart` completes.
+Export surface:
+
+- `@conscius/agent-plugin-mulch` re-exports named symbols from `mulchAdapter`, `hooks`, and `lessonWriter`.
+- `mulchPlugin` is the primary named plugin export.
+- `hooks.ts` also defines a default export, but consumers should prefer the named `mulchPlugin` export from the package root.
+
+`memorySegments` will include the raw `ml prime` markdown after `onSessionStart` completes.
+No additional heading is prepended by this plugin.
 
 ## Recording lessons (engineer's responsibility)
 
-Recording lessons is a manual the plugin does not write lessons automatically.step
+Recording lessons is a manual step; the plugin does not write lessons automatically.
 
 ```bash
 # Record a lesson after a hard-won discovery
@@ -103,6 +110,6 @@ await writeMulchLesson(
 
 ## What is NOT automated
 
-- **Lesson use `ml record` manually after discoveriesrecording**
-- **Candidate lessons staged to `.mulch/candidates.jsonl` require human review before promotion to `.mulch/expertise/`promotion**
-- **Domain `ml prime` injects all domains; domain management is done via `ml` directlyselection**
+- **Lesson recording:** use `ml record` manually after discoveries.
+- **Candidate promotion:** lessons staged to `.mulch/candidates.jsonl` require human review before promotion to `.mulch/expertise/`.
+- **Domain selection:** `ml prime` injects all domains; domain management is done via `ml` directly.

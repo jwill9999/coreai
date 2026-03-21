@@ -1,8 +1,10 @@
 # E8 — @conscius/agent-stack-standard
 
-**Beads ID:** coreai-zsh  
-**Status:** implementation brief (not started)  
-**Package:** `packages/agent-stack-standard`  
+> **Pre-v3 — do not implement as written.** This brief bundles plugins into legacy `agent-core`. The Beads epic is closed. Any future “stack” meta-package must be replanned for `@conscius/runtime` after MVP hardening. See [Beads MVP alignment (v3)](../planning/beads-mvp-alignment-v3.md).
+
+**Beads ID:** coreai-zsh (closed / frozen)  
+**Status:** historical implementation brief  
+**Package:** `packages/agent-stack-standard` (not created for v3)  
 **Import path:** `@conscius/agent-stack-standard`
 
 ---

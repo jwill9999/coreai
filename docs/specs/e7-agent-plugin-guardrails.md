@@ -1,8 +1,10 @@
 # E7 — @conscius/agent-plugin-guardrails
 
-**Beads ID:** coreai-7mm  
-**Status:** implementation brief (not started)  
-**Package:** `packages/agent-plugin-guardrails`  
+> **Pre-v3 — do not implement as written.** This brief targets a guardrails plugin on legacy `agent-core`. The Beads epic is closed. MVP guardrail work lives in **Epic 11** (`coreai-2f5`, task `coreai-5dw`) inside `@conscius/runtime`. See [Runtime v3](./runtime-v3.md) and [Beads MVP alignment (v3)](../planning/beads-mvp-alignment-v3.md).
+
+**Beads ID:** coreai-7mm (closed / frozen)  
+**Status:** historical implementation brief  
+**Package:** `packages/agent-plugin-guardrails` (not created for v3)  
 **Import path:** `@conscius/agent-plugin-guardrails`
 
 ---

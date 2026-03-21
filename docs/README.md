@@ -54,10 +54,12 @@ Formal records of significant architectural decisions — why they were made, wh
 
 Package-level API documentation for all published Conscius packages.
 
-| Package                                         | Description                                        |
-| ----------------------------------------------- | -------------------------------------------------- |
-| [`@conscius/agent-types`](./api/agent-types.md) | Shared TypeScript types and interfaces             |
-| [`@conscius/agent-core`](./api/agent-core.md)   | Core runtime — context builder, plugin loader, CLI |
+| Package                                         | Description                                         |
+| ----------------------------------------------- | --------------------------------------------------- |
+| [`@conscius/runtime`](./api/runtime.md)         | Unified runtime v3 — engine, types, memory pipeline |
+| [`@conscius/cli`](./api/cli.md)                 | `conscius` CLI                                      |
+| [`@conscius/agent-types`](./api/agent-types.md) | Archived — types merged into `@conscius/runtime`    |
+| [`@conscius/agent-core`](./api/agent-core.md)   | Archived — split into `runtime` + `cli`             |
 
 ---
 

@@ -1,6 +1,6 @@
 import { appendFile, mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
-import { MULCH_LESSON_TYPES, type MulchLesson } from '@conscius/agent-types';
+import { MULCH_LESSON_TYPES, type MulchLesson } from '@conscius/runtime';
 
 const MULCH_DIR = '.mulch';
 /**

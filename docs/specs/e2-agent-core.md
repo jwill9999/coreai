@@ -9,8 +9,13 @@
 
 ## Overview
 
-The runtime engine of the agent ecosystem. Provides three core systems:
+The runtime core of the agent ecosystem. It coordinates plugin lifecycle execution,
+hook execution, and prompt assembly, but it is not a higher-order workflow
+orchestration system.
 
+Current implementation provides four core responsibilities:
+
+- **CLI bootstrap** — creates the initial `AgentContext`, loads config, loads plugins, and sequences lifecycle execution
 - **ContextBuilder** — assembles the final prompt from plugin segments, compression summaries and recent messages
 - **HookRunner** — resolves and executes shell/JS lifecycle hooks; manages write permissions
 - **PluginLoader** — dynamically imports `AgentPlugin` modules and dispatches lifecycle events
@@ -59,10 +64,16 @@ buildContext(context: AgentContext): BuiltContext
 Assembles the prompt in canonical order:
 
 1. `context.promptSegments` — plugin-injected blocks (skills, SESSION.md, task metadata)
-2. `context.compressionSummaries` — formatted as `## Segment N: topic`
-3. Last 10 `context.conversation` messages — formatted as `**role:** content`
+2. `context.compressionSummaries` — grouped under `## Conversation History (Summarised)` with each summary formatted as `### Segment N: topic`
+3. Last 10 `context.conversation` messages — grouped under `## Recent Conversation` and formatted as `**role:** content`
 
 Sections are separated by `\n\n---\n\n`.
+
+`BuiltContext` currently returns:
+
+- `prompt: string`
+- `compressionApplied: boolean`
+- `messageCount: number`
 
 ```ts
 shouldCompress(messages: ConversationMessage[]): boolean
@@ -110,7 +121,7 @@ Extensions tried in order: `.sh`, `.js`, `.mjs`, `.cjs`
 ### Security
 
 - Hook path validated against approved hook directories before `spawn`
-- Prevents shell injection via path traversal check
+- Prevents executing hook paths outside the approved repo/global hook directories
 
 ### Config file
 
@@ -154,6 +165,12 @@ loader.runSessionEnd(context);
 ```
 
 Error handling: collects all plugin errors per lifecycle event; throws `AggregateError` when multiple plugins fail.
+
+Execution model:
+
+- plugins run sequentially in registration order
+- a single plugin failure does not stop later plugins from running
+- a single failure is re-thrown directly; multiple failures are wrapped in `AggregateError`
 
 ---
 
