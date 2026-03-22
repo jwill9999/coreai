@@ -12,6 +12,7 @@
 - *(agent-plugin-mulch)* Complete epic 4 implementation
 - *(agent-types)* Align MulchLesson type with upstream ml schema
 - *(runtime)* Runtime v3, conscius CLI, and MVP planning alignment
+- *(dx)* Interactive Mulch record via make mulch-record
 
 ### 🐛 Bug Fixes
 
@@ -165,4 +166,5 @@
 - *(changelog)* Update CHANGELOG.md [skip ci]
 - *(changelog)* Update CHANGELOG.md [skip ci]
 - *(skills)* Mirror .github/skills into .cursor/skills for Cursor
+- *(changelog)* Update CHANGELOG.md [skip ci]
 - *(changelog)* Update CHANGELOG.md [skip ci]
