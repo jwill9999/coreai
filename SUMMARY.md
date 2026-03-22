@@ -1,7 +1,7 @@
 # Conversation Summary
 
-> **Purpose:** Compressed context for new agent sessions. Manually maintained until `@conscius/agent-core` automates this at conversation threshold (~30 messages).
-> Each entry maps to a `CompressionSummary` segment as defined in `@conscius/agent-types`.
+> **Purpose:** Compressed context for new agent sessions. Manually maintained until the runtime automates this at conversation threshold (~30 messages).
+> Each entry maps conceptually to a `CompressionSummary`-style segment (types live in `@conscius/runtime`).
 
 ---
 
@@ -98,18 +98,6 @@
 - E2-T1 (context builder) implemented and merged into `feat/e2-agent-core`
 - E2-T2 (plugin loader) implemented, PR open for review
 - Full quality pipeline active: Nx local + SonarCloud + Sourcery + CodeQL
-
----
-
-## Current State
-
-| Document                          | Purpose                                  | Update Frequency                 |
-| --------------------------------- | ---------------------------------------- | -------------------------------- |
-| `SESSION.md`                      | Active task, next steps, full task table | Every session end / every commit |
-| `SUMMARY.md`                      | Compressed conversation history          | When a topic/segment completes   |
-| `.github/copilot-instructions.md` | Conventions, patterns, commands          | When conventions change          |
-
-**Next active task:** E2-T3 — hook runner (after E2-T2 PR is reviewed and merged)
 
 ---
 
@@ -354,3 +342,35 @@
 - 6 manual tests (M1–M6) require real bun + ml installation
 
 **Outcome:** Full implementation plan created with README structure, 26 test cases, exact error messages, and architectural review. Beads task `coreai-f7m` populated with design, acceptance criteria, and notes. Ready to implement.
+
+---
+
+## Segment 14 — Runtime v3 MVP on `main`, PR #19, MCP & AGENTS hygiene
+
+**Topic:** Merging runtime v3 alignment to `main`, closing Copilot review on PR #19, and cleaning secrets/tooling docs
+
+**Key Decisions:**
+
+- **`feat/runtime-v3-mvp-alignment` → `main`:** unified `@conscius/runtime` + `conscius` CLI; plugin loader attributes `memorySegments.source` only for host-empty segments and for segments appended after each hook (not every segment after every plugin).
+- **Config plugin paths:** `resolvePluginSpecifier()` + `repoRoot` on `load()` / `loadFromConfig()` so `./` / `../` / absolute paths resolve to `file:` URLs from the repo root; bare npm specifiers unchanged.
+- **Docs/specs:** Mulch README + E4 spec + `plugin-contract.md` aligned with v3 (`memorySegments`, no `onPromptBuild`); `agent-plugin-beads` `tsconfig.lib.json` references `../runtime`.
+- **SonarCloud token:** removed from tracked files; `.cursor/mcp.json` uses `"SONARQUBE_TOKEN": "${env:SONARQUBE_TOKEN}"`; `.cursor/README.md` documents shell setup; old token revoked by owner.
+- **`AGENTS.md`:** replaced non-existent `bd sync` with optional `bd dolt pull` / `bd dolt push` where a Dolt remote is used.
+
+**Constraints:**
+
+- `SUMMARY.md` segments remain append-only; earlier segments stay as historical record (including older version numbers and epic wording).
+
+**Outcome:** `main` at **0.5.0-alpha.0**, CI/Sonar/CodeQL green. Next engineering focus: **Epic 5** (`@conscius/agent-plugin-session`, `coreai-vq3`).
+
+---
+
+## Current State (rolling)
+
+| Document                          | Purpose                                    | Update when                        |
+| --------------------------------- | ------------------------------------------ | ---------------------------------- |
+| `SESSION.md`                      | Live objective, next steps, epic checklist | Session end / merge / scope change |
+| `SUMMARY.md`                      | Append-only segment history                | When a theme of work completes     |
+| `.github/copilot-instructions.md` | Standing conventions                       | When conventions change            |
+
+**Next focus:** Epic 5 — `@conscius/agent-plugin-session` (`coreai-vq3`).
