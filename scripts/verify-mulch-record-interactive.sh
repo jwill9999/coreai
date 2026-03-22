@@ -22,7 +22,8 @@ assert_contains() {
   shift 2
   local m
   for m in "$@"; do
-    if [[ "$haystack" != *"$m"* ]]; then
+    # Literal substring match (avoid [[ ]] glob semantics for *, ?, [ in m)
+    if ! grep -Fq -- "$m" <<<"$haystack"; then
       echo "FAIL: $label — missing expected substring '$m'" >&2
       echo "--- output ---" >&2
       echo "$haystack" >&2
