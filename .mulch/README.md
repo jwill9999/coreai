@@ -36,3 +36,13 @@ The script lives at `scripts/mulch-record-interactive.sh`. Field requirements ma
 1. **Install dependencies** at the repo root (`npm install`). Mulch’s CLI is pulled in as **`@os-eco/mulch-cli`** via the **`@conscius/agent-plugin-mulch`** workspace package, which exposes **`node_modules/.bin/ml`** and **`node_modules/.bin/mulch`**.
 2. **PATH order:** The script resolves the CLI with `command -v ml` / `command -v mulch` — it uses **whichever executable appears first on your `PATH`**, not “repo copy first.” If you also have a **global** `ml`, that one wins when its directory is **before** `node_modules/.bin` on `PATH`.
 3. **To prefer this repo’s version:** Put **`./node_modules/.bin`** early on `PATH` for that shell (or run the same flow with **`npx ml record …`** yourself). If neither local nor global `ml`/`mulch` is found, run **`npm install`** and ensure a Mulch CLI is available.
+
+### Automated smoke check
+
+After **`npm install`**, from the repo root:
+
+```bash
+npm run test:mulch-record-interactive
+```
+
+This runs **`scripts/verify-mulch-record-interactive.sh`**: `bash -n` on the interactive script, then two piped sessions (quit at menu; dry-run then cancel) that must exit non-zero — **no writes** to Mulch data. The same check runs in **GitHub Actions** after unit tests.

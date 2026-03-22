@@ -42,6 +42,9 @@ jobs:
       - name: Test
         run: npx nx run-many -t test --all --skip-nx-cache -- --coverage
 
+      - name: Mulch record interactive script (smoke)
+        run: npm run test:mulch-record-interactive
+
       - name: Fix coverage report paths
         run: |
           # lcov SF: paths are relative to each package dir (e.g. src/utils.ts).

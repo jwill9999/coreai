@@ -4,7 +4,8 @@
   "license": "MIT",
   "scripts": {
     "prepare": "husky",
-    "pr:feedback": "node scripts/check-pr-feedback.mjs"
+    "pr:feedback": "node scripts/check-pr-feedback.mjs",
+    "test:mulch-record-interactive": "bash scripts/verify-mulch-record-interactive.sh"
   },
   "private": true,
   "devDependencies": {
