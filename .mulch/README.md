@@ -45,4 +45,4 @@ After **`npm install`**, from the repo root:
 npm run test:mulch-record-interactive
 ```
 
-This runs **`scripts/verify-mulch-record-interactive.sh`**: `bash -n` on the interactive script, then two piped sessions (quit at menu; dry-run then cancel) that must exit non-zero — **no writes** to Mulch data. The same check runs in **GitHub Actions** after unit tests.
+Runs **`scripts/verify-mulch-record-interactive.sh`**: `bash -n` on the interactive script; single-domain quit/cancel; **temporary git fixture** with **two domains** to exercise the domain menu; **every record type** (convention, pattern, failure, decision, reference, guide) asserted via captured **`--dry-run`** command lines (then cancel — **no writes**). This checks **our script’s prompts and flags**, not Mulch’s internal behavior. The same step runs in **GitHub Actions** after unit tests.
