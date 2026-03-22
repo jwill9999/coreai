@@ -2,6 +2,7 @@
 
 ### 🚀 Features
 
+- *(e11-mvp-1)* Runtime `memoryPromptLimits` — segment count + approximate token caps before prompt build (`@conscius/runtime`)
 - *(epic-1)* Scaffold @coreai/agent-types and monorepo foundation
 - *(e3-t1)* Scaffold @coreai/agent-plugin-beads with beadsAdapter, hooks, contextLoader
 - *(nx-cloud)* Setup nx cloud workspace

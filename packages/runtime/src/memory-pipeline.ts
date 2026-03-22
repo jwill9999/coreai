@@ -1,4 +1,8 @@
-import type { CompressionSummary, ConversationMessage } from './domain.js';
+import type {
+  CompressionSummary,
+  ConversationMessage,
+  MemoryPromptLimits,
+} from './domain.js';
 import type {
   HostRuntimeContext,
   MemorySegment,
@@ -21,8 +25,76 @@ const TYPE_ORDER: Record<MemorySegmentType, number> = {
 
 export interface BuiltContext {
   prompt: string;
+  /** True when conversation compression summaries were included. */
   compressionApplied: boolean;
+  /** True when `memoryPromptLimits` dropped or truncated memory segments. */
+  memorySegmentTrimApplied: boolean;
   messageCount: number;
+}
+
+const TRUNCATION_MARKER = '\n[truncated]';
+
+/** Approximate token count: ceil(code-unit length / 4). Deterministic, not a tokenizer. */
+export function estimateApproxTokens(text: string): number {
+  if (text.length === 0) return 0;
+  return Math.ceil(text.length / 4);
+}
+
+/**
+ * Apply segment-count and approximate-token caps after sort + dedupe.
+ * Drops lowest-priority segments first (tail of `segments` array).
+ */
+export function trimMemorySegmentsForLimits(
+  segments: MemorySegment[],
+  limits: MemoryPromptLimits | undefined,
+): { segments: MemorySegment[]; applied: boolean } {
+  if (!limits) return { segments, applied: false };
+  const { maxSegments, maxApproxTokens } = limits;
+  if (maxSegments === undefined && maxApproxTokens === undefined) {
+    return { segments, applied: false };
+  }
+
+  let out = segments;
+  let applied = false;
+
+  if (
+    maxSegments !== undefined &&
+    Number.isFinite(maxSegments) &&
+    maxSegments >= 0 &&
+    out.length > maxSegments
+  ) {
+    out = out.slice(0, maxSegments);
+    applied = true;
+  }
+
+  if (
+    maxApproxTokens !== undefined &&
+    Number.isFinite(maxApproxTokens) &&
+    maxApproxTokens >= 0
+  ) {
+    const budget = maxApproxTokens;
+    const totalTok = () =>
+      out.reduce((sum, s) => sum + estimateApproxTokens(s.content), 0);
+
+    while (out.length > 0 && totalTok() > budget) {
+      if (out.length > 1) {
+        out = out.slice(0, -1);
+        applied = true;
+        continue;
+      }
+      const c = out[0].content;
+      const room = Math.max(0, budget * 4 - TRUNCATION_MARKER.length);
+      if (c.length > room) {
+        const body = room > 0 ? c.slice(0, room) : '';
+        const text = room > 0 ? body + TRUNCATION_MARKER : '';
+        out = [{ ...out[0], content: text }];
+        applied = true;
+      }
+      break;
+    }
+  }
+
+  return { segments: out, applied };
 }
 
 /**
@@ -94,10 +166,12 @@ function formatCompressionSummary(summary: CompressionSummary): string {
  */
 export function buildPromptContext(ctx: HostRuntimeContext): BuiltContext {
   const sorted = dedupeAdjacentSegments(sortMemorySegments(ctx.memorySegments));
+  const { segments: memoryForPrompt, applied: memorySegmentTrimApplied } =
+    trimMemorySegmentsForLimits(sorted, ctx.config.memoryPromptLimits);
   const sections: string[] = [];
 
-  if (sorted.length > 0) {
-    sections.push(...sorted.map((s) => s.content.trim()));
+  if (memoryForPrompt.length > 0) {
+    sections.push(...memoryForPrompt.map((s) => s.content.trim()));
   }
 
   if (ctx.compressionSummaries.length > 0) {
@@ -119,6 +193,7 @@ export function buildPromptContext(ctx: HostRuntimeContext): BuiltContext {
   return {
     prompt,
     compressionApplied: (ctx.compressionSummaries?.length ?? 0) > 0,
+    memorySegmentTrimApplied,
     messageCount: ctx.conversation.length,
   };
 }

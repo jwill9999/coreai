@@ -43,6 +43,8 @@ Active epics and features for the Conscius project. Managed by the `planning` sk
 **Mode:** parallel (tasks can be sequenced by implementer)  
 **Description:** Close v3 MVP gaps: runtime compression and limits, basic guardrails, CLI full cycle + `runtime.run()`, strict memory-only prompt influence from plugins.  
 **Dependencies:** Epic 10 complete — Beads `coreai-d6k` (Runtime v3 merge); no open blockers on paper.  
+**Execution order (current):** sequential MVP passes — `coreai-tfx` → `coreai-5dw` → `coreai-uld` → `coreai-0ga` → `coreai-9ts`. (Parallel workstreams can be replanned later in Beads + this index.)  
+**Branching:** integration branch `feat/e11-runtime-mvp-hardening` from `main`; each MVP task uses its own `feat/e11-mvp-*` branch off the integration branch, merged into integration after human review; epic merges to `main` when Epic 11 closes.  
 **Related Docs:** [Beads MVP alignment (v3)](./beads-mvp-alignment-v3.md) (canonical Epic 11 spec + task constraints), [Runtime v3 spec](../specs/runtime-v3.md) (platform behavior). Beads `spec_id` on `coreai-2f5` and MVP tasks points at `docs/planning/beads-mvp-alignment-v3.md`.
 
 **Definition of Done (MVP):** Same bullet list as in Beads on `coreai-2f5` and in [beads-mvp-alignment-v3.md](./beads-mvp-alignment-v3.md#definition-of-done-mvp) — final prompt via `runtime.run(input: string): string`, deterministic ordering and compression, string-only guardrails, `conscius run --input` full cycle, plugins only via `memorySegments`; no extra scope.

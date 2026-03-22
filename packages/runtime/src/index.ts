@@ -13,6 +13,8 @@ export {
   buildPromptContext,
   sortMemorySegments,
   dedupeAdjacentSegments,
+  trimMemorySegmentsForLimits,
+  estimateApproxTokens,
   shouldCompress,
   getMessagesToCompress,
   COMPRESSION_THRESHOLD,
@@ -36,6 +38,7 @@ export type {
 
 export type {
   AgentConfig,
+  MemoryPromptLimits,
   BeadsTask,
   BeadsTaskStatus,
   CompressionSummary,

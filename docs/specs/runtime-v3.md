@@ -147,6 +147,7 @@ Optional compression plugin may **`onMemoryCompose`:** read `memorySegments` and
 ## 7. Compression architecture
 
 - **Core** dedupe / trim / ordering-aware filtering: **runtime-owned**.
+- **Host config (MVP):** `.agent/config.json` may set **`memoryPromptLimits`** on **`AgentConfig`** — optional **`maxSegments`** and **`maxApproxTokens`** caps on **memory segments only** before `buildPromptContext` assembles the final prompt. Lowest-priority segments are dropped first (after sort + adjacent dedupe). Approximate tokens use `ceil(charLength / 4)` (not a real tokenizer). No LLM summarisation in this path.
 - **Optional** `@conscius/agent-plugin-compression` (later): may replace `memorySegments` in `onMemoryCompose`; does not define new segment types.
 
 ---

@@ -3,23 +3,28 @@ import {
   COMPRESSION_THRESHOLD,
   RECENT_MESSAGES_TO_KEEP,
   buildPromptContext,
+  dedupeAdjacentSegments,
+  estimateApproxTokens,
   getMessagesToCompress,
   shouldCompress,
   sortMemorySegments,
+  trimMemorySegmentsForLimits,
 } from './memory-pipeline.js';
 import { createHostRuntimeContext } from './host-context.js';
 
 function makeHostContext(
   overrides: Partial<{
+    config: AgentConfig;
     memorySegments: import('./public-types.js').MemorySegment[];
     conversation: import('./domain.js').ConversationMessage[];
     compressionSummaries: import('./domain.js').CompressionSummary[];
   }> = {},
 ) {
+  const { config, ...rest } = overrides;
   return createHostRuntimeContext({
     repoRoot: '/repo',
-    config: {} as AgentConfig,
-    ...overrides,
+    config: config ?? ({} as AgentConfig),
+    ...rest,
   });
 }
 
@@ -41,12 +46,64 @@ describe('sortMemorySegments', () => {
   });
 });
 
+describe('estimateApproxTokens', () => {
+  it('returns 0 for empty string', () => {
+    expect(estimateApproxTokens('')).toBe(0);
+  });
+
+  it('uses ceil(length / 4)', () => {
+    expect(estimateApproxTokens('abcd')).toBe(1);
+    expect(estimateApproxTokens('abcde')).toBe(2);
+  });
+});
+
+describe('trimMemorySegmentsForLimits', () => {
+  it('returns unchanged when limits omitted', () => {
+    const segs = [{ type: 'context' as const, content: 'a' }];
+    const r = trimMemorySegmentsForLimits(segs, undefined);
+    expect(r.segments).toEqual(segs);
+    expect(r.applied).toBe(false);
+  });
+
+  it('drops lowest-priority tail to satisfy maxSegments', () => {
+    const segs = [
+      { type: 'context' as const, content: 'high', priority: 10 },
+      { type: 'context' as const, content: 'low', priority: 1 },
+    ];
+    const ordered = dedupeAdjacentSegments(sortMemorySegments(segs));
+    const r = trimMemorySegmentsForLimits(ordered, { maxSegments: 1 });
+    expect(r.segments.map((s) => s.content)).toEqual(['high']);
+    expect(r.applied).toBe(true);
+  });
+
+  it('drops tail segments to satisfy maxApproxTokens', () => {
+    const ordered = sortMemorySegments([
+      { type: 'system' as const, content: 'aaaa', priority: 5 },
+      { type: 'experience' as const, content: 'bbbbbbbbbbbb', priority: 0 },
+    ]);
+    const r = trimMemorySegmentsForLimits(ordered, { maxApproxTokens: 3 });
+    expect(r.applied).toBe(true);
+    expect(r.segments).toHaveLength(1);
+    expect(r.segments[0].content).toBe('aaaa');
+  });
+
+  it('truncates a single oversized segment', () => {
+    const ordered = [{ type: 'instruction' as const, content: 'x'.repeat(50) }];
+    const r = trimMemorySegmentsForLimits(ordered, { maxApproxTokens: 10 });
+    expect(r.applied).toBe(true);
+    expect(r.segments).toHaveLength(1);
+    expect(r.segments[0].content).toContain('[truncated]');
+    expect(estimateApproxTokens(r.segments[0].content)).toBeLessThanOrEqual(10);
+  });
+});
+
 describe('buildPromptContext', () => {
   it('returns empty prompt for empty context', () => {
     const ctx = makeHostContext();
     const result = buildPromptContext(ctx);
     expect(result.prompt).toBe('');
     expect(result.compressionApplied).toBe(false);
+    expect(result.memorySegmentTrimApplied).toBe(false);
     expect(result.messageCount).toBe(0);
   });
 
@@ -94,6 +151,23 @@ describe('buildPromptContext', () => {
     });
     const result = buildPromptContext(ctx);
     expect(result.compressionApplied).toBe(true);
+    expect(result.memorySegmentTrimApplied).toBe(false);
+  });
+
+  it('sets memorySegmentTrimApplied when memoryPromptLimits drop segments', () => {
+    const ctx = makeHostContext({
+      config: {
+        memoryPromptLimits: { maxSegments: 1 },
+      },
+      memorySegments: [
+        { type: 'context', content: 'keep', priority: 5 },
+        { type: 'context', content: 'drop', priority: 0 },
+      ],
+    });
+    const result = buildPromptContext(ctx);
+    expect(result.prompt).toContain('keep');
+    expect(result.prompt).not.toContain('drop');
+    expect(result.memorySegmentTrimApplied).toBe(true);
   });
 
   it('only includes last RECENT_MESSAGES_TO_KEEP messages', () => {
