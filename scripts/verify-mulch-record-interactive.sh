@@ -36,11 +36,15 @@ expect_nonzero() {
   local name=$1
   shift
   set +e
-  "$@"
+  # Capture stdout+stderr so intentional "error: cancelled" lines do not look like failures
+  # when callers redirect only stdout (e.g. npm run … >/dev/null).
+  local captured
+  captured=$("$@" 2>&1)
   local code=$?
   set -e
   if [[ $code -eq 0 ]]; then
     echo "FAIL: expected non-zero exit for: $name" >&2
+    echo "$captured" >&2
     exit 1
   fi
   echo "ok: $name (exit $code)"
