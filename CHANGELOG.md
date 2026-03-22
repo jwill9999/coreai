@@ -35,6 +35,7 @@
 ### 💼 Other
 
 - *(cursor)* Remove SonarCloud token from mcp.json; document env-based auth
+- Wire Epic 11 Beads issues to MVP alignment spec
 
 ### 🚜 Refactor
 
@@ -171,6 +172,7 @@
 - *(changelog)* Update CHANGELOG.md [skip ci]
 - *(changelog)* Update CHANGELOG.md [skip ci]
 - *(skills)* Mirror .github/skills into .cursor/skills for Cursor
+- *(changelog)* Update CHANGELOG.md [skip ci]
 - *(changelog)* Update CHANGELOG.md [skip ci]
 - *(changelog)* Update CHANGELOG.md [skip ci]
 - *(changelog)* Update CHANGELOG.md [skip ci]
