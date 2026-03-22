@@ -2,6 +2,8 @@
 
 Active epics and features for the Conscius project. Managed by the `planning` skill — use `/new-epic`, `/new-feature`, `/add-task`, `/update-status`, and `/close-feature` to keep this in sync with the Beads task graph (`bd` CLI).
 
+**Priority vs roadmap:** In Beads, **Epic 11** (`coreai-2f5`) is **P1** and **Epic 5** (`coreai-vq3` and children) is **P2**. `SESSION.md` and this index follow that ordering unless you change priorities in Beads.
+
 ---
 
 ## Epics
@@ -35,23 +37,27 @@ Active epics and features for the Conscius project. Managed by the `planning` sk
 
 **Planning ID:** feature-2026-03-21-002  
 **Beads ID:** coreai-2f5  
+**Beads priority:** P1 (do before Epic 5 session plugin unless reprioritized in Beads)  
 **Status:** open  
 **Created:** 21/03/2026 (GMT)  
 **Mode:** parallel (tasks can be sequenced by implementer)  
 **Description:** Close v3 MVP gaps: runtime compression and limits, basic guardrails, CLI full cycle + `runtime.run()`, strict memory-only prompt influence from plugins.  
-**Related Docs:** [Beads MVP alignment (v3)](./beads-mvp-alignment-v3.md), [Runtime v3 spec](../specs/runtime-v3.md)
+**Dependencies:** Epic 10 complete — Beads `coreai-d6k` (Runtime v3 merge); no open blockers on paper.  
+**Related Docs:** [Beads MVP alignment (v3)](./beads-mvp-alignment-v3.md) (canonical Epic 11 spec + task constraints), [Runtime v3 spec](../specs/runtime-v3.md) (platform behavior). Beads `spec_id` on `coreai-2f5` and MVP tasks points at `docs/planning/beads-mvp-alignment-v3.md`.
 
 **Definition of Done (MVP):** Same bullet list as in Beads on `coreai-2f5` and in [beads-mvp-alignment-v3.md](./beads-mvp-alignment-v3.md#definition-of-done-mvp) — final prompt via `runtime.run(input: string): string`, deterministic ordering and compression, string-only guardrails, `conscius run --input` full cycle, plugins only via `memorySegments`; no extra scope.
 
 #### Tasks
 
-| Task                                 | Beads ID   | Status | Created    |
-| ------------------------------------ | ---------- | ------ | ---------- |
-| MVP-1: Runtime compression (basic)   | coreai-tfx | open   | 21/03/2026 |
-| MVP-2: Runtime guardrails (basic)    | coreai-5dw | open   | 21/03/2026 |
-| MVP-3: CLI full cycle                | coreai-uld | open   | 21/03/2026 |
-| MVP-4: runtime.run() → prompt        | coreai-0ga | open   | 21/03/2026 |
-| MVP-5: Plugin contract — memory-only | coreai-9ts | open   | 21/03/2026 |
+Task constraints by MVP: [Task constraints](./beads-mvp-alignment-v3.md#e11-task-constraints).
+
+| Task                                 | Beads ID   | Status | Spec / constraints (doc)                                  | Created    |
+| ------------------------------------ | ---------- | ------ | --------------------------------------------------------- | ---------- |
+| MVP-1: Runtime compression (basic)   | coreai-tfx | open   | [constraints](./beads-mvp-alignment-v3.md#e11-coreai-tfx) | 21/03/2026 |
+| MVP-2: Runtime guardrails (basic)    | coreai-5dw | open   | [constraints](./beads-mvp-alignment-v3.md#e11-coreai-5dw) | 21/03/2026 |
+| MVP-3: CLI full cycle                | coreai-uld | open   | [constraints](./beads-mvp-alignment-v3.md#e11-coreai-uld) | 21/03/2026 |
+| MVP-4: runtime.run() → prompt        | coreai-0ga | open   | [constraints](./beads-mvp-alignment-v3.md#e11-coreai-0ga) | 21/03/2026 |
+| MVP-5: Plugin contract — memory-only | coreai-9ts | open   | [constraints](./beads-mvp-alignment-v3.md#e11-coreai-9ts) | 21/03/2026 |
 
 ---
 

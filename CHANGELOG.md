@@ -35,6 +35,7 @@
 ### 💼 Other
 
 - *(cursor)* Remove SonarCloud token from mcp.json; document env-based auth
+- Wire Epic 11 Beads issues to MVP alignment spec
 
 ### 🚜 Refactor
 
@@ -67,6 +68,8 @@
 - *(session)* Hand off after coreai-na7; claim coreai-6n8
 - *(mulch)* Explain PATH vs node_modules for make mulch-record
 - *(readme)* Link Mulch guide and make mulch-record from Development
+- *(session)* Sync after main merge — mulch verify CI, close coreai-f7m, claim coreai-vq3.1
+- Align SESSION and planning index with Beads P1/P2
 
 ### 🎨 Styling
 
@@ -79,6 +82,7 @@
 - *(e3-t4)* Add unit tests for agent-plugin-beads (26 tests)
 - *(e3-t4)* Update tests for improved contextLoader and beadsAdapter
 - *(e4-t2)* Cover missing activeTask hook case
+- *(dx)* Smoke-verify mulch-record-interactive in CI
 
 ### ⚙️ Miscellaneous Tasks
 
@@ -168,6 +172,9 @@
 - *(changelog)* Update CHANGELOG.md [skip ci]
 - *(changelog)* Update CHANGELOG.md [skip ci]
 - *(skills)* Mirror .github/skills into .cursor/skills for Cursor
+- *(changelog)* Update CHANGELOG.md [skip ci]
+- *(changelog)* Update CHANGELOG.md [skip ci]
+- *(changelog)* Update CHANGELOG.md [skip ci]
 - *(changelog)* Update CHANGELOG.md [skip ci]
 - *(changelog)* Update CHANGELOG.md [skip ci]
 - *(changelog)* Update CHANGELOG.md [skip ci]

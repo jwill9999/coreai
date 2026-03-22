@@ -32,13 +32,41 @@ Designed for pre-v3 (`agent-core`, `onConversationThreshold`, plugin-shaped prom
 | `runtime.run()` → prompt                       | `coreai-0ga` |
 | Plugin contract — memory-only prompt influence | `coreai-9ts` |
 
+<a id="e11-task-constraints"></a>
+
 ### Task constraints (anti–scope-creep)
 
-- **MVP-1 (`coreai-tfx`):** NO LLM calls, NO summarisation — ONLY dedupe, priority-based trim, count/token limits.
-- **MVP-2 (`coreai-5dw`):** Simple string checks only — NO external services, NO policy engine, NO ML classifiers.
-- **MVP-3 (`coreai-uld`):** Canonical CLI is **`conscius run`** with `--input` (binary from `@conscius/cli`).
-- **MVP-4 (`coreai-0ga`):** **`runtime.run(input: string): string`** — final prompt text only; NOT segments, NOT a structured object.
-- **MVP-5 (`coreai-9ts`):** Prompt influence only via **`memorySegments`**.
+Stable fragment IDs (for `docs/planning/index.md` and agents). Beads `spec_id` on each issue: `docs/planning/beads-mvp-alignment-v3.md`.
+
+<a id="e11-coreai-tfx"></a>
+
+#### MVP-1 — Compression (`coreai-tfx`)
+
+- NO LLM calls, NO summarisation — ONLY dedupe, priority-based trim, count/token limits.
+
+<a id="e11-coreai-5dw"></a>
+
+#### MVP-2 — Guardrails (`coreai-5dw`)
+
+- Simple string checks only — NO external services, NO policy engine, NO ML classifiers.
+
+<a id="e11-coreai-uld"></a>
+
+#### MVP-3 — CLI full cycle (`coreai-uld`)
+
+- Canonical CLI is **`conscius run`** with `--input` (binary from `@conscius/cli`).
+
+<a id="e11-coreai-0ga"></a>
+
+#### MVP-4 — `runtime.run()` (`coreai-0ga`)
+
+- **`runtime.run(input: string): string`** — final prompt text only; NOT segments, NOT a structured object.
+
+<a id="e11-coreai-9ts"></a>
+
+#### MVP-5 — Memory-only contract (`coreai-9ts`)
+
+- Prompt influence only via **`memorySegments`**.
 
 ### Definition of Done (MVP)
 
