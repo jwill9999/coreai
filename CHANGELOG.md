@@ -157,3 +157,5 @@
 - Feat/runtime-v3-mvp-alignment add curser configs
 - *(cursor)* Wire Sonar MCP token via ${env:SONARQUBE_TOKEN} in mcp.json
 - *(changelog)* Update CHANGELOG.md [skip ci]
+- Main: save mulch lesson
+- *(changelog)* Update CHANGELOG.md [skip ci]
