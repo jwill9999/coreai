@@ -1,11 +1,15 @@
 # Cursor MCP (local)
 
-**Do not put SonarCloud tokens or other secrets in `mcp.json`.** If that file is tracked or shared, use environment variables instead.
+**Do not commit literal SonarCloud tokens in `mcp.json`.** The SonarQube server entry uses Cursor’s interpolation:
 
-For the **SonarQube** MCP server, `docker … -e SONARQUBE_TOKEN` reads the token from the environment of the process that starts Cursor (or from values Cursor injects). Before launching Cursor, set:
+`"SONARQUBE_TOKEN": "${env:SONARQUBE_TOKEN}"`
+
+Set the value in your shell profile (e.g. `~/.zshrc`):
 
 ```bash
-export SONARQUBE_TOKEN="your-new-token"
+export SONARQUBE_TOKEN="your-token-here"
 ```
 
-Generate tokens in [SonarCloud](https://sonarcloud.io) → **My Account** → **Security**. **Revoke** any token that was pasted into git or chat, then create a new one.
+Restart Cursor after changing `~/.zshrc`. If Cursor was opened from the Dock, it may not see variables only defined for interactive shells—either launch Cursor from a terminal (`cursor .`) after exporting, or set the variable in a place GUI apps inherit (OS-specific).
+
+Generate tokens in [SonarCloud](https://sonarcloud.io) → **My Account** → **Security**. Revoke any token that was ever committed or shared.
