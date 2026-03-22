@@ -62,6 +62,7 @@
 - *(agents)* Replace obsolete bd sync with bd dolt pull/push notes
 - Refresh README, SESSION, SUMMARY for runtime v3 on main (0.5.0-alpha.0)
 - *(planning)* Add developer experience & tooling section with standalone tasks and priorities
+- Refresh README, SESSION, SUMMARY for runtime v3 on main (0.5.0-alpha.0)
 
 ### 🎨 Styling
 
@@ -161,3 +162,5 @@
 - Main: save mulch lesson
 - *(changelog)* Update CHANGELOG.md [skip ci]
 - *(changelog)* Update CHANGELOG.md [skip ci]
+- *(changelog)* Update CHANGELOG.md [skip ci]
+- *(skills)* Mirror .github/skills into .cursor/skills for Cursor
