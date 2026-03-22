@@ -2,7 +2,6 @@
 
 ### 🚀 Features
 
-- *(runtime-v3)* Merge `@conscius/agent-types` and `@conscius/agent-core` into `@conscius/runtime`; add `@conscius/cli`; `memorySegments` + `definePlugin`; migrate beads/mulch; remove legacy packages (see `docs/specs/runtime-v3.md`)
 - *(epic-1)* Scaffold @coreai/agent-types and monorepo foundation
 - *(e3-t1)* Scaffold @coreai/agent-plugin-beads with beadsAdapter, hooks, contextLoader
 - *(nx-cloud)* Setup nx cloud workspace
@@ -12,6 +11,7 @@
 - *(e4-t2)* Add mulch session hooks
 - *(agent-plugin-mulch)* Complete epic 4 implementation
 - *(agent-types)* Align MulchLesson type with upstream ml schema
+- *(runtime)* Runtime v3, conscius CLI, and MVP planning alignment
 
 ### 🐛 Bug Fixes
 
@@ -27,6 +27,17 @@
 - *(e4-t1)* Address sonar and review findings
 - *(e4)* Address Sourcery PR feedback
 - *(mulch)* Stage lessons to candidates.jsonl for human review
+- *(agent-plugin-mulch)* Check mulch.config.yaml not .mulch/ dir for init guard
+- *(agent-plugin-mulch)* Address Sourcery PR feedback
+- *(runtime)* Address PR #19 Copilot review (plugins, docs, tsconfig)
+
+### 💼 Other
+
+- *(cursor)* Remove SonarCloud token from mcp.json; document env-based auth
+
+### 🚜 Refactor
+
+- *(agent-plugin-mulch)* Replace mulch search with ml prime bridge
 
 ### 📚 Documentation
 
@@ -47,6 +58,8 @@
 - *(e4)* Update session handoff
 - Update session handoff
 - Add segment 10 — Epic 4 merge and version bump
+- *(agent-plugin-mulch)* Sync docs and review follow-ups
+- *(agents)* Replace obsolete bd sync with bd dolt pull/push notes
 
 ### 🎨 Styling
 
@@ -135,3 +148,10 @@
 - Update SESSION.md and SUMMARY.md — end of refinement session
 - Update SESSION.md and SUMMARY.md — mulch plugin review complete
 - *(mulch)* Stage storage-triage lesson in candidates.jsonl
+- *(changelog)* Update CHANGELOG.md [skip ci]
+- Add beads dependency approach review to SESSION.md open issues
+- Feat/runtime-v3-mvp-alignment fix sonarqube issues
+- Feat/runtime-v3-mvp-alignment fix sonarqube issues
+- Feat/runtime-v3-mvp-alignment fix sonarqube issues
+- Feat/runtime-v3-mvp-alignment add curser configs
+- *(cursor)* Wire Sonar MCP token via ${env:SONARQUBE_TOKEN} in mcp.json
