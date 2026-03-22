@@ -174,11 +174,16 @@ type MemorySegmentType = 'system' | 'instruction' | 'context' | 'experience';
 
 Do **not** mix this with the removed session/task/experience **layer** vocabulary from older docs.
 
+### Prompt assembly inputs
+
+**`buildPromptContext`** reads **`memorySegments`** (after guardrails and limits), **`compressionSummaries`**, and **`conversation`**. It does **not** read **`activeTask`**, **`pendingMulchLessons`**, or other host-only metadata for string assembly. Plugins must put beads/mulch (and similar) influence into **`memorySegments`** (or the compression / conversation paths the pipeline already uses) for it to affect the final prompt.
+
 ---
 
 ## 10. CLI / host
 
 - **`@conscius/runtime`** — core engine; **`createRuntime`** is the supported programmatic entry.
+- **`createRuntime().run(input, repoRoot?)`** — one full compose cycle for a single user turn; returns the final prompt string only (loads `config.plugins` from disk each call).
 - **`@conscius/cli`** — thin consumer; **must not** add new lifecycle semantics or orchestration rules.
 
 ---
@@ -198,6 +203,8 @@ The minimal `{ memorySegments }` model is **insufficient** for real plugins (bea
 - `repoRoot`, `config`, `activeTask`, `pendingMulchLessons`, `conversation`, `compressionSummaries`
 
 **Rule:** plugins **must only** add or replace **`memorySegments`** (and may update non-prompt host state such as `activeTask` when enriching task metadata). They must **not** touch **`promptSegments`** or internal prompt assembly.
+
+**Prompt contract:** changing only host fields such as **`activeTask`** or **`pendingMulchLessons`** without updating **`memorySegments`** / **`compressionSummaries`** / **`conversation`** must **not** change the output of **`buildPromptContext`**.
 
 ---
 

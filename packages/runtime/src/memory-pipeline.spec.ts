@@ -18,6 +18,8 @@ function makeHostContext(
     memorySegments: import('./public-types.js').MemorySegment[];
     conversation: import('./domain.js').ConversationMessage[];
     compressionSummaries: import('./domain.js').CompressionSummary[];
+    activeTask: import('./domain.js').BeadsTask;
+    pendingMulchLessons: import('./domain.js').MulchLesson[];
   }> = {},
 ) {
   const { config, ...rest } = overrides;
@@ -305,6 +307,48 @@ describe('getMessagesToCompress', () => {
     expect(toCompress[0].content).toBe('msg-0');
     expect(toCompress[toCompress.length - 1].content).toBe(
       `msg-${15 - RECENT_MESSAGES_TO_KEEP - 1}`,
+    );
+  });
+});
+
+describe('buildPromptContext — host metadata isolation (MVP-5)', () => {
+  it('does not change prompt when only activeTask differs', () => {
+    const memorySegments = [{ type: 'context' as const, content: 'same' }];
+    const withTask = makeHostContext({
+      memorySegments,
+      activeTask: {
+        id: 't1',
+        title: 'Task A',
+        status: 'in_progress',
+      },
+    });
+    const withoutTask = makeHostContext({ memorySegments });
+    expect(buildPromptContext(withTask).prompt).toBe(
+      buildPromptContext(withoutTask).prompt,
+    );
+  });
+
+  it('does not change prompt when only pendingMulchLessons differ', () => {
+    const memorySegments = [{ type: 'context' as const, content: 'same' }];
+    const lessons: import('./domain.js').MulchLesson[] = [
+      {
+        id: '1',
+        topic: 't',
+        summary: 's',
+        recommendation: 'r',
+        created: '2020-01-01T00:00:00.000Z',
+      },
+    ];
+    const withLessons = makeHostContext({
+      memorySegments,
+      pendingMulchLessons: lessons,
+    });
+    const withoutLessons = makeHostContext({
+      memorySegments,
+      pendingMulchLessons: [],
+    });
+    expect(buildPromptContext(withLessons).prompt).toBe(
+      buildPromptContext(withoutLessons).prompt,
     );
   });
 });
