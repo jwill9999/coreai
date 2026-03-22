@@ -60,4 +60,11 @@ describe('applyMemorySegmentGuardrails', () => {
       applyMemorySegmentGuardrails(segs, { enabled: false }).droppedCount,
     ).toBe(0);
   });
+
+  it('returns a new array reference when guardrails are off (no aliasing)', () => {
+    const segs = [{ type: 'context' as const, content: 'ok' }];
+    const { segments } = applyMemorySegmentGuardrails(segs, undefined);
+    expect(segments).not.toBe(segs);
+    expect(segments).toEqual(segs);
+  });
 });

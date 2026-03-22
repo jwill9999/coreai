@@ -38,15 +38,17 @@ export function memorySegmentContentBlocked(
 }
 
 /**
- * Filter memory segments before prompt assembly. No mutation of input objects;
- * returns a new array. Dropped count is `input.length - output.length`.
+ * Filter memory segments before prompt assembly. Does not mutate segment objects.
+ * Always returns a **new array** (shallow copy of the list) so callers can assign
+ * to `ctx.memorySegments` without aliasing the caller’s original array reference.
+ * Dropped count is `input.length - output.length`.
  */
 export function applyMemorySegmentGuardrails(
   segments: MemorySegment[],
   config: MemoryGuardrailsConfig | undefined,
 ): { segments: MemorySegment[]; droppedCount: number } {
   if (!config?.enabled) {
-    return { segments: segments, droppedCount: 0 };
+    return { segments: segments.slice(), droppedCount: 0 };
   }
 
   const caseInsensitive = config.caseInsensitive !== false;
