@@ -123,7 +123,7 @@ This moves the entry to `index.md` and updates the `bd` issue type to `feature`.
 
 ## Related
 
-- [Beads task graph (`bd`)](#) — run `bd --help` for full CLI reference
+- Beads task graph (`bd`) — run `bd --help` for full CLI reference
 - [SESSION.md](../../SESSION.md) — current session state and next steps
 - [Adding a plugin](../guides/adding-a-plugin.md) — implementation guide for new plugins
-- [Architecture overview](../specs/agent_architecture_documentation_pack/agent_architecture_overview.md) — the 7-layer system design
+- [Architecture overview](../specs/archive/agent_architecture_overview.md) — the 7-layer system design

@@ -1,4 +1,4 @@
-import type { AgentContext, AgentConfig } from '@conscius/agent-types';
+import type { AgentConfig, RuntimeContext } from '@conscius/runtime';
 import { beadsPlugin } from '../hooks.js';
 import * as beadsAdapter from '../beadsAdapter.js';
 import * as contextLoader from '../contextLoader.js';
@@ -14,11 +14,12 @@ const mockLoadSpecContent =
     typeof contextLoader.loadSpecContent
   >;
 
-function makeContext(overrides: Partial<AgentContext> = {}): AgentContext {
+function makeContext(overrides: Partial<RuntimeContext> = {}): RuntimeContext {
   return {
     repoRoot: '/repo',
     config: {} as AgentConfig,
-    promptSegments: [],
+    memorySegments: [],
+    pendingMulchLessons: [],
     conversation: [],
     compressionSummaries: [],
     ...overrides,
@@ -43,7 +44,7 @@ describe('beadsPlugin', () => {
       await beadsPlugin.onTaskStart!(context);
 
       expect(mockFetchBeadsTask).not.toHaveBeenCalled();
-      expect(context.promptSegments).toHaveLength(0);
+      expect(context.memorySegments).toHaveLength(0);
     });
 
     it('uses context.activeTask.id when set', async () => {
@@ -97,7 +98,7 @@ describe('beadsPlugin', () => {
       expect(context.activeTask).toEqual(fetchedTask);
     });
 
-    it('pushes a task metadata segment to promptSegments', async () => {
+    it('pushes a task metadata memory segment', async () => {
       mockFetchBeadsTask.mockResolvedValue({
         id: 'task-3',
         title: 'Feature Work',
@@ -113,8 +114,9 @@ describe('beadsPlugin', () => {
       });
       await beadsPlugin.onTaskStart!(context);
 
-      expect(context.promptSegments).toHaveLength(1);
-      const segment = context.promptSegments[0];
+      expect(context.memorySegments).toHaveLength(1);
+      expect(context.memorySegments[0].type).toBe('instruction');
+      const segment = context.memorySegments[0].content;
       expect(segment).toContain('## Active Beads Task');
       expect(segment).toContain('**ID**: task-3');
       expect(segment).toContain('**Title**: Feature Work');
@@ -137,7 +139,7 @@ describe('beadsPlugin', () => {
       });
       await beadsPlugin.onTaskStart!(context);
 
-      const segment = context.promptSegments[0];
+      const segment = context.memorySegments[0].content;
       expect(segment).not.toContain('**Description**');
       expect(segment).not.toContain('**Assignee**');
       expect(segment).not.toContain('**Depends on**');
@@ -161,8 +163,9 @@ describe('beadsPlugin', () => {
         'docs/specs/task-4.md',
         '/repo',
       );
-      expect(context.promptSegments).toHaveLength(2);
-      const specSegment = context.promptSegments[1];
+      expect(context.memorySegments).toHaveLength(2);
+      expect(context.memorySegments[1].type).toBe('context');
+      const specSegment = context.memorySegments[1].content;
       expect(specSegment).toContain(
         '## Task Specification (docs/specs/task-4.md)',
       );
@@ -183,7 +186,7 @@ describe('beadsPlugin', () => {
       await beadsPlugin.onTaskStart!(context);
 
       expect(mockLoadSpecContent).not.toHaveBeenCalled();
-      expect(context.promptSegments).toHaveLength(1);
+      expect(context.memorySegments).toHaveLength(1);
     });
 
     it('does not push a spec segment when spec file is unreadable (returns null)', async () => {
@@ -200,7 +203,7 @@ describe('beadsPlugin', () => {
       });
       await beadsPlugin.onTaskStart!(context);
 
-      expect(context.promptSegments).toHaveLength(1);
+      expect(context.memorySegments).toHaveLength(1);
     });
   });
 });

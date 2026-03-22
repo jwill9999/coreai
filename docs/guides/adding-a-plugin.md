@@ -1,11 +1,11 @@
 # Adding a plugin
 
-This guide walks through scaffolding a new Conscius plugin package and wiring it into `agent-core`.
+This guide walks through scaffolding a new Conscius plugin package and wiring it into `@conscius/runtime`.
 
 ## Prerequisites
 
 - Working monorepo install (see [Getting started](./getting-started.md))
-- Familiarity with the [AgentPlugin interface](../specs/agent_architecture_documentation_pack/agent_plugin_interface.md)
+- [Runtime v3 spec](../specs/runtime-v3.md) — hooks and `memorySegments`
 
 ## 1. Scaffold the package
 
@@ -19,19 +19,19 @@ npx nx g @nx/js:lib packages/agent-plugin-<name> \
 
 Replace `<name>` with your plugin's short identifier (e.g. `mulch`, `session`, `guardrails`).
 
-## 2. Add the agent-types dependency
+## 2. Add the `@conscius/runtime` dependency
 
 In `packages/agent-plugin-<name>/package.json`, add:
 
 ```json
 {
   "dependencies": {
-    "@conscius/agent-types": "*"
+    "@conscius/runtime": "*"
   }
 }
 ```
 
-Then run `npm install` from the repo root to link the workspace package.
+Set `tsconfig.lib.json` `references` to `../runtime/tsconfig.lib.json`. Run `npm install` from the repo root.
 
 ## 3. Apply project config
 
@@ -43,49 +43,40 @@ Copy the Jest and ESLint config pattern from an existing plugin (e.g. `agent-plu
 
 ## 4. Implement the plugin
 
-Create `src/index.ts` and export a class or object implementing `AgentPlugin`:
+Use **`definePlugin`** and v3 hooks. Add segments via **`context.memorySegments`** only.
 
 ```typescript
-import type { AgentPlugin, AgentContext } from '@conscius/agent-types';
+import type { RuntimeContext } from '@conscius/runtime';
+import { definePlugin } from '@conscius/runtime';
 
-export const myPlugin: AgentPlugin = {
+const myPlugin = definePlugin({
   name: '@conscius/agent-plugin-<name>',
 
-  async onSessionStart(context: AgentContext): Promise<void> {
-    // inject context, fetch data, write to promptSegments, etc.
+  async onSessionStart(context: RuntimeContext): Promise<void> {
+    context.memorySegments.push({
+      type: 'context',
+      content: '## My section\n\n…',
+    });
   },
-
-  async onSessionEnd(context: AgentContext): Promise<void> {
-    // persist state, write lessons, clean up
-  },
-};
-```
-
-Only implement the hooks your plugin needs. All hooks are optional.
-
-## 5. Register with agent-core
-
-Import and register your plugin in the consuming agent's bootstrap:
-
-```typescript
-import { AgentRuntime } from '@conscius/agent-core';
-import { myPlugin } from '@conscius/agent-plugin-<name>';
-
-const runtime = new AgentRuntime({
-  plugins: [myPlugin],
 });
 
-await runtime.startSession();
+export { myPlugin };
+export default myPlugin;
 ```
+
+Allowed hooks: `onSessionStart`, `onTaskStart`, `onMemoryCompose`, `onSessionEnd`.
+
+## 5. Register with the runtime
+
+List the package name in `.agent/config.json` `plugins` array, or pass plugin instances to **`createRuntime({ plugins: [...] })`** from application code.
 
 ## 6. Verify
 
 ```bash
-npx nx run-many -t typecheck,lint,test --projects=agent-plugin-<name>
+npx nx run-many -t typecheck,lint,test --projects=@conscius/agent-plugin-<name>
 ```
 
 ## Related
 
-- [AgentPlugin interface spec](../specs/agent_architecture_documentation_pack/agent_plugin_interface.md)
-- [`@conscius/agent-types` API reference](../api/agent-types.md)
-- [`@conscius/agent-core` API reference](../api/agent-core.md)
+- [Runtime v3 spec](../specs/runtime-v3.md)
+- [`@conscius/runtime` API reference](../api/runtime.md)

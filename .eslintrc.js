@@ -25,5 +25,6 @@ module.exports = {
     '.github/skills/',
     '.github/agents/',
     '.github/prompts/',
+    'docs/planning/refactor/',
   ],
 };

@@ -11,15 +11,15 @@ When `onTaskStart` fires, the plugin:
 
 1. Runs `bd show --json <taskId>` to fetch the active task.
 2. Populates `context.activeTask` with the parsed `BeadsTask`.
-3. Appends a formatted task summary to `context.promptSegments`.
-4. If the task has a `specPath` (set via `external_ref` in Beads), reads the spec file and appends its content to `context.promptSegments`.
+3. Pushes a formatted task summary to `context.memorySegments` (`instruction`).
+4. If the task has a `specPath` (set via `external_ref` in Beads), reads the spec file and pushes its content as `memorySegments` (`context`).
 
 ## Usage
 
 ```ts
 import { beadsPlugin } from '@conscius/agent-plugin-beads';
 
-// Register via agent-core plugin loader
+// Register via @conscius/runtime plugin loader / .agent/config.json
 export default beadsPlugin;
 ```
 

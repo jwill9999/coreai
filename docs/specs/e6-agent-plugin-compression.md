@@ -1,8 +1,10 @@
 # E6 — @conscius/agent-plugin-compression
 
-**Beads ID:** coreai-mbp  
-**Status:** implementation brief (not started)  
-**Package:** `packages/agent-plugin-compression`  
+> **Pre-v3 — do not implement as written.** This brief targets a separate compression plugin on legacy `agent-core`. The Beads epic is closed. MVP compression work lives in **Epic 11** (`coreai-2f5`, task `coreai-tfx`) inside `@conscius/runtime`. See [Runtime v3](./runtime-v3.md) and [Beads MVP alignment (v3)](../planning/beads-mvp-alignment-v3.md).
+
+**Beads ID:** coreai-mbp (closed / frozen)  
+**Status:** historical implementation brief  
+**Package:** `packages/agent-plugin-compression` (not created for v3)  
 **Import path:** `@conscius/agent-plugin-compression`
 
 ---

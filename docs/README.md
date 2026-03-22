@@ -22,19 +22,19 @@ Developer how-to guides for integrating and extending Conscius.
 
 Design artefacts produced during the architecture phase. These are reference documents — not tutorials.
 
-| Spec                                                                                                                        | Description                                    |
-| --------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
-| [Architecture overview](./specs/agent_architecture_documentation_pack/agent_architecture_overview.md)                       | 7-layer system overview                        |
-| [Plugin interface](./specs/agent_architecture_documentation_pack/agent_plugin_interface.md)                                 | `AgentPlugin` lifecycle hooks contract         |
-| [Agent runtime flow](./specs/agent_architecture_documentation_pack/AGENT_RUNTIME_FLOW.md)                                   | How the runtime loads and orchestrates plugins |
-| [Architecture decisions](./specs/agent_architecture_documentation_pack/ARCHITECTURE_DECISIONS.md)                           | High-level design decisions log                |
-| [Ecosystem repo structure](./specs/agent_architecture_documentation_pack/ECOSYSTEM_REPO_STRUCTURE.md)                       | Package layout and naming                      |
-| [Layer 4 — Conversation compression](./specs/agent_architecture_documentation_pack/layer4_conversation_compression_spec.md) | Ephemeral context summarisation                |
-| [Layer 6 — Context injection hooks](./specs/agent_architecture_documentation_pack/layer6_context_injection_hooks_spec.md)   | Hook resolution and injection order            |
-| [Layer 7 — Guardrails & quality gates](./specs/agent_architecture_documentation_pack/layer7_guardrails_quality_gates.md)    | Validation pipeline                            |
-| [Mulch experience layer](./specs/agent_architecture_documentation_pack/mulch_experience_layer_spec.md)                      | Persistent lessons learned via mulch CLI       |
-| [Session continuity layer](./specs/agent_architecture_documentation_pack/session_continuity_layer_spec_v2.md)               | SESSION.md read/write contract                 |
-| [Skills & instruction layer](./specs/agent_architecture_documentation_pack/skills_instruction_layer.md)                     | How skills are discovered and injected         |
+| Spec                                                                                          | Description                                    |
+| --------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| [Architecture overview](./specs/archive/agent_architecture_overview.md)                       | 7-layer system overview                        |
+| [Plugin interface](./specs/archive/agent_plugin_interface.md)                                 | `AgentPlugin` lifecycle hooks contract         |
+| [Agent runtime flow](./specs/archive/AGENT_RUNTIME_FLOW.md)                                   | How the runtime loads and orchestrates plugins |
+| [Architecture decisions](./specs/archive/ARCHITECTURE_DECISIONS.md)                           | High-level design decisions log                |
+| [Ecosystem repo structure](./specs/archive/ECOSYSTEM_REPO_STRUCTURE.md)                       | Package layout and naming                      |
+| [Layer 4 — Conversation compression](./specs/archive/layer4_conversation_compression_spec.md) | Ephemeral context summarisation                |
+| [Layer 6 — Context injection hooks](./specs/archive/layer6_context_injection_hooks_spec.md)   | Hook resolution and injection order            |
+| [Layer 7 — Guardrails & quality gates](./specs/archive/layer7_guardrails_quality_gates.md)    | Validation pipeline                            |
+| [Mulch experience layer](./specs/archive/mulch_experience_layer_spec.md)                      | Persistent lessons learned via mulch CLI       |
+| [Session continuity layer](./specs/archive/session_continuity_layer_spec_v2.md)               | SESSION.md read/write contract                 |
+| [Skills & instruction layer](./specs/archive/skills_instruction_layer.md)                     | How skills are discovered and injected         |
 
 ---
 
@@ -54,10 +54,12 @@ Formal records of significant architectural decisions — why they were made, wh
 
 Package-level API documentation for all published Conscius packages.
 
-| Package                                         | Description                                        |
-| ----------------------------------------------- | -------------------------------------------------- |
-| [`@conscius/agent-types`](./api/agent-types.md) | Shared TypeScript types and interfaces             |
-| [`@conscius/agent-core`](./api/agent-core.md)   | Core runtime — context builder, plugin loader, CLI |
+| Package                                         | Description                                         |
+| ----------------------------------------------- | --------------------------------------------------- |
+| [`@conscius/runtime`](./api/runtime.md)         | Unified runtime v3 — engine, types, memory pipeline |
+| [`@conscius/cli`](./api/cli.md)                 | `conscius` CLI                                      |
+| [`@conscius/agent-types`](./api/agent-types.md) | Archived — types merged into `@conscius/runtime`    |
+| [`@conscius/agent-core`](./api/agent-core.md)   | Archived — split into `runtime` + `cli`             |
 
 ---
 

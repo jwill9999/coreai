@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import type { MulchLesson } from '@conscius/agent-types';
+import type { MulchLesson } from '@conscius/runtime';
 import { writeMulchLesson } from '../lessonWriter.js';
 
 describe('writeMulchLesson', () => {

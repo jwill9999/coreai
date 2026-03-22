@@ -2,26 +2,28 @@
 
 ## Current Objective
 
-Build the Conscius agent ecosystem — a layered AI-assisted engineering workflow platform — as an Nx monorepo with 8 publishable packages.
+Land PR #18 cleanly, then begin Epic 5 (`agent-plugin-session`) while preserving the current 0.4.0-alpha.0 lockstep baseline.
 
 ## Active Task
 
-**`coreai-f7m` — Refactor mulchAdapter: replace `mulch search` with `ml prime`** (P1).
+**PR #18 hardening and documentation sync for `coreai-f7m` on `feat/mulch-ml-prime-refactor`.**
 
-No branch created yet. Implementation plan complete and architecturally reviewed. Ready to begin coding.
+Latest relevant commits:
 
-Epic 4 is fully complete and merged to `main`. Version bumped to `0.4.0-alpha.0`.
+- `ddefcf9` — `fix(agent-plugin-mulch): address Sourcery PR feedback`
+- `2fbd0ab` — `docs(agent-plugin-mulch): sync docs and review follow-ups`
+- `c087fd2` — docs follow-up commit on current branch
+
+Epic 4 implementation is complete; current work is PR closure polish + handoff quality.
 
 ## Progress Since Last Session
 
-- ✅ **Full audit of `agent-plugin-mulch`** — identified the entire adapter as non-functional: neither `ml` nor `mulch` installed, fallback files don't exist, `pendingMulchLessons` never populated, no `.agent/config.json` to load the plugin
-- ✅ **Upstream CLI source audit** — verified `@os-eco/mulch-cli` v0.6.3 commands (`ml prime`, `ml init`, `ml record`, `ml add`, `ml doctor`, `ml validate`) against source code with line-number citations
-- ✅ **Architecture decision: thin bridge to `ml prime`** — drop ~200 lines of custom JSONL parsing/fallback/dedup; replace with ~40 lines shelling out to `ml prime` (all domains, budget-limited)
-- ✅ **MVP decision: drop staging pipeline** — `onSessionEnd` removed from plugin; `lessonWriter.ts` retained as utility export; recording is engineer's responsibility via `ml record`
-- ✅ **`coreai-8ji` closed** — superseded by `coreai-f7m` (staging pipeline dropped for MVP)
-- ✅ **`coreai-f7m` created** (P1) — full design, acceptance criteria, testing strategy, and notes populated in Beads
-- ✅ **Architectural review completed** — 16 assumptions verified against upstream source; 6 corrections applied (empty-domain edge case accepted, version req → ≥ 0.6.3, 10s timeout added, `access()` over deprecated `exists()`, domain explanation added to README)
-- ✅ **Implementation plan written** — `.copilot/session-state/849bc280-31f9-4b7c-921a-b6b92a075659/plan.md` with full README structure, 26 test cases, 6 manual checks, exact error messages
+- ✅ **`coreai-f7m` implemented** — mulch adapter replaced with `ml` bridge (`resolveMlExecutable`, `assertMlRunnable`, `runMlInit`, `runMlPrime`, `queryMulch`).
+- ✅ **Lifecycle simplified** — `ensureMlReady()` added; plugin is read-only at lifecycle level (`onSessionStart` only, no `onSessionEnd`).
+- ✅ **Sourcery feedback addressed** — added/updated tests for non-ENOENT access failures, `ml prime` failure propagation, and timeout assertion coverage.
+- ✅ **Sonar lint follow-up fixed** — resolved `typescript:S7735` style issue in `mulchAdapter.ts` using nullish-coalescing string conversion.
+- ✅ **Docs audit + sync completed** — global README and docs were updated for link consistency, version consistency, and E4 as-built behavior.
+- ✅ **Planning and spec wording normalized** — `docs/planning/*` and `docs/specs/e4-agent-plugin-mulch.md` aligned with actual implementation.
 
 ## Decisions Made
 
@@ -52,24 +54,23 @@ Epic 4 is fully complete and merged to `main`. Version bumped to `0.4.0-alpha.0`
 
 - **🚨 Codecov "Missing Head Report" — unresolved, on hold** — Codecov shows no coverage on every main commit. Attempts so far: `workflow_dispatch` trigger, `codecov.yml` carryforward, `--skip-nx-cache`, YAML path fix, removed empty `agent-types` lcov, added `sed` to prefix `SF:` paths. None resolved it. **Resume with the diagnostic PR-branch probe:** create a short-lived branch, push, open a PR, and check if Codecov picks up the report. If yes → problem is main-specific (the `[skip ci]` changelog bot commit always landing on HEAD with no coverage). If no → a config regression was introduced and a before/after comparison is needed.
 
+- **Re-evaluate `agent-plugin-beads` dependency approach after `coreai-f7m`** — The mulch plugin refactor bundles `@os-eco/mulch-cli` as a package dependency to eliminate a separate global install step for users. Once `coreai-f7m` lands, review whether `agent-plugin-beads` should adopt the same pattern (bundling the `bd` CLI as a dependency rather than requiring a separate global install). Goal: minimize manual setup steps and improve onboarding UX, especially for non-developer users.
+
 ## Next Steps
 
-> ⚠️ **Do NOT start Epic 5 yet.** Complete `coreai-f7m` first — it replaces the non-functional mulch adapter and must not bleed into E5 scope.
+1. **Close PR #18 loop**
 
-1. **`coreai-f7m` — Refactor mulchAdapter** (P1, do this first)
-   - Create branch `feat/mulch-ml-prime-refactor` from `main`
-   - Claim task: `bd update coreai-f7m --claim`
-   - Implement per plan.md:
-     1. Replace `mulchAdapter.ts` (~200 lines → ~40 lines)
-     2. Simplify `hooks.ts` (add `ensureMlReady`, remove `onSessionEnd`/`getTopicHint`/`formatLesson`)
-     3. Rewrite `mulchAdapter.spec.ts` (12 new tests)
-     4. Update `hooks.spec.ts` (9 tests)
-     5. Rewrite `README.md`
-   - Run quality gates: `npx nx run-many -t typecheck,lint,test --projects=agent-plugin-mulch,agent-types`
-   - Manual testing checklist (M1–M6) requires bun installed
-   - Push, open PR, merge to `main`
-2. **Then start Epic 5** — create branch `feat/e5-agent-plugin-session`; claim `coreai-vq3` in Beads
-3. **Codecov remains on hold** — resume later with the PR-branch probe
+- Confirm CI/quality gates are green.
+- Resolve remaining PR review threads once checks are clean.
+
+2. **Start Epic 5 (`coreai-vq3`)**
+
+- Branch: `feat/e5-agent-plugin-session`
+- Claim task in Beads and scaffold `sessionReader`, `sessionWriter`, hooks, and tests.
+
+3. **Resume Codecov probe later**
+
+- Keep the existing diagnostic PR-branch probe plan; this remains independent of Epic 5.
 
 ---
 
@@ -92,7 +93,7 @@ Runtime orchestration: context builder, plugin loader, hook runner, CLI.
 | E2-T1 | Context builder — assembles prompt in injection order; triggers compression at 30–40 messages | ✅ |
 | E2-T2 | Plugin loader — loads plugins from config, calls all lifecycle hooks | ✅ |
 | E2-T3 | Hook runner — resolves `repo/.agent/hooks/` then `~/.agent/hooks/`; enforces write permissions; first-run prompt → `.agent/config.json` | ✅ |
-| E2-T4 | CLI — `agent start`, `agent end`, `agent task start <id>` using `commander` | ✅ |
+| E2-T4 | CLI — `conscius start`, `conscius end`, `conscius task start <id>` using `commander` | ✅ |
 | E2-T5 | Unit tests for context builder, plugin loader, hook runner, CLI (57 tests) | ✅ |
 
 ### Epic 3 — `@conscius/agent-plugin-beads` ✅
@@ -107,13 +108,13 @@ Wraps `bd` CLI to inject Beads task context.
 
 ### Epic 4 — `@conscius/agent-plugin-mulch` ✅
 
-Surfaces Mulch experience lessons at session start and persists explicit pending lessons at session end.
+Read-only Mulch integration: injects `ml prime` output at session start; no lifecycle persistence on `onSessionEnd`.
 | ID | Task | Status |
 |----|------|--------|
-| E4-T1 | `mulchAdapter.ts` — calls `mulch search <topic>`, parses JSONL | ✅ |
-| E4-T2 | `hooks.ts` — `onSessionStart` searches mulch for relevant topics | ✅ |
-| E4-T3 | `lessonWriter.ts` — explicit helper persists supplied lessons; `onSessionEnd` consumes `pendingMulchLessons` | ✅ |
-| E4-T4 | Unit tests with mocked Mulch adapter/writer paths | ✅ |
+| E4-T1 | `mulchAdapter.ts` — `ml` bridge (`resolve`, `validate`, `init`, `prime`, `queryMulch`) | ✅ |
+| E4-T2 | `hooks.ts` — `ensureMlReady` + `onSessionStart` prompt injection | ✅ |
+| E4-T3 | `lessonWriter.ts` — explicit helper retained; lifecycle remains read-only | ✅ |
+| E4-T4 | Unit tests including `ml prime` failure propagation and timeout coverage | ✅ |
 
 ### Epic 5 — `@conscius/agent-plugin-session` ⬜
 
@@ -203,6 +204,6 @@ CI-T1 ✅
 
 ## References
 
-- Architecture specs: `docs/specs/agent_architecture_documentation_pack/`
+- Architecture specs archive: `docs/specs/archive/`
 - Copilot instructions: `.github/copilot-instructions.md`
 - Repo: https://github.com/jwill9999/conscius

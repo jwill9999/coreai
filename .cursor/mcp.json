@@ -2,6 +2,42 @@
   "mcpServers": {
     "context7": {
       "url": "https://mcp.context7.com/mcp/oauth"
+    },
+    "figma": {
+      "type": "http",
+      "url": "https://mcp.figma.com/mcp"
+    },
+    "beads": {
+      "type": "stdio",
+      "command": "beads-mcp"
+    },
+    "nx": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["nx", "mcp"]
+    },
+    "sonarqube": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "SONARQUBE_TOKEN",
+        "-e",
+        "SONARQUBE_ORG",
+        "-e",
+        "SONARQUBE_CLOUD_URL",
+        "-e",
+        "SONARQUBE_IDE_PORT",
+        "mcp/sonarqube"
+      ],
+      "env": {
+        "SONARQUBE_ORG": "jwill9999",
+        "SONARQUBE_CLOUD_URL": "https://sonarcloud.io",
+        "SONARQUBE_TOKEN": "${env:SONARQUBE_TOKEN}",
+        "SONARQUBE_IDE_PORT": "64120"
+      }
     }
   }
 }

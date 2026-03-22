@@ -1,7 +1,7 @@
 # E4 — @conscius/agent-plugin-mulch
 
 **Beads ID:** coreai-x3b  
-**Status:** implemented  
+**Status:** as-built  
 **Package:** `packages/agent-plugin-mulch`  
 **Import path:** `@conscius/agent-plugin-mulch`
 
@@ -9,15 +9,15 @@
 
 ## Overview
 
-Plugin that injects relevant experience lessons from Mulch into the agent context at `onSessionStart` and persists explicit pending lessons at `onSessionEnd`. For this repository, upstream `ml` is the canonical direction for docs and new integration work, while any legacy `mulch` compatibility should remain lightweight.
+Plugin that injects Mulch experience context into the agent prompt during `onSessionStart` using the `ml` CLI bridge (`ml prime`). Lifecycle behavior is read-only: the plugin does not persist lessons on `onSessionEnd`.
 
 Current implementation snapshot:
 
-- `mulchAdapter.ts` exists and currently shells out to legacy `mulch search`
-- `hooks.ts` exists and injects lessons during `onSessionStart`
-- `lessonWriter.ts` now supports explicit writing of supplied `MulchLesson` records
-- adapter and hook tests exist
-- `onSessionEnd` now stages explicit lessons from `AgentContext.pendingMulchLessons` to `.mulch/candidates.jsonl` for human review
+- `mulchAdapter.ts` resolves `ml`, validates Bun, and executes `ml init` / `ml prime`
+- `hooks.ts` ensures `ml` readiness then injects `ml prime` output during `onSessionStart`
+- `ensureMlReady()` auto-initializes `.mulch/` when `mulch.config.yaml` is missing
+- `lessonWriter.ts` remains available as an explicit helper but is not used by plugin lifecycle hooks
+- adapter and hook tests cover CLI timeout handling, ml prime error propagation, and setup guard behavior
 
 ---
 
@@ -26,10 +26,10 @@ Current implementation snapshot:
 ```
 packages/agent-plugin-mulch/
 └── src/
-    ├── index.ts                    ← exports mulchPlugin (default) + queryMulch
+    ├── index.ts                    ← re-exports named symbols from lib modules
     └── lib/
-        ├── mulchAdapter.ts         ← queryMulch() — current implementation
-        ├── lessonWriter.ts         ← writeMulchLesson() — explicit helper implemented
+        ├── mulchAdapter.ts         ← resolve/validate/init/prime helpers for `ml`
+        ├── lessonWriter.ts         ← optional explicit helper (not lifecycle-wired)
         ├── hooks.ts                ← mulchPlugin: AgentPlugin implementation
         └── __tests__/
             ├── mulchAdapter.spec.ts
@@ -44,17 +44,25 @@ packages/agent-plugin-mulch/
 ### `mulchAdapter.ts`
 
 ```ts
-queryMulch(topic: string, repoRoot: string): Promise<MulchLesson[]>
+resolveMlExecutable(): Promise<string>
+assertMlRunnable(mlPath: string): Promise<void>
+runMlInit(mlPath: string, repoRoot: string): Promise<void>
+runMlPrime(mlPath: string, repoRoot: string): Promise<string>
+queryMulch(repoRoot: string): Promise<string>
 ```
 
-Query order (project → global):
+Current behavior:
 
-1. `{repoRoot}/.mulch/mulch.jsonl` — project lessons
-2. `~/.mulch/mulch.jsonl` — global lessons
+1. Resolve `ml` executable on PATH
+2. Verify `ml --version` succeeds (Bun runtime available)
+3. Run `ml prime` in `repoRoot` and return trimmed markdown output
+4. Surface stderr details in thrown errors for diagnostics
 
-Current implementation: if legacy `mulch` is available, use `mulch search <topic>`. Otherwise read and filter JSONL directly.
+Execution guardrails:
 
-Direction for future work: prefer upstream `ml` for new integration work, but do not build a broad dual-command abstraction layer just to support both CLIs at parity. Keep any legacy compatibility minimal.
+- all child process calls use a 10s timeout
+- ml and Bun missing-path failures throw install guidance
+- `queryMulch()` propagates `ml prime` failures with prefixed context
 
 **Pattern:** Use same manual Promise wrapper as `beadsAdapter.ts` when calling CLI via `execFile`.
 
@@ -64,19 +72,15 @@ Direction for future work: prefer upstream `ml` for new integration work, but do
 writeMulchLesson(lesson: MulchLesson, repoRoot: string): Promise<void>
 ```
 
-Current implementation. Preferred direction:
+Current implementation (helper only):
 
-- use upstream `ml` semantics as the canonical path for new integration work
-- keep any legacy `mulch` compatibility lightweight
-- explicitly review whether upstream `ml` storage paths require changes to approved write-path assumptions before implementing writer behavior
+- supports explicit candidate lesson staging when called directly
+- not invoked from plugin lifecycle hooks
 
-Current task-scoped decision:
+Usage decision:
 
-- implement explicit `writeMulchLesson()` support for the existing
-  `MulchLesson` shape
-- do **not** invent automatic lesson discovery from `AgentContext`
-- use `AgentContext.pendingMulchLessons` as the explicit lesson source for
-  `onSessionEnd`
+- keep lesson recording explicit and human-driven via `ml record` / review flow
+- avoid automatic lesson extraction from conversation context
 
 ### `hooks.ts`
 
@@ -86,16 +90,14 @@ export const mulchPlugin: AgentPlugin;
 
 `onSessionStart(context)`:
 
-1. Read `context.activeTask?.description` or task title for topic hint
-2. Query project mulch then global mulch for relevant lessons
-3. Append `## Experience Lessons` block to `context.promptSegments`
-4. Return silently if no lessons found (graceful degradation)
+1. Call `ensureMlReady(context.repoRoot)`
+2. `ensureMlReady` resolves `ml`, verifies Bun, checks `.mulch/mulch.config.yaml`, and runs `ml init` when missing
+3. Call `queryMulch(context.repoRoot)`
+4. Push non-empty `ml prime` output into `context.memorySegments` (type `experience`)
 
 `onSessionEnd(context)`:
 
-1. Read `context.pendingMulchLessons ?? []`
-2. Persist each supplied lesson with `writeMulchLesson()`
-3. Return silently when there are no pending lessons
+- intentionally not implemented for this plugin
 
 ---
 
@@ -108,27 +110,28 @@ export const mulchPlugin: AgentPlugin;
   summary: string;
   recommendation: string;
   created: string;        // ISO 8601
-  severity?: 'low' | 'medium' | 'high';
+  type?:
+    | 'convention'
+    | 'pattern'
+    | 'failure'
+    | 'decision'
+    | 'reference'
+    | 'guide';
+  classification?: 'foundational' | 'tactical' | 'observational';
   tags?: string[];
+  task_id?: string;
+  files?: string[];
+  service?: string;
 }
 ```
 
 ---
 
-## Prompt segment injected
+## Memory segment injected
 
-```
-## Experience Lessons
-
-### util.promisify loses .custom symbol under Jest
-**Topic**: jest mocking
-**Recommendation**: Use manual Promise wrapper around execFile instead of util.promisify when the test suite uses Jest mock transforms.
-**Created**: 2025-01-15
-
-### tsconfig.spec.json needs customConditions: null
-**Topic**: typescript configuration
-...
-```
+Raw markdown generated by `ml prime` is appended to `context.memorySegments` as an `experience` segment.
+No additional heading is prepended by this plugin. Output shape depends on
+current `.mulch/expertise/` contents and Mulch formatting.
 
 ---
 
@@ -137,20 +140,21 @@ export const mulchPlugin: AgentPlugin;
 - Follow `packages/agent-plugin-beads/` file structure **exactly**
 - Manual Promise wrapper (not `util.promisify`) for any CLI calls
 - `tsconfig.spec.json` must set `"customConditions": null`
-- Explicit session-end persistence uses `AgentContext.pendingMulchLessons`
-- Writer behavior remains intentionally explicit; no heuristic lesson extraction
-- Plugin exported as `mulchPlugin` (named) + default export from `index.ts`
+- Lifecycle is read-only: no `onSessionEnd` persistence hook
+- Writer behavior remains explicit and opt-in; no heuristic lesson extraction
+- `mulchPlugin` is a named export from `hooks.ts`; `hooks.ts` also exports a default
+- `index.ts` uses star re-exports for named symbols from `mulchAdapter.ts`, `hooks.ts`, and `lessonWriter.ts`
 
 ---
 
 ## Acceptance criteria
 
-- [ ] `queryMulch` reads both project and global mulch, returns ordered array
-- [ ] Remaining persistence work follows upstream `ml` as the canonical direction, with only lightweight legacy compatibility if needed
-- [ ] `mulchPlugin.onSessionStart` injects lesson block into `context.promptSegments`
-- [ ] Plugin returns silently when no lessons found
-- [ ] All functions have unit tests with Jest mocks
-- [ ] `npx nx run-many -t typecheck,lint,test --projects=agent-plugin-mulch` passes
+- [x] `queryMulch(repoRoot)` resolves `ml`, validates Bun, runs `ml prime`, and returns trimmed markdown
+- [x] `ensureMlReady(repoRoot)` auto-initializes `.mulch/` when config is missing
+- [x] `mulchPlugin.onSessionStart` injects `ml prime` output into `context.memorySegments`
+- [x] Plugin returns silently when prime output is empty
+- [x] Plugin exposes no `onSessionEnd` method
+- [x] Adapter and hook modules have Jest coverage for setup guard and failure propagation
 
 ---
 
@@ -158,11 +162,11 @@ export const mulchPlugin: AgentPlugin;
 
 | Beads ID     | Task                                                   |
 | ------------ | ------------------------------------------------------ |
-| coreai-x3b.1 | Implement mulch adapter (JSONL reader + CLI wrapper)   |
-| coreai-x3b.2 | Implement hooks (onSessionStart)                       |
+| coreai-x3b.1 | Implement mulch adapter (`ml` bridge)                  |
+| coreai-x3b.2 | Implement hooks (`ensureMlReady` + `onSessionStart`)   |
 | coreai-btc   | Align upstream `ml` storage and write-path assumptions |
 | coreai-x3b.3 | Implement explicit lesson writer helper                |
-| coreai-ljm   | Wire explicit lessons into `onSessionEnd`              |
+| coreai-ljm   | Lifecycle read-only alignment (no `onSessionEnd`)      |
 | coreai-x3b.4 | Unit tests for all modules                             |
 
 ---

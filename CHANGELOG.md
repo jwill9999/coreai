@@ -2,6 +2,7 @@
 
 ### 🚀 Features
 
+- *(runtime-v3)* Merge `@conscius/agent-types` and `@conscius/agent-core` into `@conscius/runtime`; add `@conscius/cli`; `memorySegments` + `definePlugin`; migrate beads/mulch; remove legacy packages (see `docs/specs/runtime-v3.md`)
 - *(epic-1)* Scaffold @coreai/agent-types and monorepo foundation
 - *(e3-t1)* Scaffold @coreai/agent-plugin-beads with beadsAdapter, hooks, contextLoader
 - *(nx-cloud)* Setup nx cloud workspace

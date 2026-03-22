@@ -120,8 +120,10 @@ For more details, see README.md and docs/QUICKSTART.md.
 4. **PUSH TO REMOTE** - This is MANDATORY:
    ```bash
    git pull --rebase
-   bd sync
+   # Beads: if you use a Dolt remote for the issue DB, sync before/after git as needed:
+   # bd dolt pull   # optional
    git push
+   # bd dolt push   # optional
    git status  # MUST show "up to date with origin"
    ```
 5. **Clean up** - Clear stashes, prune remote branches

@@ -18,7 +18,7 @@ Plugin that injects Beads task metadata and spec file content into the agent con
 ```
 packages/agent-plugin-beads/
 └── src/
-    ├── index.ts                    ← exports beadsPlugin (default) + fetchBeadsTask, loadSpecContent
+    ├── index.ts                    ← re-exports named symbols from lib modules
     └── lib/
         ├── beadsAdapter.ts         ← fetchBeadsTask() — calls `bd show --json`
         ├── contextLoader.ts        ← loadSpecContent() — reads spec file safely
@@ -99,7 +99,8 @@ export const beadsPlugin: AgentPlugin;
 - Manual Promise wrapper (not `util.promisify`) — required for Jest mock compatibility
 - `specPath` stored in Beads `external_ref` field — no dedicated spec field in Beads CLI
 - `loadSpecContent` returns `null` for missing files (graceful degradation — task continues without spec)
-- Plugin exported as both default and named export for flexibility
+- `beadsPlugin` is a named export from `hooks.ts`; `hooks.ts` also exports a default
+- `index.ts` uses star re-exports for named symbols from `beadsAdapter.ts`, `contextLoader.ts`, and `hooks.ts`
 
 ---
 
@@ -121,7 +122,12 @@ Also requires:
 
 ```json
 {
-  "include": ["src/**/*.ts"],
+  "include": [
+    "jest.config.ts",
+    "jest.config.cts",
+    "src/**/*.ts",
+    "src/**/*.d.ts"
+  ],
   "references": [{ "path": "./tsconfig.lib.json" }]
 }
 ```
@@ -135,7 +141,7 @@ This package is the **reference implementation** for all future plugin epics (E4
 1. Same file structure: `{adapter}.ts`, `hooks.ts`, `{loader/reader}.ts`, `index.ts`
 2. Manual Promise wrapper around `execFile` (not `util.promisify`)
 3. `tsconfig.spec.json` with `"customConditions": null`
-4. Plugin exported as `export const {name}Plugin: AgentPlugin` in `hooks.ts`, re-exported as default from `index.ts`
+4. Plugin exported as `export const {name}Plugin: AgentPlugin` in `hooks.ts`; keep `index.ts` as named re-exports from lib modules
 5. Graceful degradation — plugins must not throw when optional data is unavailable
 
 ---

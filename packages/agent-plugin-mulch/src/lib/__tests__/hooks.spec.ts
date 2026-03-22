@@ -1,198 +1,171 @@
-import type { AgentContext, MulchLesson } from '@conscius/agent-types';
-import { mulchPlugin } from '../hooks.js';
-import { queryMulch } from '../mulchAdapter.js';
-import { writeMulchLesson } from '../lessonWriter.js';
+import { access } from 'node:fs/promises';
+import type { RuntimeContext } from '@conscius/runtime';
+import { mulchPlugin, ensureMlReady } from '../hooks.js';
+import {
+  assertMlRunnable,
+  queryMulch,
+  resolveMlExecutable,
+  runMlInit,
+} from '../mulchAdapter.js';
 
 jest.mock('../mulchAdapter.js', () => ({
+  resolveMlExecutable: jest.fn(),
+  assertMlRunnable: jest.fn(),
+  runMlInit: jest.fn(),
   queryMulch: jest.fn(),
 }));
-jest.mock('../lessonWriter.js', () => ({
-  writeMulchLesson: jest.fn(),
+jest.mock('node:fs/promises', () => ({
+  ...jest.requireActual('node:fs/promises'),
+  access: jest.fn(),
 }));
 
-const mockQueryMulch = queryMulch as jest.MockedFunction<typeof queryMulch>;
-const mockWriteMulchLesson = writeMulchLesson as jest.MockedFunction<
-  typeof writeMulchLesson
+const mockResolveMl = resolveMlExecutable as jest.MockedFunction<
+  typeof resolveMlExecutable
 >;
+const mockAssertRunnable = assertMlRunnable as jest.MockedFunction<
+  typeof assertMlRunnable
+>;
+const mockRunMlInit = runMlInit as jest.MockedFunction<typeof runMlInit>;
+const mockQueryMulch = queryMulch as jest.MockedFunction<typeof queryMulch>;
+const mockAccess = access as jest.MockedFunction<typeof access>;
 
-function createContext(overrides: Partial<AgentContext> = {}): AgentContext {
+function createContext(
+  overrides: Partial<RuntimeContext> = {},
+): RuntimeContext {
   return {
     repoRoot: '/repo',
     config: {},
-    promptSegments: [],
+    memorySegments: [],
+    pendingMulchLessons: [],
     conversation: [],
     compressionSummaries: [],
     ...overrides,
   };
 }
 
+describe('ensureMlReady', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockResolveMl.mockResolvedValue('/usr/local/bin/ml');
+    mockAssertRunnable.mockResolvedValue(undefined);
+  });
+
+  it('skips ml init when mulch.config.yaml exists', async () => {
+    mockAccess.mockResolvedValue(undefined);
+
+    await ensureMlReady('/repo');
+
+    expect(mockResolveMl).toHaveBeenCalled();
+    expect(mockAssertRunnable).toHaveBeenCalledWith('/usr/local/bin/ml');
+    expect(mockRunMlInit).not.toHaveBeenCalled();
+  });
+
+  it('calls ml init when mulch.config.yaml is absent', async () => {
+    mockAccess.mockRejectedValue(
+      Object.assign(new Error('not found'), { code: 'ENOENT' }),
+    );
+    mockRunMlInit.mockResolvedValue(undefined);
+
+    await ensureMlReady('/repo');
+
+    expect(mockRunMlInit).toHaveBeenCalledWith('/usr/local/bin/ml', '/repo');
+  });
+
+  it('calls ml init when access fails with non-ENOENT error', async () => {
+    mockAccess.mockRejectedValue(
+      Object.assign(new Error('permission denied'), { code: 'EACCES' }),
+    );
+    mockRunMlInit.mockResolvedValue(undefined);
+
+    await ensureMlReady('/repo');
+
+    expect(mockRunMlInit).toHaveBeenCalledWith('/usr/local/bin/ml', '/repo');
+  });
+
+  it('throws when ml is not installed', async () => {
+    mockResolveMl.mockRejectedValue(
+      new Error(
+        'agent-plugin-mulch: ml is required but was not found on PATH.',
+      ),
+    );
+
+    await expect(ensureMlReady('/repo')).rejects.toThrow(
+      'ml is required but was not found on PATH',
+    );
+  });
+
+  it('throws when bun is missing', async () => {
+    mockAssertRunnable.mockRejectedValue(
+      new Error('agent-plugin-mulch: ml requires Bun to run'),
+    );
+
+    await expect(ensureMlReady('/repo')).rejects.toThrow(
+      'ml requires Bun to run',
+    );
+  });
+});
+
 describe('mulchPlugin', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockResolveMl.mockResolvedValue('/usr/local/bin/ml');
+    mockAssertRunnable.mockResolvedValue(undefined);
+    mockAccess.mockResolvedValue(undefined);
   });
 
-  it('returns early when activeTask is absent', async () => {
+  it('has the correct name', () => {
+    expect(mulchPlugin.name).toBe('agent-plugin-mulch');
+  });
+
+  it('has no onSessionEnd method', () => {
+    expect(mulchPlugin.onSessionEnd).toBeUndefined();
+  });
+
+  it('pushes ml prime output to memorySegments as experience', async () => {
+    mockQueryMulch.mockResolvedValue('## Experience\n\nSome lessons...');
+
     const context = createContext();
-
     await mulchPlugin.onSessionStart?.(context);
 
-    expect(mockQueryMulch).not.toHaveBeenCalled();
-    expect(context.promptSegments).toEqual([]);
-  });
-
-  it('uses the active task description as the topic hint and injects lessons', async () => {
-    const lessons: MulchLesson[] = [
+    expect(mockQueryMulch).toHaveBeenCalledWith('/repo');
+    expect(context.memorySegments).toEqual([
       {
-        id: 'lesson-1',
-        topic: 'jest mocking',
-        summary: 'util.promisify loses its custom symbol under Jest',
-        recommendation: 'Use a manual Promise wrapper around execFile',
-        created: '2026-03-15',
+        type: 'experience',
+        content: '## Experience\n\nSome lessons...',
       },
-      {
-        id: 'lesson-2',
-        topic: 'typescript configuration',
-        summary: 'tsconfig.spec.json needs customConditions: null',
-        recommendation: 'Set customConditions to null in Jest tsconfig',
-        created: '2026-03-16',
-      },
-    ];
-
-    mockQueryMulch.mockResolvedValue(lessons);
-
-    const context = createContext({
-      activeTask: {
-        id: 'coreai-x3b.3',
-        title: 'Implement hooks',
-        status: 'in_progress',
-        description: 'Jest mocking and TypeScript configuration',
-      },
-    });
-
-    await mulchPlugin.onSessionStart?.(context);
-
-    expect(mockQueryMulch).toHaveBeenCalledWith(
-      'Jest mocking and TypeScript configuration',
-      '/repo',
-    );
-    expect(context.promptSegments).toEqual([
-      [
-        '## Experience Lessons',
-        '',
-        '### util.promisify loses its custom symbol under Jest',
-        '**Topic**: jest mocking',
-        '**Recommendation**: Use a manual Promise wrapper around execFile',
-        '**Created**: 2026-03-15',
-        '',
-        '### tsconfig.spec.json needs customConditions: null',
-        '**Topic**: typescript configuration',
-        '**Recommendation**: Set customConditions to null in Jest tsconfig',
-        '**Created**: 2026-03-16',
-      ].join('\n'),
     ]);
   });
 
-  it('falls back to the active task title when description is absent', async () => {
-    mockQueryMulch.mockResolvedValue([
-      {
-        id: 'lesson-1',
-        topic: 'mulch hooks',
-        summary: 'Hook startup should be quiet when there are no lessons',
-        recommendation: 'Return early without mutating promptSegments',
-        created: '2026-03-15',
-      },
-    ]);
+  it('skips when ml prime returns empty string', async () => {
+    mockQueryMulch.mockResolvedValue('');
 
-    const context = createContext({
-      activeTask: {
-        id: 'coreai-x3b.3',
-        title: 'Mulch hooks startup behavior',
-        status: 'todo',
-      },
-    });
-
-    await mulchPlugin.onSessionStart?.(context);
-
-    expect(mockQueryMulch).toHaveBeenCalledWith(
-      'Mulch hooks startup behavior',
-      '/repo',
-    );
-    expect(context.promptSegments).toHaveLength(1);
-  });
-
-  it('returns silently when there is no active task topic hint', async () => {
-    const context = createContext({
-      activeTask: {
-        id: 'coreai-x3b.3',
-        title: '   ',
-        status: 'todo',
-      },
-    });
-
-    await mulchPlugin.onSessionStart?.(context);
-
-    expect(mockQueryMulch).not.toHaveBeenCalled();
-    expect(context.promptSegments).toEqual([]);
-  });
-
-  it('returns silently when no lessons are found', async () => {
-    mockQueryMulch.mockResolvedValue([]);
-
-    const context = createContext({
-      activeTask: {
-        id: 'coreai-x3b.3',
-        title: 'Jest configuration',
-        status: 'review',
-      },
-    });
-
-    await mulchPlugin.onSessionStart?.(context);
-
-    expect(mockQueryMulch).toHaveBeenCalledWith('Jest configuration', '/repo');
-    expect(context.promptSegments).toEqual([]);
-  });
-
-  it('returns silently when there are no pending lessons at session end', async () => {
     const context = createContext();
+    await mulchPlugin.onSessionStart?.(context);
 
-    await mulchPlugin.onSessionEnd?.(context);
-
-    expect(mockWriteMulchLesson).not.toHaveBeenCalled();
+    expect(context.memorySegments).toEqual([]);
   });
 
-  it('persists each explicitly supplied pending lesson at session end', async () => {
-    const lessons: MulchLesson[] = [
-      {
-        id: 'lesson-1',
-        topic: 'typescript',
-        summary: 'Jest tsconfig needs customConditions set to null',
-        recommendation: 'Override customConditions in tsconfig.spec.json',
-        created: '2026-03-17T00:00:00.000Z',
-      },
-      {
-        id: 'lesson-2',
-        topic: 'mulch',
-        summary: 'Explicit lessons should be supplied via AgentContext',
-        recommendation: 'Populate pendingMulchLessons before onSessionEnd',
-        created: '2026-03-17T00:05:00.000Z',
-      },
-    ];
-
-    const context = createContext({
-      pendingMulchLessons: lessons,
-    });
-
-    await mulchPlugin.onSessionEnd?.(context);
-
-    expect(mockWriteMulchLesson).toHaveBeenNthCalledWith(
-      1,
-      lessons[0],
-      '/repo',
+  it('throws when ml is not installed', async () => {
+    mockResolveMl.mockRejectedValue(
+      new Error(
+        'agent-plugin-mulch: ml is required but was not found on PATH.',
+      ),
     );
-    expect(mockWriteMulchLesson).toHaveBeenNthCalledWith(
-      2,
-      lessons[1],
-      '/repo',
+
+    const context = createContext();
+    await expect(mulchPlugin.onSessionStart?.(context)).rejects.toThrow(
+      'ml is required but was not found on PATH',
+    );
+  });
+
+  it('throws when bun is missing', async () => {
+    mockAssertRunnable.mockRejectedValue(
+      new Error('agent-plugin-mulch: ml requires Bun to run'),
+    );
+
+    const context = createContext();
+    await expect(mulchPlugin.onSessionStart?.(context)).rejects.toThrow(
+      'ml requires Bun to run',
     );
   });
 });
