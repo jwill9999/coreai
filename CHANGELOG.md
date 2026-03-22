@@ -67,6 +67,8 @@
 - *(session)* Hand off after coreai-na7; claim coreai-6n8
 - *(mulch)* Explain PATH vs node_modules for make mulch-record
 - *(readme)* Link Mulch guide and make mulch-record from Development
+- *(session)* Sync after main merge — mulch verify CI, close coreai-f7m, claim coreai-vq3.1
+- Align SESSION and planning index with Beads P1/P2
 
 ### 🎨 Styling
 
@@ -169,6 +171,7 @@
 - *(changelog)* Update CHANGELOG.md [skip ci]
 - *(changelog)* Update CHANGELOG.md [skip ci]
 - *(skills)* Mirror .github/skills into .cursor/skills for Cursor
+- *(changelog)* Update CHANGELOG.md [skip ci]
 - *(changelog)* Update CHANGELOG.md [skip ci]
 - *(changelog)* Update CHANGELOG.md [skip ci]
 - *(changelog)* Update CHANGELOG.md [skip ci]
