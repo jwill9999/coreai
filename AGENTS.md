@@ -22,6 +22,13 @@
 
 <!-- nx configuration end-->
 
+## Project agent skills (Cursor + GitHub Copilot)
+
+- **Locations:** `.cursor/skills/<name>/SKILL.md` (loaded by Cursor for this repo) and `.github/skills/<name>/SKILL.md` (GitHub Copilot). Optional supporting files use the same relative paths under each tree (`references/`, `scripts/`, `planning/sections/`, etc.).
+- **Canonical source for edits:** `.github/skills/`. When you add or change a skill, **mirror the same commit** into `.cursor/skills/` so both environments stay aligned. Do not symlink (portability and editor tooling differ).
+- **Format:** Matches Cursor’s project skills: YAML frontmatter with `name` (short identifier) and `description` (what + when to use; third person; include trigger terms), then markdown instructions. Keep `SKILL.md` focused; use linked files for long reference material.
+- **Copilot markers in some skills:** Lines like ``!`git branch --show-current` `` mean the agent should **run that command** to populate context. `$ARGUMENTS` means **use the user’s current request** as supplemental instructions for that skill. Cursor does not expand these automatically—treat them as explicit agent guidance.
+
 <!-- BEGIN BEADS INTEGRATION -->
 
 ## Issue Tracking with bd (beads)
