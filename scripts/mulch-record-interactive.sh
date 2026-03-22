@@ -2,6 +2,7 @@
 # Interactive wrapper for `mulch record` / `ml record`.
 # Prompts for record type and required fields per `mulch record --help`.
 # Defaults domain from .mulch/mulch.config.yaml when exactly one domain is listed.
+# PATH / local vs global CLI: see .mulch/README.md ("Install and which binary runs").
 
 set -euo pipefail
 
