@@ -2,17 +2,19 @@
 
 ## Current Objective
 
-**`main` carries runtime v3 (0.5.0-alpha.0), CI green.** **DX tooling:** skills mirror (`coreai-na7`) and interactive **`make mulch-record`** / `scripts/mulch-record-interactive.sh` (`coreai-6n8`) are **done**. **Next product focus when ready:** **Epic 5** — `@conscius/agent-plugin-session` (`coreai-vq3`).
+**`main` carries runtime v3 (0.5.0-alpha.0), CI green.** **In progress:** **Epic 5** — **`coreai-vq3.1`** (E5-T1 `sessionReader.ts`). **Recently merged:** PR **#22** — `scripts/verify-mulch-record-interactive.sh`, **`npm run test:mulch-record-interactive`**, CI smoke step, `.mulch/README.md` automated check docs.
 
 ## Active Task
 
-**None.** Pick up **Epic 5** on branch `feat/e5-agent-plugin-session` and claim `coreai-vq3` / subtasks in Beads when starting session plugin work.
+**`coreai-vq3.1`** — Implement **`sessionReader.ts`** per [docs/specs/e5-agent-plugin-session.md](./docs/specs/e5-agent-plugin-session.md): read repo-root **`SESSION.md`**, parse into **`SessionState`** (`currentObjective`, `activeTask`, `nextSteps`, epic table). Use branch **`feat/e5-agent-plugin-session`** when opening the implementation PR.
 
 Recent `main` themes (already landed):
 
 - Runtime v3 MVP (`@conscius/runtime`, `conscius` CLI); PR **#19** Copilot items addressed (plugin `source` attribution, `resolvePluginSpecifier` + `repoRoot`, docs/tsconfig).
 - `.cursor` hygiene: Sonar token out of git; `SONARQUBE_TOKEN` via `${env:SONARQUBE_TOKEN}`; `AGENTS.md` uses `bd dolt pull`/`push` instead of non-existent `bd sync`.
 - **Skills:** `.cursor/skills/` now mirrors `.github/skills/` (planning + sections, pr-review, guardrails, docs, git-workflow, mulch, session); canonical source + sync rule documented in `AGENTS.md` / `CLAUDE.md` (`coreai-na7`).
+- **Mulch plugin:** `coreai-f7m` **closed** — adapter uses **`ml prime`** / init guard; no `onSessionEnd` (read-only at lifecycle).
+- **Mulch DX / CI:** PR **#22** — non-interactive verify for `mulch-record-interactive.sh` (multi-domain fixture, all record types, `grep -Fq` assertions); runs after Nx tests in CI.
 
 ## Progress Since Last Session
 
@@ -22,6 +24,9 @@ Recent `main` themes (already landed):
 - ✅ **Tooling/security** — MCP Sonar config + SESSION/SUMMARY/README alignment (this update).
 - ✅ **Cursor skills parity** — `coreai-na7` closed; `.cursor/skills/` synced from `.github/skills/`; planning `docs/planning/index.md` DX row updated.
 - ✅ **Mulch record helper** — `coreai-6n8` closed; `make mulch-record`, `scripts/mulch-record-interactive.sh`, `.mulch/README.md` + mulch skill table row.
+- ✅ **Mulch adapter refactor** — `coreai-f7m` closed (ml prime + Bun guard; matches `main`).
+- ✅ **Mulch interactive CI verify** — merged PR **#22**; `npm run test:mulch-record-interactive` + workflow step.
+- ◐ **Epic 5 started** — `coreai-vq3.1` **claimed** (session reader).
 
 ## Decisions Made
 
@@ -47,8 +52,8 @@ Recent `main` themes (already landed):
 
 ## Next Steps
 
-1. **Epic 5 (`coreai-vq3`)** — `@conscius/agent-plugin-session`: `sessionReader`, `sessionWriter`, hooks, tests (branch `feat/e5-agent-plugin-session` when picked up).
-2. **Epic 11 (`coreai-2f5`)** — runtime MVP hardening tasks (parallel) when prioritized vs plugin work.
+1. **`coreai-vq3.1`** — ship `sessionReader.ts` + tests; then **`coreai-vq3.2`** writer, **`coreai-vq3.3`** hooks, **`coreai-vq3.4`** test sweep (see E5 spec).
+2. **Epic 11 (`coreai-2f5`)** — MVP hardening (`coreai-tfx`, `coreai-5dw`, `coreai-uld`, `coreai-0ga`, `coreai-9ts`) in parallel when prioritized.
 3. **Codecov probe** — when time allows, PR-branch experiment (see Open Issues).
 4. **Beads** — after issue changes, commit updated `.beads/issues.jsonl` per `.beads/README.md` when your workflow exports issues to git.
 
@@ -56,7 +61,7 @@ Recent `main` themes (already landed):
 
 ## Full Epic & Task Plan
 
-Legend: ✅ done | ⬜ pending
+Legend: ✅ done | ⬜ pending | ◐ in progress
 
 ### Epic 1 — Monorepo Foundation ✅
 
@@ -99,14 +104,14 @@ Read-only Mulch: `ml prime` → `memorySegments` at `onSessionStart`; no `onSess
 | E4-T3 | `lessonWriter` | ✅     |
 | E4-T4 | Unit tests     | ✅     |
 
-### Epic 5 — `@conscius/agent-plugin-session` ⬜
+### Epic 5 — `@conscius/agent-plugin-session` ◐
 
-| ID    | Task            | Status |
-| ----- | --------------- | ------ |
-| E5-T1 | `sessionReader` | ⬜     |
-| E5-T2 | `sessionWriter` | ⬜     |
-| E5-T3 | `hooks.ts`      | ⬜     |
-| E5-T4 | Unit tests      | ⬜     |
+| ID    | Task            | Status      |
+| ----- | --------------- | ----------- |
+| E5-T1 | `sessionReader` | ◐ in flight |
+| E5-T2 | `sessionWriter` | ⬜          |
+| E5-T3 | `hooks.ts`      | ⬜          |
+| E5-T4 | Unit tests      | ⬜          |
 
 ### Epic 6 — `@conscius/agent-plugin-compression` ⬜
 
