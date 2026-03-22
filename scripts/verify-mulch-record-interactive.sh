@@ -102,6 +102,9 @@ run_in_fixture() {
   )
   rc=$?
   printf '%s' "$out"
+  if [[ "$rc" -eq 0 ]]; then
+    return 0
+  fi
   return "$rc"
 }
 
