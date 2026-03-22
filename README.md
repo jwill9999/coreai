@@ -11,6 +11,8 @@
 
 Most AI agents are stateless. Conscius bridges that gap by providing a structured runtime that agents can use to reason about past actions, understand current work, and plan future steps.
 
+**`main` baseline:** runtime **v3** — types and orchestration live in `@conscius/runtime`; the published CLI is `conscius` (`@conscius/cli`). Legacy `agent-core` / standalone `agent-types` packages are not in this workspace.
+
 ---
 
 ## Packages
@@ -97,4 +99,4 @@ npx nx affected -t typecheck,lint,test
 
 ## Contributing
 
-See [SESSION.md](./SESSION.md) for current work in progress and next steps.
+See [SESSION.md](./SESSION.md) for epic status, open housekeeping items, and next steps. [SUMMARY.md](./SUMMARY.md) holds compressed session history for agents.
