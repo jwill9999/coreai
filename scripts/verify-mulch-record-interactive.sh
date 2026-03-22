@@ -16,6 +16,10 @@ fi
 SCRIPT="$ROOT/scripts/mulch-record-interactive.sh"
 bash -n "$SCRIPT"
 
+# Expected substrings in captured `ml record … --dry-run` output (avoid duplicated literals)
+readonly RECORD_ALPHA='record alpha'
+readonly FLAG_DESCRIPTION='--description'
+
 assert_contains() {
   local label=$1
   local haystack=$2
@@ -31,6 +35,7 @@ assert_contains() {
     fi
   done
   echo "ok: $label"
+  return 0
 }
 
 expect_nonzero() {
@@ -49,6 +54,7 @@ expect_nonzero() {
     exit 1
   fi
   echo "ok: $name (exit $code)"
+  return 0
 }
 
 # --- Single-domain repo (this workspace): quit / cancel paths ---
@@ -60,6 +66,7 @@ expect_nonzero "cancel after dry-run (single domain)" bash -c "printf '1\n\ndesc
 FIXTURE=$(mktemp -d)
 cleanup() {
   rm -rf "$FIXTURE"
+  return 0
 }
 trap cleanup EXIT
 
@@ -87,11 +94,15 @@ YAML
 
 run_in_fixture() {
   local input=$1
-  (
+  local out rc
+  out=$(
     cd "$FIXTURE"
     export PATH="$ROOT/node_modules/.bin:$PATH"
-    printf '%b' "$input" | bash "$SCRIPT"
-  ) 2>&1
+    printf '%b' "$input" | bash "$SCRIPT" 2>&1
+  )
+  rc=$?
+  printf '%s' "$out"
+  return "$rc"
 }
 
 expect_cancel_output() {
@@ -104,6 +115,7 @@ expect_cancel_output() {
     exit 1
   fi
   echo "ok: $label (exit $code)"
+  return 0
 }
 
 # domain 1=alpha, convention, default classification, dry-run then cancel
@@ -113,7 +125,7 @@ CODE=$?
 set -e
 expect_cancel_output "fixture: cancel after dry-run (convention / alpha)" "$OUT" "$CODE"
 assert_contains "fixture: convention uses domain alpha + description" "$OUT" \
-  'record alpha' '--type convention' '--description' 'conv_desc' '--dry-run'
+  "$RECORD_ALPHA" '--type convention' "$FLAG_DESCRIPTION" 'conv_desc' '--dry-run'
 
 # domain 2=beta, decision
 set +e
@@ -131,7 +143,7 @@ CODE=$?
 set -e
 expect_cancel_output "fixture: cancel after dry-run (failure / beta)" "$OUT" "$CODE"
 assert_contains "fixture: failure flags" "$OUT" \
-  'record beta' '--type failure' '--description' 'fdesc' '--resolution' 'fres'
+  'record beta' '--type failure' "$FLAG_DESCRIPTION" 'fdesc' '--resolution' 'fres'
 
 # domain 1=alpha, pattern
 set +e
@@ -140,7 +152,7 @@ CODE=$?
 set -e
 expect_cancel_output "fixture: cancel after dry-run (pattern / alpha)" "$OUT" "$CODE"
 assert_contains "fixture: pattern flags" "$OUT" \
-  'record alpha' '--type pattern' '--name' 'patname' '--description' 'patdesc'
+  "$RECORD_ALPHA" '--type pattern' '--name' 'patname' "$FLAG_DESCRIPTION" 'patdesc'
 
 # domain 1=alpha, reference (same required fields as guide)
 set +e
@@ -149,7 +161,7 @@ CODE=$?
 set -e
 expect_cancel_output "fixture: cancel after dry-run (reference / alpha)" "$OUT" "$CODE"
 assert_contains "fixture: reference flags" "$OUT" \
-  'record alpha' '--type reference' '--name' 'refname' '--description' 'refdesc'
+  "$RECORD_ALPHA" '--type reference' '--name' 'refname' "$FLAG_DESCRIPTION" 'refdesc'
 
 # domain 1=alpha, guide (same prompts as reference)
 set +e
@@ -158,6 +170,6 @@ CODE=$?
 set -e
 expect_cancel_output "fixture: cancel after dry-run (guide / alpha)" "$OUT" "$CODE"
 assert_contains "fixture: guide flags" "$OUT" \
-  'record alpha' '--type guide' '--name' 'guide_name' '--description' 'guide_desc'
+  "$RECORD_ALPHA" '--type guide' '--name' 'guide_name' "$FLAG_DESCRIPTION" 'guide_desc'
 
 echo "verify-mulch-record-interactive: all checks passed"
