@@ -66,6 +66,7 @@
 - Refresh README, SESSION, SUMMARY for runtime v3 on main (0.5.0-alpha.0)
 - *(session)* Hand off after coreai-na7; claim coreai-6n8
 - *(mulch)* Explain PATH vs node_modules for make mulch-record
+- *(readme)* Link Mulch guide and make mulch-record from Development
 
 ### 🎨 Styling
 
@@ -167,6 +168,7 @@
 - *(changelog)* Update CHANGELOG.md [skip ci]
 - *(changelog)* Update CHANGELOG.md [skip ci]
 - *(skills)* Mirror .github/skills into .cursor/skills for Cursor
+- *(changelog)* Update CHANGELOG.md [skip ci]
 - *(changelog)* Update CHANGELOG.md [skip ci]
 - *(changelog)* Update CHANGELOG.md [skip ci]
 - *(changelog)* Update CHANGELOG.md [skip ci]
