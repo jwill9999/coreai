@@ -2,11 +2,13 @@
 
 ## Current Objective
 
-**`main` carries runtime v3 (0.5.0-alpha.0), CI green.** **In progress:** **Epic 5** — **`coreai-vq3.1`** (E5-T1 `sessionReader.ts`). **Recently merged:** PR **#22** — `scripts/verify-mulch-record-interactive.sh`, **`npm run test:mulch-record-interactive`**, CI smoke step, `.mulch/README.md` automated check docs.
+**`main` carries runtime v3 (0.5.0-alpha.0), CI green.** **Next engineering priority (Beads P1):** **Epic 11** — **`coreai-2f5`** (Runtime MVP hardening). **Epic 5** (`coreai-vq3` / `coreai-vq3.1` …) is **P2** — pick up after Epic 11 unless Beads priorities change. **Recently merged:** PR **#22** — `scripts/verify-mulch-record-interactive.sh`, **`npm run test:mulch-record-interactive`**, CI smoke step, `.mulch/README.md` automated check docs.
 
 ## Active Task
 
-**`coreai-vq3.1`** — Implement **`sessionReader.ts`** per [docs/specs/e5-agent-plugin-session.md](./docs/specs/e5-agent-plugin-session.md): read repo-root **`SESSION.md`**, parse into **`SessionState`** (`currentObjective`, `activeTask`, `nextSteps`, epic table). Use branch **`feat/e5-agent-plugin-session`** when opening the implementation PR.
+**Epic 11** — Claim the next open MVP task under **`coreai-2f5`** (e.g. **`coreai-tfx`** compression, **`coreai-5dw`** guardrails, **`coreai-uld`** CLI cycle, **`coreai-0ga`** `runtime.run()`, **`coreai-9ts`** memory-only contract). Scope and DoD: [docs/planning/beads-mvp-alignment-v3.md](./docs/planning/beads-mvp-alignment-v3.md).
+
+**Queued (P2):** **`coreai-vq3.1`** — `sessionReader.ts` per [docs/specs/e5-agent-plugin-session.md](./docs/specs/e5-agent-plugin-session.md); branch **`feat/e5-agent-plugin-session`** when opening that PR.
 
 Recent `main` themes (already landed):
 
@@ -26,10 +28,11 @@ Recent `main` themes (already landed):
 - ✅ **Mulch record helper** — `coreai-6n8` closed; `make mulch-record`, `scripts/mulch-record-interactive.sh`, `.mulch/README.md` + mulch skill table row.
 - ✅ **Mulch adapter refactor** — `coreai-f7m` closed (ml prime + Bun guard; matches `main`).
 - ✅ **Mulch interactive CI verify** — merged PR **#22**; `npm run test:mulch-record-interactive` + workflow step.
-- ◐ **Epic 5 started** — `coreai-vq3.1` **claimed** (session reader).
+- ⬜ **Epic 5** — `coreai-vq3.1` is **open** in Beads (not claimed); **Epic 11** is **P1** ahead of Epic 5 (**P2**).
 
 ## Decisions Made
 
+- **Work order:** Beads **priority** is the source of truth for what to do next; **SESSION.md** and **docs/planning/** stay aligned with it (currently Epic 11 **P1**, Epic 5 **P2**).
 - Nx monorepo — prefer `npx nx add @nx/<plugin>` over manual config where applicable
 - TypeScript: `module: nodenext`, strict mode, `.js` extensions in imports
 - `tsconfig.spec.json` must set `"customConditions": null` (avoids TS5098 with Jest/node10)
@@ -52,10 +55,10 @@ Recent `main` themes (already landed):
 
 ## Next Steps
 
-1. **`coreai-vq3.1`** — ship `sessionReader.ts` + tests; then **`coreai-vq3.2`** writer, **`coreai-vq3.3`** hooks, **`coreai-vq3.4`** test sweep (see E5 spec).
-2. **Epic 11 (`coreai-2f5`)** — MVP hardening (`coreai-tfx`, `coreai-5dw`, `coreai-uld`, `coreai-0ga`, `coreai-9ts`) in parallel when prioritized.
+1. **Epic 11 (`coreai-2f5`)** — MVP hardening: `coreai-tfx`, `coreai-5dw`, `coreai-uld`, `coreai-0ga`, `coreai-9ts` (see [beads-mvp-alignment-v3.md](./docs/planning/beads-mvp-alignment-v3.md)).
+2. **Epic 5 (`coreai-vq3`)** — after Epic 11 or if Beads priorities change: **`coreai-vq3.1`** `sessionReader.ts` + tests, then **`coreai-vq3.2`–`coreai-vq3.4`** (E5 spec).
 3. **Codecov probe** — when time allows, PR-branch experiment (see Open Issues).
-4. **Beads** — after issue changes, commit updated `.beads/issues.jsonl` per `.beads/README.md` when your workflow exports issues to git.
+4. **Beads** — after issue changes, `bd export -o .beads/issues.jsonl` (use a temp file + `mv` if the DB is flaky) and commit per `.beads/README.md`.
 
 ---
 
@@ -104,14 +107,14 @@ Read-only Mulch: `ml prime` → `memorySegments` at `onSessionStart`; no `onSess
 | E4-T3 | `lessonWriter` | ✅     |
 | E4-T4 | Unit tests     | ✅     |
 
-### Epic 5 — `@conscius/agent-plugin-session` ◐
+### Epic 5 — `@conscius/agent-plugin-session` ⬜ (Beads P2)
 
-| ID    | Task            | Status      |
-| ----- | --------------- | ----------- |
-| E5-T1 | `sessionReader` | ◐ in flight |
-| E5-T2 | `sessionWriter` | ⬜          |
-| E5-T3 | `hooks.ts`      | ⬜          |
-| E5-T4 | Unit tests      | ⬜          |
+| ID    | Task            | Status |
+| ----- | --------------- | ------ |
+| E5-T1 | `sessionReader` | ⬜     |
+| E5-T2 | `sessionWriter` | ⬜     |
+| E5-T3 | `hooks.ts`      | ⬜     |
+| E5-T4 | Unit tests      | ⬜     |
 
 ### Epic 6 — `@conscius/agent-plugin-compression` ⬜
 

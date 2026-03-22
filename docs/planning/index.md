@@ -2,6 +2,8 @@
 
 Active epics and features for the Conscius project. Managed by the `planning` skill — use `/new-epic`, `/new-feature`, `/add-task`, `/update-status`, and `/close-feature` to keep this in sync with the Beads task graph (`bd` CLI).
 
+**Priority vs roadmap:** In Beads, **Epic 11** (`coreai-2f5`) is **P1** and **Epic 5** (`coreai-vq3` and children) is **P2**. `SESSION.md` and this index follow that ordering unless you change priorities in Beads.
+
 ---
 
 ## Epics
@@ -35,6 +37,7 @@ Active epics and features for the Conscius project. Managed by the `planning` sk
 
 **Planning ID:** feature-2026-03-21-002  
 **Beads ID:** coreai-2f5  
+**Beads priority:** P1 (do before Epic 5 session plugin unless reprioritized in Beads)  
 **Status:** open  
 **Created:** 21/03/2026 (GMT)  
 **Mode:** parallel (tasks can be sequenced by implementer)  
