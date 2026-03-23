@@ -12,6 +12,7 @@ import {
   toMessage,
 } from '@conscius/runtime';
 import { Command } from 'commander';
+import { runFullCycleAndBuildPrompt } from './run-flow.js';
 
 interface BootstrapOptions {
   taskId?: string;
@@ -85,6 +86,29 @@ program
   .name('conscius')
   .description('Conscius CLI — runtime consumer')
   .version('0.5.0-alpha.0');
+
+program
+  .command('run')
+  .description(
+    'Full cycle: load config and plugins, session start + memory compose, print final prompt',
+  )
+  .requiredOption(
+    '--input <text>',
+    'User message to include as the latest turn before building the prompt',
+  )
+  .action(
+    wrapAction(async (opts: { input: string }) => {
+      const repoRoot = process.cwd();
+      const { prompt } = await runFullCycleAndBuildPrompt({
+        repoRoot,
+        input: opts.input,
+      });
+      process.stdout.write(prompt);
+      if (prompt.length > 0 && !prompt.endsWith('\n')) {
+        process.stdout.write('\n');
+      }
+    }),
+  );
 
 program
   .command('start')

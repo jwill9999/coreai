@@ -4,6 +4,7 @@
 
 - *(e11-mvp-5)* Contract tests + spec: final prompt from `buildPromptContext` ignores `activeTask` / `pendingMulchLessons` unless reflected in segments, compression, or conversation (`@conscius/runtime`)
 - *(e11-mvp-4)* `createRuntime().run(input, repoRoot?)` — full session-start + memory-compose cycle, returns prompt string only (`@conscius/runtime`)
+- *(e11-mvp-3)* `conscius run --input` — full config + plugin + hook cycle, print assembled prompt (`@conscius/cli`)
 - *(e11-mvp-2)* Runtime `memoryGuardrails` — opt-in substring denylist for memory segments before prompt build (`@conscius/runtime`)
 - *(e11-mvp-1)* Runtime `memoryPromptLimits` — segment count + approximate token caps before prompt build (`@conscius/runtime`)
 - *(epic-1)* Scaffold @coreai/agent-types and monorepo foundation

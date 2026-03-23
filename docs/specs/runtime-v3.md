@@ -185,6 +185,7 @@ Do **not** mix this with the removed session/task/experience **layer** vocabular
 - **`@conscius/runtime`** — core engine; **`createRuntime`** is the supported programmatic entry.
 - **`createRuntime().run(input, repoRoot?)`** — one full compose cycle for a single user turn; returns the final prompt string only (loads `config.plugins` from disk each call).
 - **`@conscius/cli`** — thin consumer; **must not** add new lifecycle semantics or orchestration rules.
+- **`conscius run --input "<text>"`** (MVP): loads `.agent/config.json`, plugins, runs **`onSessionStart`** + **`onMemoryCompose`** (plugin + hook scripts), then **`buildPromptContext`** and prints the final prompt string to **stdout** (with a trailing newline when the prompt does not already end in one).
 
 ---
 
