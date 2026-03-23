@@ -79,6 +79,7 @@
 - *(readme)* Link Mulch guide and make mulch-record from Development
 - *(session)* Sync after main merge — mulch verify CI, close coreai-f7m, claim coreai-vq3.1
 - Align SESSION and planning index with Beads P1/P2
+- Align README, SESSION, SUMMARY, APIs with Epic 11 on main
 
 ### 🎨 Styling
 
@@ -189,6 +190,7 @@
 - *(changelog)* Update CHANGELOG.md [skip ci]
 - *(verify)* Satisfy Sonar shell rules (explicit return, shared literals)
 - *(verify)* Explicit return 0 branch in run_in_fixture for Sonar S7682
+- *(changelog)* Update CHANGELOG.md [skip ci]
 - *(changelog)* Update CHANGELOG.md [skip ci]
 - *(changelog)* Update CHANGELOG.md [skip ci]
 - *(changelog)* Update CHANGELOG.md [skip ci]
