@@ -147,6 +147,8 @@ Optional compression plugin may **`onMemoryCompose`:** read `memorySegments` and
 ## 7. Compression architecture
 
 - **Core** dedupe / trim / ordering-aware filtering: **runtime-owned**.
+- **Host config (MVP):** `.agent/config.json` may set **`memoryPromptLimits`** on **`AgentConfig`** — optional **`maxSegments`** and **`maxApproxTokens`** caps on **memory segments only** before `buildPromptContext` assembles the final prompt. Lowest-priority segments are dropped first (after sort + adjacent dedupe). Approximate tokens use `ceil(charLength / 4)` (not a real tokenizer). No LLM summarisation in this path.
+- **Host config (MVP guardrails):** optional **`memoryGuardrails`** with **`enabled: true`** drops memory segments whose `content` contains built-in deny substrings (case-insensitive) or custom **`denySubstrings`**. Substring checks only — no external services or ML. Runs at the start of `buildPromptContext` (before sort / dedupe / limits).
 - **Optional** `@conscius/agent-plugin-compression` (later): may replace `memorySegments` in `onMemoryCompose`; does not define new segment types.
 
 ---
@@ -172,12 +174,18 @@ type MemorySegmentType = 'system' | 'instruction' | 'context' | 'experience';
 
 Do **not** mix this with the removed session/task/experience **layer** vocabulary from older docs.
 
+### Prompt assembly inputs
+
+**`buildPromptContext`** reads **`memorySegments`** (after guardrails and limits), **`compressionSummaries`**, and **`conversation`**. It does **not** read **`activeTask`**, **`pendingMulchLessons`**, or other host-only metadata for string assembly. Plugins must put beads/mulch (and similar) influence into **`memorySegments`** (or the compression / conversation paths the pipeline already uses) for it to affect the final prompt.
+
 ---
 
 ## 10. CLI / host
 
 - **`@conscius/runtime`** — core engine; **`createRuntime`** is the supported programmatic entry.
+- **`createRuntime().run(input, repoRoot?)`** — one full compose cycle for a single user turn; returns the final prompt string only (loads `config.plugins` from disk each call).
 - **`@conscius/cli`** — thin consumer; **must not** add new lifecycle semantics or orchestration rules.
+- **`conscius run --input "<text>"`** (MVP): loads `.agent/config.json`, plugins, runs **`onSessionStart`** + **`onMemoryCompose`** (plugin + hook scripts), then **`buildPromptContext`** and prints the final prompt string to **stdout** (with a trailing newline when the prompt does not already end in one).
 
 ---
 
@@ -196,6 +204,8 @@ The minimal `{ memorySegments }` model is **insufficient** for real plugins (bea
 - `repoRoot`, `config`, `activeTask`, `pendingMulchLessons`, `conversation`, `compressionSummaries`
 
 **Rule:** plugins **must only** add or replace **`memorySegments`** (and may update non-prompt host state such as `activeTask` when enriching task metadata). They must **not** touch **`promptSegments`** or internal prompt assembly.
+
+**Prompt contract:** changing only host fields such as **`activeTask`** or **`pendingMulchLessons`** without updating **`memorySegments`** / **`compressionSummaries`** / **`conversation`** must **not** change the output of **`buildPromptContext`**.
 
 ---
 

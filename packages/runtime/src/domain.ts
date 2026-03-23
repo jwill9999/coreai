@@ -107,6 +107,40 @@ export interface CompressionSummary {
 
 // ─── Agent config (.agent/config.json) ────────────────────────────────────────
 
+/**
+ * Host-owned limits on **memory segments only** before `buildPromptContext` assembles
+ * the prompt. Omitted fields mean no limit. No LLM use — drop lowest-priority
+ * segments first, then hard-truncate a single oversized segment if needed.
+ */
+/**
+ * MVP memory guardrails: substring checks only, no network / ML.
+ * Enable with `{ enabled: true }` to apply built-in deny phrases plus optional extras.
+ */
+export interface MemoryGuardrailsConfig {
+  /** When true, segments matching built-in or custom deny substrings are dropped. */
+  enabled?: boolean;
+  /** Additional deny substrings (substring match). */
+  denySubstrings?: string[];
+  /**
+   * When true (default), custom `denySubstrings` are matched case-insensitively.
+   * Built-in patterns are always case-insensitive.
+   */
+  caseInsensitive?: boolean;
+}
+
+export interface MemoryPromptLimits {
+  /**
+   * Max segments after sort + adjacent dedupe. Segments at the end of the ordered
+   * list (lowest priority / weakest type tie-break) are dropped first.
+   */
+  maxSegments?: number;
+  /**
+   * Approximate token budget for the combined `content` of retained memory segments.
+   * Tokens ≈ ceil(utf16 code units / 4); not a real tokenizer.
+   */
+  maxApproxTokens?: number;
+}
+
 export interface AgentConfig {
   plugins?: string[];
   hooks?: {
@@ -119,4 +153,8 @@ export interface AgentConfig {
   };
   /** Tracks first-run write approval per exact file path. */
   approvedWrites?: Record<string, boolean>;
+  /** Optional caps on memory segments before prompt build (MVP compression). */
+  memoryPromptLimits?: MemoryPromptLimits;
+  /** Optional substring guardrails on memory segments before prompt build (MVP). */
+  memoryGuardrails?: MemoryGuardrailsConfig;
 }
