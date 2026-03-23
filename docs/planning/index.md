@@ -53,13 +53,13 @@ Active epics and features for the Conscius project. Managed by the `planning` sk
 
 Task constraints by MVP: [Task constraints](./beads-mvp-alignment-v3.md#e11-task-constraints).
 
-| Task                                 | Beads ID   | Status      | Spec / constraints (doc)                                  | Created    |
-| ------------------------------------ | ---------- | ----------- | --------------------------------------------------------- | ---------- |
-| MVP-1: Runtime compression (basic)   | coreai-tfx | done        | [constraints](./beads-mvp-alignment-v3.md#e11-coreai-tfx) | 21/03/2026 |
-| MVP-2: Runtime guardrails (basic)    | coreai-5dw | done        | [constraints](./beads-mvp-alignment-v3.md#e11-coreai-5dw) | 21/03/2026 |
-| MVP-3: CLI full cycle                | coreai-uld | in progress | [constraints](./beads-mvp-alignment-v3.md#e11-coreai-uld) | 21/03/2026 |
-| MVP-4: runtime.run() → prompt        | coreai-0ga | open        | [constraints](./beads-mvp-alignment-v3.md#e11-coreai-0ga) | 21/03/2026 |
-| MVP-5: Plugin contract — memory-only | coreai-9ts | open        | [constraints](./beads-mvp-alignment-v3.md#e11-coreai-9ts) | 21/03/2026 |
+| Task                                 | Beads ID   | Status | Spec / constraints (doc)                                  | Created    |
+| ------------------------------------ | ---------- | ------ | --------------------------------------------------------- | ---------- |
+| MVP-1: Runtime compression (basic)   | coreai-tfx | done   | [constraints](./beads-mvp-alignment-v3.md#e11-coreai-tfx) | 21/03/2026 |
+| MVP-2: Runtime guardrails (basic)    | coreai-5dw | done   | [constraints](./beads-mvp-alignment-v3.md#e11-coreai-5dw) | 21/03/2026 |
+| MVP-3: CLI full cycle                | coreai-uld | done   | [constraints](./beads-mvp-alignment-v3.md#e11-coreai-uld) | 21/03/2026 |
+| MVP-4: runtime.run() → prompt        | coreai-0ga | done   | [constraints](./beads-mvp-alignment-v3.md#e11-coreai-0ga) | 21/03/2026 |
+| MVP-5: Plugin contract — memory-only | coreai-9ts | done   | [constraints](./beads-mvp-alignment-v3.md#e11-coreai-9ts) | 21/03/2026 |
 
 ---
 

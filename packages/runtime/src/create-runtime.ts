@@ -1,6 +1,13 @@
+import type {
+  CompressionSummary,
+  ConversationMessage,
+  MulchLesson,
+} from './domain.js';
 import type { HostRuntimeContext, Plugin } from './public-types.js';
-import { PluginLoader } from './plugin-loader.js';
+import { createHostRuntimeContext } from './host-context.js';
+import { HookRunner, HOOK_SCRIPT_NAMES } from './hook-runner.js';
 import { buildPromptContext } from './memory-pipeline.js';
+import { PluginLoader } from './plugin-loader.js';
 
 export interface CreateRuntimeOptions {
   plugins?: Plugin[];
@@ -42,6 +49,39 @@ export function createRuntime(options: CreateRuntimeOptions = {}) {
 
     buildPromptContext(ctx: HostRuntimeContext) {
       return buildPromptContext(ctx);
+    },
+
+    /**
+     * One full compose cycle for a single user turn: load config from disk,
+     * (re)load plugins from `config.plugins`, run session-start + memory-compose
+     * (plugin hooks and optional shell hooks), then return the final prompt
+     * string only. Async because hooks and plugin loading are async.
+     */
+    async run(
+      input: string,
+      repoRoot: string = process.cwd(),
+    ): Promise<string> {
+      const config = await HookRunner.ensureConfig(repoRoot);
+      await loader.load(config.plugins ?? [], repoRoot);
+
+      const hookRunner = new HookRunner(repoRoot, config);
+      const conversation: ConversationMessage[] =
+        input.length > 0 ? [{ role: 'user', content: input }] : [];
+
+      const ctx = createHostRuntimeContext({
+        repoRoot,
+        config,
+        pendingMulchLessons: [] as MulchLesson[],
+        conversation,
+        compressionSummaries: [] as CompressionSummary[],
+      });
+
+      await loader.runSessionStart(ctx);
+      await hookRunner.runHook(HOOK_SCRIPT_NAMES.onSessionStart, ctx);
+      await loader.runMemoryCompose(ctx);
+      await hookRunner.runHook(HOOK_SCRIPT_NAMES.onMemoryCompose, ctx);
+
+      return buildPromptContext(ctx).prompt;
     },
   };
 }
