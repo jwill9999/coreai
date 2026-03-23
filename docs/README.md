@@ -10,11 +10,12 @@ Welcome to the Conscius monorepo documentation. Conscius is a plugin-based frame
 
 Developer how-to guides for integrating and extending Conscius.
 
-| Guide                                          | Description                                    |
-| ---------------------------------------------- | ---------------------------------------------- |
-| [Getting started](./guides/getting-started.md) | Install, configure, and run your first session |
-| [Adding a plugin](./guides/adding-a-plugin.md) | Scaffold and register a new Conscius plugin    |
-| [Publishing packages](./guides/publishing.md)  | Pre-publish checklist and npm publish workflow |
+| Guide                                                              | Description                                               |
+| ------------------------------------------------------------------ | --------------------------------------------------------- |
+| [Getting started](./guides/getting-started.md)                     | Install, configure, and run your first session            |
+| [Adding a plugin](./guides/adding-a-plugin.md)                     | Scaffold and register a new Conscius plugin               |
+| [Publishing packages](./guides/publishing.md)                      | Pre-publish checklist and npm publish workflow            |
+| [Upstream versions (Mulch / Beads)](./guides/upstream-versions.md) | Semver, lockfile + CI gate, tested `bd` / Mulch CLI bumps |
 
 ---
 

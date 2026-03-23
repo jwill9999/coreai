@@ -41,6 +41,7 @@
 
 ### 💼 Other
 
+- **Upstream tooling policy** — `@os-eco/mulch-cli` range tightened to `^0.6.3`; documented tested **`bd` 0.59.0**, lockfile + `npm ci` as CI gate, and bump workflow in [docs/guides/upstream-versions.md](./docs/guides/upstream-versions.md)
 - *(cursor)* Remove SonarCloud token from mcp.json; document env-based auth
 - Wire Epic 11 Beads issues to MVP alignment spec
 - *(main)* Resolve mulch verify conflicts — keep extended smoke test

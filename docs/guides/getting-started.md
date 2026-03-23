@@ -51,6 +51,7 @@ packages/
 
 ## Next steps
 
+- [Upstream tooling — Mulch and Beads](./upstream-versions.md) — semver ranges, **`package-lock.json`** + **`npm ci`** in CI, tested **`bd`** / Mulch CLI versions, and how to bump safely
 - [Add a plugin](./adding-a-plugin.md) — scaffold a new `@conscius` plugin package
 - [Plugin interface spec](../specs/archive/agent_plugin_interface.md) — understand the `AgentPlugin` lifecycle
 - [Architecture overview](../specs/archive/agent_architecture_overview.md) — the 7-layer system design

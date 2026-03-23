@@ -27,6 +27,7 @@ jobs:
           node-version: '24'
           cache: 'npm'
 
+      # Exact versions from package-lock.json (Mulch CLI + all deps). Bump via intentional npm install + lockfile commit.
       - name: Install dependencies
         run: npm ci
 

@@ -21,9 +21,11 @@ The plugin has **no `onSessionEnd`** hook; lesson recording remains an explicit 
 | Requirement                      | How to install                              |
 | -------------------------------- | ------------------------------------------- |
 | **Bun >= 1.0**                   | `curl -fsSL https://bun.sh/install \| bash` |
-| **`@os-eco/mulch-cli` >= 0.6.3** | Installed automatically via `npm install`   |
+| **`@os-eco/mulch-cli` `^0.6.3`** | Installed automatically via `npm install`   |
 
-`@os-eco/mulch-cli` is declared as a package dependency so `npm install` handles it automatically. Bun is the only external prerequisite.
+`@os-eco/mulch-cli` is a **semver-caret** dependency (`^0.6.3`); the **resolved** version is pinned by **`package-lock.json`**. CI uses **`npm ci`** so Mulch CLI behavior in automation matches the lockfile. See [Upstream tooling — Mulch and Beads](../../docs/guides/upstream-versions.md) for bump policy.
+
+Bun is the only external prerequisite beyond npm-installed `ml`/`mulch` binaries.
 
 ## First-time setup (automatic)
 

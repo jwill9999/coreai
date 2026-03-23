@@ -20,7 +20,7 @@
   ],
   "dependencies": {
     "@conscius/runtime": "*",
-    "@os-eco/mulch-cli": ">=0.6.3",
+    "@os-eco/mulch-cli": "^0.6.3",
     "tslib": "^2.3.0"
   }
 }

@@ -31,5 +31,11 @@ Or add `@conscius/agent-plugin-beads` to your `.agent/config.json` plugins list.
 
 ## Requirements
 
-- `bd` CLI must be installed and on `$PATH`.
-- A `.beads` database must exist in the repository (auto-discovered by `bd`).
+- **`bd` CLI** must be installed and on `$PATH` (Beads is **not** an npm dependency of this monorepo).
+- A **`.beads/`** database must exist in the repository (auto-discovered by `bd`).
+
+### Supported / tested `bd` version
+
+This repo’s issue workflow and local testing use **`bd` 0.59.0**. Newer versions may work; if **`bd show --json`** output or flags change, update [`beadsAdapter`](./src/lib/beadsAdapter.ts) and the [upstream versions guide](../../docs/guides/upstream-versions.md).
+
+**Note:** Unit tests **mock** `execFile` — CI does not run a real `bd`. Verify manually (or add an integration job) when upgrading Beads.

@@ -54,6 +54,7 @@ npx conscius run --input "Hello"
 | [Getting started](./docs/guides/getting-started.md)                          | Install, configure, and run the workspace                             |
 | [Adding a plugin](./docs/guides/adding-a-plugin.md)                          | Scaffold and register a new Conscius plugin                           |
 | [Publishing](./docs/guides/publishing.md)                                    | Pre-publish checklist and npm publish workflow                        |
+| [Upstream versions (Mulch / Beads)](./docs/guides/upstream-versions.md)      | Pinning policy, lockfile + CI, bumping `ml` and `bd`                  |
 | [API reference — runtime](./docs/api/runtime.md)                             | Engine, types, hooks, memory pipeline                                 |
 | [API reference — cli](./docs/api/cli.md)                                     | `conscius` binary                                                     |
 | [API reference — agent-types (archived)](./docs/api/agent-types.md)          | Redirect: types merged into `@conscius/runtime`                       |

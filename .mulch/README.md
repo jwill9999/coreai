@@ -33,7 +33,7 @@ The script lives at `scripts/mulch-record-interactive.sh`. Field requirements ma
 
 ### Install and which binary runs
 
-1. **Install dependencies** at the repo root (`npm install`). Mulch’s CLI is pulled in as **`@os-eco/mulch-cli`** via the **`@conscius/agent-plugin-mulch`** workspace package, which exposes **`node_modules/.bin/ml`** and **`node_modules/.bin/mulch`**.
+1. **Install dependencies** at the repo root (`npm install`). Mulch’s CLI is pulled in as **`@os-eco/mulch-cli`** (`^0.6.3`, resolved in **`package-lock.json`**) via the **`@conscius/agent-plugin-mulch`** workspace package, which exposes **`node_modules/.bin/ml`** and **`node_modules/.bin/mulch`**. See [Upstream tooling — Mulch and Beads](../docs/guides/upstream-versions.md) for bump policy.
 2. **PATH order:** The script resolves the CLI with `command -v ml` / `command -v mulch` — it uses **whichever executable appears first on your `PATH`**, not “repo copy first.” If you also have a **global** `ml`, that one wins when its directory is **before** `node_modules/.bin` on `PATH`.
 3. **To prefer this repo’s version:** Put **`./node_modules/.bin`** early on `PATH` for that shell (or run the same flow with **`npx ml record …`** yourself). If neither local nor global `ml`/`mulch` is found, run **`npm install`** and ensure a Mulch CLI is available.
 

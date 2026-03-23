@@ -8,6 +8,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **`main`:** Runtime v3 plus Epic 11 MVP — `memoryPromptLimits`, `memoryGuardrails`, `conscius run --input`, `createRuntime().run()`, and the memory-only prompt contract (see `docs/specs/runtime-v3.md`).
 
+**Upstream CLIs:** Mulch is **`^0.6.3`** in `agent-plugin-mulch` with versions pinned by **`package-lock.json`**; CI uses **`npm ci`**. Beads **`bd`** is documented (tested **0.59.0**); beads unit tests mock `execFile`. See **`docs/guides/upstream-versions.md`**.
+
 **Agent skills:** Project skills live in `.github/skills/` and `.cursor/skills/`; keep them in sync when editing. See `AGENTS.md` (**Project agent skills**) for layout, canonical source, and how to interpret Copilot-oriented placeholders (`!`-prefixed shell snippets and `$ARGUMENTS`).
 
 ## Commands
